@@ -27,7 +27,7 @@ class Settings:
 def get_settings() -> Settings:
     return Settings(
         gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
-        gemini_model=os.environ.get("GEMINI_MODEL", "").strip() or "gemini-3.8-flash",
+        gemini_model=os.environ.get("GEMINI_MODEL", "").strip() or "gemini-3.5-flash-lite",
         llm_timeout_seconds=_int_env("LLM_TIMEOUT_SECONDS", 15),
         max_output_tokens=_int_env("MAX_OUTPUT_TOKENS", 1024),
         max_input_chars=_int_env("MAX_INPUT_CHARS", 500),

@@ -55,7 +55,11 @@ class GeminiClient:
         self._settings = settings
         self._client = genai.Client(
             api_key=settings.gemini_api_key,
-            http_options=types.HttpOptions(timeout=settings.llm_timeout_seconds * 1000),
+            # SDK 内蔵の自動リトライは実行時間の予算を読めなくするため無効化する
+            http_options=types.HttpOptions(
+                timeout=settings.llm_timeout_seconds * 1000,
+                retry_options=types.HttpRetryOptions(attempts=1),
+            ),
         )
 
     async def generate(self, system: str, messages: list[ChatMessage]) -> LLMResult:

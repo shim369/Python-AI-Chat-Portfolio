@@ -3,8 +3,6 @@
 静的ファイル (public/) は Vercel の CDN が配信するため、ここではマウントしない。
 """
 
-from functools import lru_cache
-
 from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -17,13 +15,9 @@ from app.schemas import ChatRequest, ChatResponse
 app = FastAPI(title="Python-AI-Chat-Portfolio", docs_url=None, redoc_url=None)
 
 
-@lru_cache
-def _gemini_client() -> GeminiClient:
-    return GeminiClient(get_settings())
-
-
 def get_llm_client() -> LLMClient:
-    return _gemini_client()
+    # 非同期クライアントはイベントループに紐づくため、リクエストごとに生成する（生成コストは小さい）
+    return GeminiClient(get_settings())
 
 
 @app.exception_handler(LLMError)
