@@ -1,0 +1,56 @@
+{
+  "_comment": "AIチャットが回答の根拠にする公開用プロフィールです。ここに書いた内容だけをAIが答えます。住所・電話番号など公開したくない情報は書かないでください。",
+  "basics": {
+    "name": "Shinpei Ohtani",
+    "title": "Web Engineer / System Engineer",
+    "summary": "Python・JavaScript・PHP を用いた Web システムの開発・改修を経験。既存システムの調査・不具合修正から、外部サービス連携 (OAuth2.0) まで担当してきました。現在は AI エージェントを活用したチャットシステムの設計・実装に取り組んでいます。",
+    "location": "日本",
+    "languages": ["日本語"]
+  },
+  "skills": [
+    { "name": "Python", "category": "言語", "years": "X年", "details": "FastAPI による API 開発、業務自動化スクリプト" },
+    { "name": "JavaScript", "category": "言語", "years": "X年", "details": "バニラJSでのフロントエンド実装、非同期通信" },
+    { "name": "PHP", "category": "言語", "years": "X年", "details": "Webアプリケーションの開発・保守" },
+    { "name": "Web制作", "category": "フロントエンド", "years": "X年", "details": "HTML / CSS、レスポンシブ対応" },
+    { "name": "システム改修", "category": "開発工程", "years": "X年", "details": "既存コードの調査、ログ確認、不具合修正" },
+    { "name": "OAuth2.0", "category": "認証・認可", "years": "X年", "details": "外部サービスとの認可フロー実装" },
+    { "name": "Gemini API", "category": "AI", "years": "1年未満", "details": "function calling を用いたエージェントループの実装 (このサイト)" }
+  ],
+  "experience": [
+    {
+      "period": "20XX年 - 現在",
+      "company": "（会社名は後で記入）",
+      "role": "Webエンジニア",
+      "description": "（業務内容を後で記入）",
+      "technologies": ["PHP", "JavaScript"]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Python-AI-Chat-Portfolio",
+      "summary": "このサイト。自己紹介ページと、Gemini の function calling を使った手動エージェントループの AI チャット。Vercel 上の FastAPI で動作し、構造化ログ・レート制限・テスト・CI を備える。",
+      "technologies": ["Python", "FastAPI", "Gemini API", "JavaScript", "Vercel", "GitHub Actions", "uv"],
+      "url": "https://github.com/shim369/Python-AI-Chat-Portfolio"
+    },
+    {
+      "title": "（制作物タイトル）",
+      "summary": "（制作物の概要を後で記入）",
+      "technologies": ["PHP", "MySQL"],
+      "url": "https://github.com/shim369"
+    },
+    {
+      "title": "（制作物タイトル）",
+      "summary": "（制作物の概要を後で記入）",
+      "technologies": ["JavaScript", "OAuth2.0"],
+      "url": "https://github.com/shim369"
+    }
+  ],
+  "contact": {
+    "email": "（後で記入）",
+    "github": "https://github.com/shim369",
+    "note": "お問い合わせはメールまたは GitHub からお願いします。"
+  },
+  "site": {
+    "description": "このチャットは、ブラウザから Vercel 上の FastAPI (Python) に会話履歴を送り、サーバー側で Gemini API の function calling を使ったエージェントループを回して回答しています。ツール (get_skills など) は profile.json からデータを返します。サーバーはステートレスで、会話履歴はブラウザ側で保持しています。"
+  }
+}
