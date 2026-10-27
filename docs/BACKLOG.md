@@ -50,5 +50,6 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] pytest（ツール、エージェントループ（モック）、入力バリデーション、API / SSE、レート制限、ブログのパーサー）
 - [x] GitHub Actions（setup-uv → `uv sync --locked` → `uv run pytest`）
 - [x] README 完成（設計判断、既知の制限、改善案、確認日と参照URL）
+- [x] 提供地域の制御（Gemini 無料枠の規約に沿い、EEA・スイス・英国からのチャットに 451 を返す）
 - [ ] GitHub Actions が main で成功することを確認
-- [ ] 本番でログ（Vercel Runtime Logs）とレート制限を確認
+- [ ] 本番でログ（Vercel Runtime Logs）・レート制限・地域制限を確認

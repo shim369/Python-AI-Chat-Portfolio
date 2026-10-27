@@ -19,7 +19,7 @@
   - Gemini の function calling による手動エージェントループ（最大反復回数・時間予算つき）
   - 呼び出したツールをバッジで表示（例: 🔧 get_projects を実行）し、回答を SSE で逐次表示
   - 経歴データ (`profile.json`) に無いことは「分かりません」と答え、推測で経歴を作らない
-- 運用面: JSON 構造化ログ、IP 単位のレート制限、入力長の上限、一時的エラーのリトライ、pytest + GitHub Actions
+- 運用面: JSON 構造化ログ、IP 単位のレート制限、入力長の上限、一時的エラーのリトライ、提供地域の制御、pytest + GitHub Actions
 
 ## 技術構成
 
@@ -36,7 +36,7 @@
 Browser ──(GET 静的ファイル)──▶ Vercel CDN (public/)
    │
    └─(POST /api/chat, SSE)──▶ FastAPI (Vercel Python Function)
-                                 ├─ レート制限 / 入力バリデーション
+                                 ├─ 提供地域の制御 / レート制限 / 入力バリデーション
                                  ├─ agent.py: エージェントループ ──▶ llm.py ──▶ Gemini API
                                  │      └─ tools.py ──▶ profile.json / TECH BLOG
                                  └─ 構造化ログ (stdout → Vercel Runtime Logs)
@@ -53,6 +53,7 @@ app/
   schemas.py         リクエスト定義と入力バリデーション
   config.py          環境変数の読み込み（上限値はすべてここで調整）
   rate_limit.py      メモリ内のスライディングウィンドウ式レート制限
+  region.py          AI チャットの提供地域の制御（EEA・スイス・英国では提供しない）
   logging_utils.py   JSON 構造化ログ
   blog.py            TECH BLOG のトップページから最新記事を取得（RSS がないため HTML をパース）
   profile.py         profile.json / system.md の読み込み
@@ -145,7 +146,7 @@ uv run pytest
 | `done` | `{"tools": [...], "request_id": "..."}` | 回答完了 |
 | `error` | `{"code": "rate_limited", "detail": "...", "request_id": "..."}` | ストリーム開始後のエラー |
 
-入力エラー（422）・レート制限（429）・設定エラー（500）は、ストリーム開始前に JSON `{"code": "...", "detail": "..."}` で返ります。
+入力エラー（422）・提供地域外（451）・レート制限（429）・設定エラー（500）は、ストリーム開始前に JSON `{"code": "...", "detail": "..."}` で返ります。
 フロントは `code` から現在の表示言語のメッセージを選びます。
 
 ### `GET /api/blog`
@@ -194,6 +195,7 @@ Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されま�
 | event | 出力されるとき |
 |---|---|
 | `chat_completed` | チャット 1 回の終了時（`outcome`: `ok` / `partial_timeout` / `empty_reply` / エラーコード） |
+| `chat_region_blocked` | 提供地域外のため拒否（国コードのみ記録） |
 | `chat_rate_limited` | レート制限で拒否（IP は SHA-256 の先頭 12 桁に匿名化） |
 | `chat_rejected` | 入力バリデーションで拒否 |
 | `chat_failed` | ストリーム開始前の LLM エラー（設定エラーなど） |
@@ -211,6 +213,7 @@ Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されま�
 - **LLM 呼び出しを 1 モジュールに分離**: `llm.py` にプロバイダ非依存の型（`ToolSpec` / `ModelTurn` / `TextDelta` など）と `LLMClient` プロトコルを定義し、Gemini 固有のコードはその中だけに置いた。プロバイダを差し替えやすく、テストではモック（`tests/conftest.py` の `ScriptedLLM`）に置き換えて実 API なしでループを検証できる。なお Gemini 3 系は関数呼び出しに付く thought signature を次のリクエストで返す必要があるため、モデル応答は Gemini の形のまま `ModelTurn.raw` に保持している。
 - **経歴データはツール経由で取得**: プロンプトに `profile.json` を丸ごと埋め込まず、必要な部分だけをツールで取らせる。回答の根拠がツール結果に限定され、ログの `tools` で「何を根拠に答えたか」を追える。
 - **uv**: 依存の定義（`pyproject.toml`）とロックファイル（`uv.lock`）を一本化でき、`uv sync --locked` で CI とローカルの環境をそろえられる。Vercel も `uv.lock` からのインストールに対応しているため、`requirements.txt` を二重管理する必要がない。
+- **提供地域の制御**: Gemini API 追加利用規約では、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされている。無料枠のまま公開を続けるため、Vercel が付与する `x-vercel-ip-country` ヘッダーで国を判定し、これらの地域からの `/api/chat` には 451（Unavailable For Legal Reasons）を返す。ページの他の部分はそのまま表示する。判定はレート制限より前に行い、拒否したリクエストがレート制限の枠を消費しないようにしている。
 - **ビルド不要のフロントエンド**: ページ規模に対してフレームワークは過剰と判断し、HTML / CSS / バニラ JS にした。AI の出力は常に `textContent` で描画し、XSS を防いでいる。
 
 ## 既知の制限
@@ -218,7 +221,7 @@ Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されま�
 - **Gemini API 無料枠**
   - モデルごとに 1 分あたり / 1 日あたりのリクエスト数・トークン数の上限がある（プロジェクト単位。具体的な値は AI Studio で確認）。1 回の質問でエージェントが最大 4 回 Gemini を呼ぶため、上限に達すると「現在アクセスが集中しています」と表示される
   - 無料枠の入力・出力は Google の製品改善に使われ、人が確認する場合がある。そのためチャット画面に「個人情報は入力しないでください」と表示している
-  - 規約上、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされている（対応方針は検討中）
+  - 規約上、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされているため、これらの地域では AI チャットを提供していない（IP アドレスによる国の判定のため、VPN などでは判定が実際の所在地と異なる場合がある）
   - モデルの提供状況は変わる。開発中、`gemini-3.8-flash` は高負荷で 503 / 504 が続き、`gemini-2.5-flash-lite` は新規ユーザーには提供終了となっていた。モデルは `GEMINI_MODEL` で切り替えられる
 - **Vercel Hobby プラン**
   - 個人・非商用の利用に限られる（本サイトは就職活動用の個人ポートフォリオで、広告・課金の要素はない）
@@ -236,7 +239,6 @@ Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されま�
 - ブラウザでの E2E テスト（Playwright で SSE 表示・言語切り替え・エラー表示を確認）
 - サニタイズ済みの Markdown 描画（現在はプレーンテキスト表示で、プロンプトで Markdown を使わないよう指示している）
 - ブログ記事の本文を取り込んだ検索（RAG）で、記事の内容についても答えられるようにする
-- EEA・スイス・英国からのアクセスへの対応（規約に沿った提供範囲の制御）
 
 ## 利用範囲について
 
@@ -250,6 +252,7 @@ Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されま�
 - Vercel Python Runtime（対応バージョン 3.12 / 3.13 / 3.14、`pyproject.toml` / `uv.lock` に対応、ストリーミング対応）: https://vercel.com/docs/functions/runtimes/python
 - Vercel で FastAPI をデプロイ（エントリポイント、`public/` の CDN 配信、`maxDuration` の設定）: https://vercel.com/docs/frameworks/backend/fastapi
 - Vercel Functions の制限（Hobby の最大実行時間 300 秒）: https://vercel.com/docs/functions/limitations
+- Vercel のリクエストヘッダー（`x-vercel-ip-country`、`x-forwarded-for` は Vercel が上書き）: https://vercel.com/docs/headers/request-headers
 - Vercel Hobby プラン（月間の使用量、超過時の停止、非商用・個人利用のみ、Runtime Logs 1 時間）: https://vercel.com/docs/plans/hobby
 - Gemini API の料金（無料枠の対象モデル、無料枠の入力は製品改善に使われる）: https://ai.google.dev/gemini-api/docs/pricing
 - Gemini API のレート制限（モデルごと・プロジェクト単位、値は AI Studio で確認）: https://ai.google.dev/gemini-api/docs/rate-limits
