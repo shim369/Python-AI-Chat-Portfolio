@@ -5,7 +5,7 @@
 自己紹介ページと、経歴について質問できる AI チャットを1ページにまとめたポートフォリオです。
 バックエンドは Python (FastAPI) で、Gemini API の function calling を使ったエージェントループで回答します（Sprint 2 で実装予定）。
 
-- デプロイ先: **（デプロイ後にURLを記入）**
+- デプロイ先: https://python-ai-chat-portfolio.vercel.app
 - 開発の進め方とタスク: [docs/BACKLOG.md](docs/BACKLOG.md)
 
 <!-- スクリーンショット（後で差し替え） -->

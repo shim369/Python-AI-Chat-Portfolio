@@ -16,10 +16,10 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] チャットUI（吹き出し、ローディング、再試行、Enter送信、サンプル質問チップ、注意書き）
 - [x] ローカル開発サーバー（`scripts/dev_server.py`）
 - [x] ローカルで Gemini 実接続を確認（`gemini-3.5-flash-lite`）
-- [ ] GitHub へ push
-- [ ] Vercel に GitHub 連携でデプロイし、`GEMINI_API_KEY` を設定
-- [ ] Vercel 上で uv（pyproject.toml / uv.lock）の依存解決と Python 3.14 をビルドログで確認
-- [ ] 本番 URL でページ表示とチャット応答を確認
+- [x] GitHub へ push
+- [x] Vercel に GitHub 連携でデプロイし、`GEMINI_API_KEY` を設定
+- [x] Vercel 上で uv（pyproject.toml / uv.lock）の依存解決と Python 3.14 をビルドログで確認
+- [x] 本番 URL でページ表示とチャット応答を確認
 
 ## Sprint 2: ストリーミング + エージェントループ
 
