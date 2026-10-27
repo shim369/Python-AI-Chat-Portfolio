@@ -52,4 +52,4 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] README 完成（設計判断、既知の制限、改善案、確認日と参照URL）
 - [x] 提供地域の制御（Gemini 無料枠の規約に沿い、EEA・スイス・英国からのチャットに 451 を返す）
 - [ ] GitHub Actions が main で成功することを確認
-- [ ] 本番でログ（Vercel Runtime Logs）・レート制限・地域制限を確認
+- [x] 本番でログ（Vercel Runtime Logs）・レート制限を確認（地域制限の 451 は日本からは再現できないためテストで担保。クライアントが送った x-vercel-ip-country は Vercel に上書きされることを確認）
