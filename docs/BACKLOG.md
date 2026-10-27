@@ -31,13 +31,15 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 
 ## Sprint 2: ストリーミング + エージェントループ
 
-- [ ] ツール関数（get_skills / get_projects / get_experience / get_contact_info）
-- [ ] FunctionDeclaration によるツールスキーマ定義
-- [ ] 手動エージェントループ（最大反復回数・時間予算つき）
-- [ ] SSE によるストリーミング応答
-- [ ] フロントでツール呼び出しバッジ表示（例: 🔧 get_projects を実行）
-- [ ] 時間切れ時の部分回答と案内表示
-- [ ] Vercel プレビュー URL で逐次表示を実機確認（だめならフォールバック方針を決める）
+- [x] ツール関数（get_skills / get_projects / get_experience / get_contact_info / get_site_info / get_blog_posts）
+- [x] JSON Schema によるツールスキーマ定義（FunctionDeclaration に変換）
+- [x] LLM 呼び出しをプロバイダ非依存の型（ToolSpec / ModelTurn など）で抽象化し、ストリーミングに対応
+- [x] 手動エージェントループ（最大4回、全体40秒の予算、最後の反復はツール禁止）
+- [x] SSE によるストリーミング応答（event: tool / delta / notice / done / error）
+- [x] フロントでツール呼び出しバッジ表示（例: 🔧 get_projects を実行）
+- [x] 時間切れ時の部分回答と案内表示
+- [x] ブログ記事のメモリ内キャッシュ（ツールからの再取得を抑える）
+- [ ] Vercel プレビュー URL で逐次表示と実行時間を実機確認（だめならフォールバック方針を決める）
 
 ## Sprint 3: 運用・品質
 
