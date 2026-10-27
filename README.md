@@ -25,15 +25,17 @@
 
 ```
 app/
-  main.py          FastAPI エントリポイント（/api/chat, /api/health）
+  main.py          FastAPI エントリポイント（/api/chat, /api/blog, /api/health）
   config.py        環境変数の読み込み
   schemas.py       リクエスト定義と入力バリデーション
   llm.py           LLM 呼び出し（Gemini）を閉じ込めるモジュール
+  blog.py          TECH BLOG のトップページから最新記事を取得（RSS がないため HTML をパース）
   profile.py       profile.json / system.md の読み込み
   data/profile.json  AI が回答の根拠にする経歴データ（ここを編集すれば内容を差し替えられる）
   prompts/system.md  システムプロンプト
 public/            静的ページ（スキル・制作物の表示内容は js/config.js で編集）
 scripts/dev_server.py  ローカル開発用サーバー
+tests/             pytest（実 API・外部サイトにはアクセスしない）
 docs/BACKLOG.md    スプリントごとのタスク
 ```
 

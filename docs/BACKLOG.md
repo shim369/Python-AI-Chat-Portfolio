@@ -21,6 +21,12 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] Vercel 上で uv（pyproject.toml / uv.lock）の依存解決と Python 3.14 をビルドログで確認
 - [x] 本番 URL でページ表示とチャット応答を確認
 
+## 追加タスク（Sprint 1 後）
+
+- [x] Blog セクション: TECH BLOG の最新3記事をカード表示（`GET /api/blog` がトップページを取得・パース、CDN に1時間キャッシュ）
+- [x] ブログのパーサーのテスト（`tests/test_blog.py`）
+- [ ] 本番 URL で Blog セクションの表示を確認
+
 ## Sprint 2: ストリーミング + エージェントループ
 
 - [ ] ツール関数（get_skills / get_projects / get_experience / get_contact_info）
