@@ -100,9 +100,11 @@
     let answer = "";
     let finished = false;
 
-    const fail = (message, requestId) => {
+    // 再試行しても結果が変わらないエラーには再試行ボタンを出さない
+    const NO_RETRY_CODES = ["region_unavailable", "input_too_long", "invalid_input"];
+    const fail = (message, requestId, code) => {
       msg.remove();
-      addError(message, requestReply, requestId);
+      addError(message, NO_RETRY_CODES.includes(code) ? null : requestReply, requestId);
       finished = true;
     };
 
@@ -123,7 +125,7 @@
         history.push({ role: "model", text: answer });
         finished = true;
       } else if (event === "error") {
-        fail(t(`error.${data.code || "llm_error"}`), data.request_id);
+        fail(t(`error.${data.code || "llm_error"}`), data.request_id, data.code);
       }
       scrollToBottom();
     };
@@ -137,7 +139,7 @@
       if (!res.ok || !(res.headers.get("content-type") || "").includes("text/event-stream")) {
         // 入力エラーなどはストリーム開始前に JSON で返る。表示文言は code から現在の言語で選ぶ
         const data = await res.json().catch(() => ({}));
-        fail(t(`error.${data.code || "llm_error"}`, { max: MAX_INPUT_LENGTH }));
+        fail(t(`error.${data.code || "llm_error"}`, { max: MAX_INPUT_LENGTH }), null, data.code);
         return;
       }
       const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
