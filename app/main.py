@@ -3,10 +3,11 @@
 静的ファイル (public/) は Vercel の CDN が配信するため、ここではマウントしない。
 """
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from app.blog import BLOG_URL, fetch_latest_posts
 from app.config import get_settings
 from app.llm import GeminiClient, LLMClient, LLMError
 from app.profile import build_system_prompt
@@ -40,6 +41,20 @@ async def handle_validation_error(request: Request, exc: RequestValidationError)
 @app.get("/api/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/api/blog")
+async def blog(response: Response) -> dict:
+    try:
+        posts = [p.to_dict() for p in await fetch_latest_posts()]
+    except Exception:
+        posts = []
+    # Vercel の CDN にキャッシュさせ、関数の実行回数とブログ側への負荷を抑える
+    if posts:
+        response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
+    else:
+        response.headers["Cache-Control"] = "public, s-maxage=300"
+    return {"blog_url": BLOG_URL, "posts": posts}
 
 
 @app.post("/api/chat", response_model=ChatResponse)
