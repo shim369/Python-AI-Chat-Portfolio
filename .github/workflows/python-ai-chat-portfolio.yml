@@ -1,0 +1,28 @@
+name: Python-AI-Chat-Portfolio
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          enable-cache: true
+
+      # uv.lock が pyproject.toml とずれていたら失敗させる（--locked）
+      - name: Install dependencies
+        run: uv sync --locked
+
+      # テストは Gemini API・外部サイトにアクセスしないため、API キーは不要
+      - name: Run tests
+        run: uv run pytest
