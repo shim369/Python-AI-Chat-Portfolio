@@ -48,6 +48,3 @@ class ChatRequest(BaseModel):
             trimmed = trimmed[1:]
         return trimmed
 
-
-class ChatResponse(BaseModel):
-    reply: str

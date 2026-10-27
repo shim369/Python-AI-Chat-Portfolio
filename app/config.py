@@ -1,7 +1,7 @@
 """環境変数から読み込む設定値。
 
 Vercel Hobby の関数最大実行時間 (vercel.json の maxDuration=60s) に収まるよう、
-タイムアウトや出力トークン数はデフォルトで小さめにしている。
+タイムアウト・出力トークン数・エージェントの反復回数と時間予算はデフォルトで小さめにしている。
 """
 
 import os
@@ -22,6 +22,9 @@ class Settings:
     max_output_tokens: int
     max_input_chars: int
     max_history: int
+    # エージェントループの最大反復回数と、1 リクエスト全体の時間予算（秒）
+    agent_max_iterations: int
+    agent_budget_seconds: int
 
 
 def get_settings() -> Settings:
@@ -32,4 +35,6 @@ def get_settings() -> Settings:
         max_output_tokens=_int_env("MAX_OUTPUT_TOKENS", 1024),
         max_input_chars=_int_env("MAX_INPUT_CHARS", 500),
         max_history=_int_env("MAX_HISTORY", 10),
+        agent_max_iterations=_int_env("AGENT_MAX_ITERATIONS", 4),
+        agent_budget_seconds=_int_env("AGENT_BUDGET_SECONDS", 40),
     )
