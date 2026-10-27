@@ -8,9 +8,6 @@
 - デプロイ先: https://python-ai-chat-portfolio.vercel.app
 - 開発の進め方とタスク: [docs/BACKLOG.md](docs/BACKLOG.md)（3 スプリント + 追加タスク）
 
-<!-- スクリーンショット（後で差し替え） -->
-![スクリーンショット](docs/screenshot.png)
-
 ## 主な機能
 
 - 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / AI チャット）、レスポンシブ・ダークモード対応
