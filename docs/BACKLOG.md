@@ -27,7 +27,7 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] ブログのパーサーのテスト（`tests/test_blog.py`）
 - [x] 本番 URL で Blog セクションの表示を確認
 - [x] 日本語 / 英語の切り替え（ヘッダーの JA / EN。文言は `public/js/i18n.js`、AI の回答言語はリクエストの `lang` で指定）
-- [ ] 本番 URL で言語切り替えを確認
+- [x] 本番 URL で言語切り替えを確認
 
 ## Sprint 2: ストリーミング + エージェントループ
 
