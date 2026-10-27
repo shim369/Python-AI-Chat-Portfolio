@@ -19,6 +19,7 @@ from app.llm import GeminiClient, LLMClient, LLMError
 from app.logging_utils import anonymize_ip, log_event, new_request_id
 from app.profile import build_system_prompt
 from app.rate_limit import RateLimiter
+from app.region import COUNTRY_HEADER, is_restricted
 from app.schemas import ChatRequest, InputError
 from app.tools import TOOL_SPECS
 
@@ -35,6 +36,10 @@ class TooManyRequestsError(Exception):
 
     def __init__(self, limit_name: str):
         self.limit_name = limit_name
+
+
+class RegionUnavailableError(Exception):
+    """AI チャットを提供していない地域からのリクエスト（app/region.py を参照）。"""
 
 
 def get_request_id(request: Request) -> str:
@@ -60,6 +65,13 @@ def get_rate_limiter() -> RateLimiter:
     )
 
 
+def enforce_region(request: Request, request_id: str = Depends(get_request_id)) -> None:
+    country = request.headers.get(COUNTRY_HEADER)
+    if is_restricted(country):
+        log_event("chat_region_blocked", level="warning", request_id=request_id, country=country)
+        raise RegionUnavailableError()
+
+
 def enforce_rate_limit(
     request: Request,
     request_id: str = Depends(get_request_id),
@@ -80,6 +92,14 @@ def enforce_rate_limit(
 def get_llm_client() -> LLMClient:
     # 非同期クライアントはイベントループに紐づくため、リクエストごとに生成する（生成コストは小さい）
     return GeminiClient(get_settings())
+
+
+@app.exception_handler(RegionUnavailableError)
+async def handle_region_unavailable(request: Request, exc: RegionUnavailableError) -> JSONResponse:
+    return JSONResponse(
+        status_code=451,
+        content={"code": "region_unavailable", "detail": "お住まいの地域では AI チャットを提供していません。"},
+    )
 
 
 @app.exception_handler(TooManyRequestsError)
@@ -140,7 +160,8 @@ def _sse(event: str, data: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
 
 
-@app.post("/api/chat", dependencies=[Depends(enforce_rate_limit)])
+# 地域の制限 → レート制限の順に判定する（地域で拒否したリクエストはレート制限の枠を消費しない）
+@app.post("/api/chat", dependencies=[Depends(enforce_region), Depends(enforce_rate_limit)])
 async def chat(
     body: ChatRequest,
     request_id: str = Depends(get_request_id),
@@ -148,7 +169,7 @@ async def chat(
 ) -> StreamingResponse:
     """エージェントループの進行を SSE で返す（event: tool / delta / notice / done / error）。
 
-    入力エラー・レート制限・設定エラーはストリーム開始前に JSON で返る。開始後のエラーは error イベントで返す。
+    入力エラー・提供地域外・レート制限・設定エラーはストリーム開始前に JSON で返る。開始後のエラーは error イベントで返す。
     """
     settings = get_settings()
     limits = AgentLimits(
