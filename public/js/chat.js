@@ -37,16 +37,12 @@
     return msg;
   }
 
-  function addLoading() {
-    const msg = el("div", "msg msg-ai");
+  function createLoading() {
     const loading = el("div", "loading");
     const dots = el("span", "dots");
     dots.append(el("span"), el("span"), el("span"));
     loading.append(dots, el("span", "", t("chat.loading")));
-    msg.append(loading);
-    log.append(msg);
-    scrollToBottom();
-    return msg;
+    return loading;
   }
 
   function addError(message, onRetry) {
@@ -77,27 +73,87 @@
     counter.textContent = `${input.value.length} / ${MAX_INPUT_LENGTH}`;
   }
 
+  // SSE のテキストを {event, data} に分解する（fetch のストリームを読むため EventSource は使わない）
+  function parseSSE(block) {
+    let event = "message";
+    const data = [];
+    for (const line of block.split("\n")) {
+      if (line.startsWith("event:")) event = line.slice(6).trim();
+      else if (line.startsWith("data:")) data.push(line.slice(5).trim());
+    }
+    return { event, data: data.length ? JSON.parse(data.join("\n")) : {} };
+  }
+
   async function requestReply() {
     setBusy(true);
-    const loading = addLoading();
+    // AI の吹き出し: ツールバッジ → 回答（届くまではローディング表示）
+    const msg = el("div", "msg msg-ai");
+    const badges = el("div", "tool-badges");
+    const loading = createLoading();
+    msg.append(badges, loading);
+    log.append(msg);
+    scrollToBottom();
+
+    let bubble = null;
+    let answer = "";
+    let finished = false;
+
+    const fail = (message) => {
+      msg.remove();
+      addError(message, requestReply);
+      finished = true;
+    };
+
+    const handle = ({ event, data }) => {
+      if (event === "tool") {
+        badges.append(el("span", "tool-badge", t("chat.toolRun", { name: data.name })));
+      } else if (event === "delta") {
+        if (!bubble) {
+          loading.remove();
+          bubble = el("div", "bubble");
+          msg.append(bubble);
+        }
+        answer += data.text;
+        bubble.textContent = answer;
+      } else if (event === "notice") {
+        msg.append(el("div", "msg-note", t(`chat.notice.${data.code}`)));
+      } else if (event === "done") {
+        history.push({ role: "model", text: answer });
+        finished = true;
+      } else if (event === "error") {
+        fail(t(`error.${data.code || "llm_error"}`));
+      }
+      scrollToBottom();
+    };
+
     try {
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history.slice(-MAX_HISTORY), lang: window.I18N.lang }),
       });
-      const data = await res.json().catch(() => ({}));
-      loading.remove();
-      if (!res.ok) {
-        // サーバーはエラーの code を返すので、表示文言は現在の言語で選ぶ
-        addError(t(`error.${data.code || "llm_error"}`, { max: MAX_INPUT_LENGTH }), requestReply);
+      if (!res.ok || !(res.headers.get("content-type") || "").includes("text/event-stream")) {
+        // 入力エラーなどはストリーム開始前に JSON で返る。表示文言は code から現在の言語で選ぶ
+        const data = await res.json().catch(() => ({}));
+        fail(t(`error.${data.code || "llm_error"}`, { max: MAX_INPUT_LENGTH }));
         return;
       }
-      history.push({ role: "model", text: data.reply });
-      addMessage("model", data.reply);
+      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+      let buffer = "";
+      while (!finished) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += value;
+        let index;
+        while (!finished && (index = buffer.indexOf("\n\n")) !== -1) {
+          handle(parseSSE(buffer.slice(0, index)));
+          buffer = buffer.slice(index + 2);
+        }
+      }
+      // done / error が届かずに切れた場合（関数のタイムアウトなど）
+      if (!finished) fail(t("error.network"));
     } catch (err) {
-      loading.remove();
-      addError(t("error.network"), requestReply);
+      if (!finished) fail(t("error.network"));
     } finally {
       setBusy(false);
     }

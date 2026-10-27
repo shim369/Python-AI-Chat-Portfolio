@@ -491,6 +491,10 @@ a {
   font-size: 0.8rem;
 }
 
+.tool-badges:empty {
+  display: none;
+}
+
 .tool-badges {
   display: flex;
   flex-wrap: wrap;
