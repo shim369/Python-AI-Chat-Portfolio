@@ -15,6 +15,7 @@
       <ul class="nav-links">
         <li><a href="#skills">Skills</a></li>
         <li><a href="#works">Works</a></li>
+        <li><a href="#blog">Blog</a></li>
         <li><a href="#architecture">Architecture</a></li>
         <li><a href="#chat">AI Chat</a></li>
       </ul>
@@ -48,8 +49,22 @@
       </div>
     </section>
 
+    <!-- ブログ（最新記事は /api/blog が TECH BLOG から取得） -->
+    <section id="blog" class="section">
+      <div class="container">
+        <h2 class="section-title">Blog</h2>
+        <p class="section-lead">技術ブログ「TECH BLOG」の最新記事です。</p>
+        <div class="card-grid" id="blog-list">
+          <p class="blog-status" id="blog-status">記事を読み込み中…</p>
+        </div>
+        <p class="blog-more">
+          <a class="btn btn-ghost" href="https://sohtani.pythonanywhere.com/" target="_blank" rel="noopener">ブログをもっと見る →</a>
+        </p>
+      </div>
+    </section>
+
     <!-- 4. このサイトの技術解説 -->
-    <section id="architecture" class="section">
+    <section id="architecture" class="section section-alt">
       <div class="container">
         <h2 class="section-title">このサイトの仕組み</h2>
         <figure class="arch">
@@ -95,7 +110,7 @@
     </section>
 
     <!-- 5. AIチャット -->
-    <section id="chat" class="section section-alt">
+    <section id="chat" class="section">
       <div class="container">
         <h2 class="section-title">AI Chat</h2>
         <p class="section-lead">私の経歴・スキル・制作物について、AI に気軽に質問してください。</p>
