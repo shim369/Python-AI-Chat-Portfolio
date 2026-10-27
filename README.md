@@ -177,8 +177,16 @@ TECH BLOG の最新3記事。Vercel の CDN に1時間キャッシュされま�
 
 ## ログの確認
 
-ログは 1 行 1 JSON で標準出力に書き出し、Vercel の **Logs**（Runtime Logs）で確認できます。CLI では `vercel logs <デプロイURL>` でも見られます。
+ログは 1 行 1 JSON で書き出し、Vercel の **Logs**（Runtime Logs）で確認できます。
 Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されます。
+
+- `level` が `error` のログは**標準エラー出力**、それ以外は標準出力に出します。Vercel は Python の stderr を `error`、stdout を `info` として扱うため、エラーだけを Vercel のレベルで絞り込めます
+- `warning`（レート制限・地域制限・入力エラー）は stdout に出します。Python から Vercel の `warning` レベルにする手段がなく、stderr に出すと `error` 扱いになってしまうためです。これらは 4xx を返すので、Vercel 上でもリクエスト単位で Warning として区別できます
+- SSE 開始後のエラー（Gemini のタイムアウトや 429 など）は HTTP ステータスが 200 のままなので、このレベル分けで見つけられるようにしています
+
+```bash
+vercel logs --project python-ai-chat-portfolio --environment production --query 'level:error' --since 1h
+```
 
 チャット 1 回ごとに `chat_completed` を出力します（**発言本文・回答本文は記録しません**）。
 
