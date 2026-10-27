@@ -21,11 +21,17 @@ def load_profile() -> dict[str, Any]:
     return profile
 
 
+# 回答言語ごとの指定（プロフィールは日本語のまま渡し、英語の場合は AI が訳して答える）
+LANGUAGE_NAMES = {"ja": "日本語", "en": "英語 (English)"}
+
+
 @lru_cache
-def build_system_prompt() -> str:
+def build_system_prompt(lang: str = "ja") -> str:
     profile = load_profile()
     template = SYSTEM_PROMPT_PATH.read_text(encoding="utf-8")
     # JSON に波括弧が含まれるため str.format ではなく置換で埋め込む
-    return template.replace("{name}", profile["basics"]["name"]).replace(
-        "{profile_json}", json.dumps(profile, ensure_ascii=False, indent=2)
+    return (
+        template.replace("{name}", profile["basics"]["name"])
+        .replace("{language}", LANGUAGE_NAMES[lang])
+        .replace("{profile_json}", json.dumps(profile, ensure_ascii=False, indent=2))
     )

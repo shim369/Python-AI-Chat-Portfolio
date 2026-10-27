@@ -17,24 +17,28 @@ from app.schemas import ChatMessage
 
 
 class LLMError(Exception):
-    """LLM 呼び出しの失敗。user_message は画面にそのまま表示できる日本語。"""
+    """LLM 呼び出しの失敗。code はフロントが表示言語の文言を選ぶためのキー、user_message は日本語の既定文言。"""
 
     status_code = 502
+    code = "llm_error"
     user_message = "AIの応答取得中にエラーが発生しました。少し待ってから再試行してください。"
 
 
 class LLMRateLimitError(LLMError):
     status_code = 429
+    code = "rate_limited"
     user_message = "現在アクセスが集中しています。少し待ってから再試行してください。"
 
 
 class LLMTimeoutError(LLMError):
     status_code = 504
+    code = "timeout"
     user_message = "AIの応答に時間がかかりすぎたため中断しました。再試行してください。"
 
 
 class LLMConfigError(LLMError):
     status_code = 500
+    code = "config_error"
     user_message = "AIチャットは現在利用できません（サーバー設定エラー）。"
 
 
