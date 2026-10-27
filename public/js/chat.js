@@ -45,9 +45,11 @@
     return loading;
   }
 
-  function addError(message, onRetry) {
+  function addError(message, onRetry, requestId) {
     const msg = el("div", "msg msg-ai msg-error");
     msg.append(el("div", "bubble", message));
+    // サーバーログ (request_id) と突き合わせられるよう、エラーIDを小さく表示する
+    if (requestId) msg.append(el("div", "msg-note", t("error.requestId", { id: requestId })));
     if (onRetry) {
       const actions = el("div", "msg-actions");
       const retry = el("button", "btn btn-ghost", t("chat.retry"));
@@ -98,9 +100,9 @@
     let answer = "";
     let finished = false;
 
-    const fail = (message) => {
+    const fail = (message, requestId) => {
       msg.remove();
-      addError(message, requestReply);
+      addError(message, requestReply, requestId);
       finished = true;
     };
 
@@ -121,7 +123,7 @@
         history.push({ role: "model", text: answer });
         finished = true;
       } else if (event === "error") {
-        fail(t(`error.${data.code || "llm_error"}`));
+        fail(t(`error.${data.code || "llm_error"}`), data.request_id);
       }
       scrollToBottom();
     };
