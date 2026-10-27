@@ -3,6 +3,7 @@
   "use strict";
 
   const { SAMPLE_QUESTIONS, MAX_INPUT_LENGTH, MAX_HISTORY } = window.SITE_CONFIG;
+  const { t, pick } = window.I18N;
   const API_URL = "/api/chat";
 
   const log = document.getElementById("chat-log");
@@ -41,7 +42,7 @@
     const loading = el("div", "loading");
     const dots = el("span", "dots");
     dots.append(el("span"), el("span"), el("span"));
-    loading.append(dots, el("span", "", "考え中…（初回は少し時間がかかります）"));
+    loading.append(dots, el("span", "", t("chat.loading")));
     msg.append(loading);
     log.append(msg);
     scrollToBottom();
@@ -53,7 +54,7 @@
     msg.append(el("div", "bubble", message));
     if (onRetry) {
       const actions = el("div", "msg-actions");
-      const retry = el("button", "btn btn-ghost", "再試行");
+      const retry = el("button", "btn btn-ghost", t("chat.retry"));
       retry.type = "button";
       retry.addEventListener("click", () => {
         msg.remove();
@@ -83,19 +84,20 @@
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-MAX_HISTORY) }),
+        body: JSON.stringify({ messages: history.slice(-MAX_HISTORY), lang: window.I18N.lang }),
       });
       const data = await res.json().catch(() => ({}));
       loading.remove();
       if (!res.ok) {
-        addError(data.detail || "エラーが発生しました。少し待ってから再試行してください。", requestReply);
+        // サーバーはエラーの code を返すので、表示文言は現在の言語で選ぶ
+        addError(t(`error.${data.code || "llm_error"}`, { max: MAX_INPUT_LENGTH }), requestReply);
         return;
       }
       history.push({ role: "model", text: data.reply });
       addMessage("model", data.reply);
     } catch (err) {
       loading.remove();
-      addError("通信エラーが発生しました。ネットワークを確認して再試行してください。", requestReply);
+      addError(t("error.network"), requestReply);
     } finally {
       setBusy(false);
     }
@@ -105,7 +107,7 @@
     const trimmed = text.trim();
     if (!trimmed || busy) return;
     if (trimmed.length > MAX_INPUT_LENGTH) {
-      addError(`質問は${MAX_INPUT_LENGTH}文字以内で入力してください。`);
+      addError(t("chat.tooLong", { max: MAX_INPUT_LENGTH }));
       return;
     }
     history.push({ role: "user", text: trimmed });
@@ -130,12 +132,24 @@
 
   input.addEventListener("input", updateCounter);
 
-  for (const q of SAMPLE_QUESTIONS) {
-    const chip = el("button", "chip", q);
-    chip.type = "button";
-    chip.addEventListener("click", () => send(q));
-    chips.append(chip);
+  function renderChips() {
+    chips.replaceChildren();
+    for (const q of pick(SAMPLE_QUESTIONS)) {
+      const chip = el("button", "chip", q);
+      chip.type = "button";
+      chip.disabled = busy;
+      chip.addEventListener("click", () => send(q));
+      chips.append(chip);
+    }
   }
 
-  addMessage("model", "こんにちは！Shinpei Ohtani の経歴・スキル・制作物について、何でも質問してください。");
+  renderChips();
+  const greeting = addMessage("model", t("chat.greeting"));
+
+  // 言語切り替え時: チップを差し替え、会話が始まる前なら挨拶も切り替える
+  // （以降の回答はリクエストの lang に従って AI がその言語で答える）
+  window.I18N.onChange(() => {
+    renderChips();
+    if (history.length === 0) greeting.querySelector(".bubble").textContent = t("chat.greeting");
+  });
 })();

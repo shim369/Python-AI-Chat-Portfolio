@@ -4,21 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shinpei Ohtani | Portfolio</title>
-  <meta name="description" content="Shinpei Ohtani の自己紹介ページ。経歴・スキル・制作物について AI チャットで質問できます。">
+  <meta name="description" content="Shinpei Ohtani の自己紹介ページ。経歴・スキル・制作物について AI チャットで質問できます。" data-i18n-content="meta.description">
   <meta name="color-scheme" content="light dark">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <!-- 文言は js/i18n.js の辞書から data-i18n のキーで流し込む（ここに書いた日本語は読み込み前の初期表示） -->
   <header class="site-header">
     <nav class="container nav">
       <a class="nav-brand" href="#top">S. Ohtani</a>
       <ul class="nav-links">
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#works">Works</a></li>
-        <li><a href="#blog">Blog</a></li>
-        <li><a href="#architecture">Architecture</a></li>
-        <li><a href="#chat">AI Chat</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">スキル</a></li>
+        <li><a href="#works" data-i18n="nav.works">制作物</a></li>
+        <li><a href="#blog" data-i18n="nav.blog">ブログ</a></li>
+        <li><a href="#architecture" data-i18n="nav.architecture">仕組み</a></li>
+        <li><a href="#chat" data-i18n="nav.chat">AIチャット</a></li>
       </ul>
+      <div class="lang-switch" role="group" aria-label="表示言語" data-i18n-aria-label="lang.label">
+        <button type="button" data-lang="ja" aria-pressed="true">JA</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
     </nav>
   </header>
 
@@ -28,15 +33,15 @@
       <div class="container">
         <p class="hero-eyebrow">Web Engineer / System Engineer</p>
         <h1 class="hero-name">Shinpei Ohtani</h1>
-        <p class="hero-lead">Python・JavaScript で、Web システムの改修から AI チャットの設計・実装まで手がけるエンジニアです。</p>
-        <a class="btn btn-primary" href="#chat">AIに質問する</a>
+        <p class="hero-lead" data-i18n="hero.lead">Python・JavaScript で、Web システムの改修から AI チャットの設計・実装まで手がけるエンジニアです。</p>
+        <a class="btn btn-primary" href="#chat" data-i18n="hero.cta">AIに質問する</a>
       </div>
     </section>
 
     <!-- 2. スキル（内容は js/config.js の SKILLS を編集） -->
     <section id="skills" class="section">
       <div class="container">
-        <h2 class="section-title">Skills</h2>
+        <h2 class="section-title" data-i18n="skills.title">スキル</h2>
         <ul class="skill-grid" id="skill-list"></ul>
       </div>
     </section>
@@ -44,7 +49,7 @@
     <!-- 3. 制作物（内容は js/config.js の PROJECTS を編集） -->
     <section id="works" class="section section-alt">
       <div class="container">
-        <h2 class="section-title">Works</h2>
+        <h2 class="section-title" data-i18n="works.title">制作物</h2>
         <div class="card-grid" id="project-list"></div>
       </div>
     </section>
@@ -52,13 +57,13 @@
     <!-- ブログ（最新記事は /api/blog が TECH BLOG から取得） -->
     <section id="blog" class="section">
       <div class="container">
-        <h2 class="section-title">Blog</h2>
-        <p class="section-lead">技術ブログ「TECH BLOG」の最新記事です。</p>
+        <h2 class="section-title" data-i18n="blog.title">ブログ</h2>
+        <p class="section-lead" data-i18n="blog.lead">技術ブログ「TECH BLOG」の最新記事です。</p>
         <div class="card-grid" id="blog-list">
-          <p class="blog-status" id="blog-status">記事を読み込み中…</p>
+          <p class="blog-status" id="blog-status" data-i18n="blog.loading">記事を読み込み中…</p>
         </div>
         <p class="blog-more">
-          <a class="btn btn-ghost" href="https://sohtani.pythonanywhere.com/" target="_blank" rel="noopener">ブログをもっと見る →</a>
+          <a class="btn btn-ghost" href="https://sohtani.pythonanywhere.com/" target="_blank" rel="noopener" data-i18n="blog.more">ブログをもっと見る →</a>
         </p>
       </div>
     </section>
@@ -66,11 +71,11 @@
     <!-- 4. このサイトの技術解説 -->
     <section id="architecture" class="section section-alt">
       <div class="container">
-        <h2 class="section-title">このサイトの仕組み</h2>
+        <h2 class="section-title" data-i18n="arch.title">このサイトの仕組み</h2>
         <figure class="arch">
           <svg viewBox="0 0 720 260" role="img" aria-labelledby="arch-title arch-desc">
-            <title id="arch-title">アーキテクチャ図</title>
-            <desc id="arch-desc">ブラウザから Vercel 上の FastAPI にリクエストし、エージェントループが Gemini API とツール関数を往復して回答を返す構成</desc>
+            <title id="arch-title" data-i18n="arch.svgTitle">アーキテクチャ図</title>
+            <desc id="arch-desc" data-i18n="arch.svgDesc">ブラウザから Vercel 上の FastAPI にリクエストし、エージェントループが Gemini API とツール関数を往復して回答を返す構成</desc>
             <defs>
               <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0 0 L10 5 L0 10 z" class="arch-arrowhead"/>
@@ -84,12 +89,12 @@
             <rect x="210" y="20" width="300" height="220" rx="12" class="arch-group"/>
             <text x="360" y="44" class="arch-sub">Vercel (Hobby)</text>
             <rect x="230" y="60" width="260" height="44" rx="8" class="arch-box"/>
-            <text x="360" y="87" class="arch-label">CDN: public/ 静的配信</text>
+            <text x="360" y="87" class="arch-label" data-i18n="arch.cdn">CDN: public/ 静的配信</text>
             <rect x="230" y="120" width="260" height="104" rx="8" class="arch-box arch-accent"/>
             <text x="360" y="146" class="arch-label">FastAPI (Python Function)</text>
-            <text x="360" y="170" class="arch-sub">/api/chat ・ エージェントループ</text>
+            <text x="360" y="170" class="arch-sub" data-i18n="arch.loop">/api/chat ・ エージェントループ</text>
             <text x="360" y="192" class="arch-sub">tools.py ← profile.json</text>
-            <text x="360" y="212" class="arch-sub">構造化ログ ・ レート制限</text>
+            <text x="360" y="212" class="arch-sub" data-i18n="arch.ops">構造化ログ ・ レート制限</text>
             <!-- Gemini -->
             <rect x="560" y="132" width="150" height="80" rx="10" class="arch-box"/>
             <text x="635" y="164" class="arch-label">Gemini API</text>
@@ -101,10 +106,10 @@
           </svg>
         </figure>
         <ul class="design-notes">
-          <li><strong>フロントはビルド不要</strong>：HTML/CSS/バニラJSをCDNから配信し、構成をシンプルに保っています。</li>
-          <li><strong>サーバーはステートレス</strong>：会話履歴はブラウザ側で保持して毎回送信するので、サーバーレス環境でもスケールします。</li>
-          <li><strong>エージェントループを手書き</strong>：Gemini の function calling の自動実行は使わず、ツール呼び出しと結果の返却を明示的に繰り返しています。</li>
-          <li><strong>LLM呼び出しを1モジュールに分離</strong>：プロバイダを差し替えやすく、テストではモックに置き換えられます。</li>
+          <li><strong data-i18n="arch.note1.title">フロントはビルド不要</strong><span data-i18n="arch.note1.body">：HTML/CSS/バニラJSをCDNから配信し、構成をシンプルに保っています。</span></li>
+          <li><strong data-i18n="arch.note2.title">サーバーはステートレス</strong><span data-i18n="arch.note2.body">：会話履歴はブラウザ側で保持して毎回送信するので、サーバーレス環境でもスケールします。</span></li>
+          <li><strong data-i18n="arch.note3.title">エージェントループを手書き</strong><span data-i18n="arch.note3.body">：Gemini の function calling の自動実行は使わず、ツール呼び出しと結果の返却を明示的に繰り返しています。</span></li>
+          <li><strong data-i18n="arch.note4.title">LLM呼び出しを1モジュールに分離</strong><span data-i18n="arch.note4.body">：プロバイダを差し替えやすく、テストではモックに置き換えられます。</span></li>
         </ul>
       </div>
     </section>
@@ -112,20 +117,20 @@
     <!-- 5. AIチャット -->
     <section id="chat" class="section">
       <div class="container">
-        <h2 class="section-title">AI Chat</h2>
-        <p class="section-lead">私の経歴・スキル・制作物について、AI に気軽に質問してください。</p>
+        <h2 class="section-title" data-i18n="chat.title">AIチャット</h2>
+        <p class="section-lead" data-i18n="chat.lead">私の経歴・スキル・制作物について、AI に気軽に質問してください。</p>
         <div class="chat">
           <div class="chat-log" id="chat-log" aria-live="polite"></div>
           <div class="chat-chips" id="chat-chips"></div>
           <form class="chat-form" id="chat-form">
-            <label for="chat-input" class="visually-hidden">質問を入力</label>
-            <textarea id="chat-input" rows="2" maxlength="500" placeholder="質問を入力（Enterで送信 / Shift+Enterで改行）"></textarea>
-            <button type="submit" class="btn btn-primary" id="chat-send">送信</button>
+            <label for="chat-input" class="visually-hidden" data-i18n="chat.inputLabel">質問を入力</label>
+            <textarea id="chat-input" rows="2" maxlength="500" placeholder="質問を入力（Enterで送信 / Shift+Enterで改行）" data-i18n-placeholder="chat.placeholder"></textarea>
+            <button type="submit" class="btn btn-primary" id="chat-send" data-i18n="chat.send">送信</button>
           </form>
           <div class="chat-meta">
             <span id="chat-counter">0 / 500</span>
           </div>
-          <p class="chat-notice">入力内容はAIサービス提供元で処理されます。個人情報は入力しないでください。AIの回答は誤りを含む場合があります。</p>
+          <p class="chat-notice" data-i18n="chat.notice">入力内容はAIサービス提供元で処理されます。個人情報は入力しないでください。AIの回答は誤りを含む場合があります。</p>
         </div>
       </div>
     </section>
@@ -134,13 +139,14 @@
   <!-- 6. フッター -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>Contact: <span id="contact-placeholder">（連絡先は準備中です）</span></p>
-      <p><a href="https://github.com/shim369/Python-AI-Chat-Portfolio" target="_blank" rel="noopener">このサイトのソースコード (GitHub)</a></p>
+      <p><span data-i18n="footer.contact">連絡先：</span><span id="contact-placeholder" data-i18n="footer.contactPlaceholder">（連絡先は準備中です）</span></p>
+      <p><a href="https://github.com/shim369/Python-AI-Chat-Portfolio" target="_blank" rel="noopener" data-i18n="footer.source">このサイトのソースコード (GitHub)</a></p>
       <p class="footer-copy">&copy; Shinpei Ohtani</p>
     </div>
   </footer>
 
   <script src="/js/config.js"></script>
+  <script src="/js/i18n.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/chat.js"></script>
 </body>
