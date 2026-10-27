@@ -33,11 +33,20 @@ app/
   profile.py       profile.json / system.md の読み込み
   data/profile.json  AI が回答の根拠にする経歴データ（ここを編集すれば内容を差し替えられる）
   prompts/system.md  システムプロンプト
-public/            静的ページ（スキル・制作物の表示内容は js/config.js で編集）
+public/            静的ページ（スキル・制作物の表示内容は js/config.js、画面の文言は js/i18n.js で編集）
 scripts/dev_server.py  ローカル開発用サーバー
 tests/             pytest（実 API・外部サイトにはアクセスしない）
 docs/BACKLOG.md    スプリントごとのタスク
 ```
+
+## 日本語 / 英語の切り替え
+
+ヘッダーの JA / EN で表示言語を切り替えられます（選んだ言語はブラウザに保存。初回はブラウザの言語設定で決定）。
+
+- 画面の固定文言: `public/js/i18n.js` の辞書。HTML 側は `data-i18n="キー"` で参照
+- スキル・制作物など: `public/js/config.js` で `{ ja: "...", en: "..." }` の形で記述
+- AI の回答: リクエストの `lang` に応じて、システムプロンプトで回答言語を指定。`profile.json` は日本語の1ファイルのみで、英語の場合は AI が訳して回答する
+- エラー: API は `code`（例: `rate_limited`）を返し、表示文言はフロントが現在の言語で選ぶ
 
 ## ローカルでの起動
 
