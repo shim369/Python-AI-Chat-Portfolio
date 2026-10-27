@@ -25,7 +25,7 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 
 - [x] Blog セクション: TECH BLOG の最新3記事をカード表示（`GET /api/blog` がトップページを取得・パース、CDN に1時間キャッシュ）
 - [x] ブログのパーサーのテスト（`tests/test_blog.py`）
-- [ ] 本番 URL で Blog セクションの表示を確認
+- [x] 本番 URL で Blog セクションの表示を確認
 
 ## Sprint 2: ストリーミング + エージェントループ
 
