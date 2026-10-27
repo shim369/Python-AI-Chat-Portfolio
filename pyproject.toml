@@ -21,3 +21,8 @@ entrypoint = "app.main:app"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+# 依存ライブラリ側の非推奨警告（テストの動作には影響しない）
+filterwarnings = [
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+    "ignore:'_UnionGenericAlias' is deprecated",
+]
