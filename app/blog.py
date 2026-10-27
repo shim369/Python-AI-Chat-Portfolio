@@ -5,6 +5,7 @@
 空のリストを返し、フロントはブログへのリンクだけを表示する。
 """
 
+import time
 from dataclasses import asdict, dataclass
 from html.parser import HTMLParser
 from urllib.parse import urljoin
@@ -13,6 +14,9 @@ import httpx
 
 BLOG_URL = "https://sohtani.pythonanywhere.com/"
 FETCH_TIMEOUT_SECONDS = 5
+# 同じインスタンス内での再取得を避けるメモリ内キャッシュ（エージェントのツールからも呼ばれるため）
+CACHE_TTL_SECONDS = 3600
+_cache: tuple[float, list["BlogPost"]] | None = None
 
 
 @dataclass
@@ -82,7 +86,13 @@ def parse_posts(html: str, base_url: str = BLOG_URL, limit: int = 3) -> list[Blo
 
 
 async def fetch_latest_posts(limit: int = 3) -> list[BlogPost]:
+    global _cache
+    if _cache and time.monotonic() - _cache[0] < CACHE_TTL_SECONDS:
+        return _cache[1][:limit]
     async with httpx.AsyncClient(timeout=FETCH_TIMEOUT_SECONDS, follow_redirects=True) as client:
         response = await client.get(BLOG_URL)
         response.raise_for_status()
-    return parse_posts(response.text, limit=limit)
+    posts = parse_posts(response.text)
+    if posts:
+        _cache = (time.monotonic(), posts)
+    return posts[:limit]
