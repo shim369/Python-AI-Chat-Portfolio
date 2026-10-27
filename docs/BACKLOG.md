@@ -1,0 +1,41 @@
+# BACKLOG
+
+Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理する。
+
+## Sprint 1: 静的ページ + 非ストリーミングのチャットAPI
+
+- [x] Python 3.14 固定（`.python-version` / `requires-python`。Vercel 対応版の最新）
+- [x] `vercel.json`（maxDuration、関数バンドルからの除外設定）
+- [x] `.env.example`（変数名のみ）
+- [x] 1ページ構成の静的ページ（ヒーロー / スキル / 制作物 / 技術解説 / チャット / フッター）
+- [x] レスポンシブ・ダークモード対応
+- [x] `profile.json` と `prompts/system.md`
+- [x] `POST /api/chat`（非ストリーミング、ステートレス）
+- [x] LLM 呼び出しを `app/llm.py` に分離（`LLMClient` プロトコル）
+- [x] 入力長・履歴件数のバリデーション、日本語エラーメッセージ
+- [x] チャットUI（吹き出し、ローディング、再試行、Enter送信、サンプル質問チップ、注意書き）
+- [x] ローカル開発サーバー（`scripts/dev_server.py`）
+- [x] ローカルで Gemini 実接続を確認（`gemini-3.5-flash-lite`）
+- [ ] GitHub へ push
+- [ ] Vercel に GitHub 連携でデプロイし、`GEMINI_API_KEY` を設定
+- [ ] Vercel 上で uv（pyproject.toml / uv.lock）の依存解決と Python 3.14 をビルドログで確認
+- [ ] 本番 URL でページ表示とチャット応答を確認
+
+## Sprint 2: ストリーミング + エージェントループ
+
+- [ ] ツール関数（get_skills / get_projects / get_experience / get_contact_info）
+- [ ] FunctionDeclaration によるツールスキーマ定義
+- [ ] 手動エージェントループ（最大反復回数・時間予算つき）
+- [ ] SSE によるストリーミング応答
+- [ ] フロントでツール呼び出しバッジ表示（例: 🔧 get_projects を実行）
+- [ ] 時間切れ時の部分回答と案内表示
+- [ ] Vercel プレビュー URL で逐次表示を実機確認（だめならフォールバック方針を決める）
+
+## Sprint 3: 運用・品質
+
+- [ ] JSON 構造化ログ（リクエストID、所要時間、ツール名、トークン使用量、エラー。本文は残さない）
+- [ ] IP 単位のメモリ内レート制限（環境変数で調整）
+- [ ] 429 / 5xx の扱い（日本語メッセージ、上限付き指数バックオフ）
+- [ ] pytest（ツール、エージェントループ（モック）、入力バリデーション）
+- [ ] GitHub Actions（setup-uv → `uv sync --locked` → `uv run pytest`）
+- [ ] README 完成（設計判断、既知の制限、改善案、確認日と参照URL）
