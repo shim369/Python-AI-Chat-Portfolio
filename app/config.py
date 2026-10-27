@@ -25,6 +25,12 @@ class Settings:
     # エージェントループの最大反復回数と、1 リクエスト全体の時間予算（秒）
     agent_max_iterations: int
     agent_budget_seconds: int
+    # 一時的なエラー (5xx / 通信エラー) のリトライ回数（時間予算の範囲内でのみ行う）
+    llm_max_retries: int
+    # レート制限（0 で無効）。Gemini 無料枠を使い切らないよう保守的な値にしている
+    rate_limit_per_ip_per_minute: int
+    rate_limit_per_ip_per_day: int
+    rate_limit_global_per_minute: int
 
 
 def get_settings() -> Settings:
@@ -37,4 +43,8 @@ def get_settings() -> Settings:
         max_history=_int_env("MAX_HISTORY", 10),
         agent_max_iterations=_int_env("AGENT_MAX_ITERATIONS", 4),
         agent_budget_seconds=_int_env("AGENT_BUDGET_SECONDS", 40),
+        llm_max_retries=_int_env("LLM_MAX_RETRIES", 2),
+        rate_limit_per_ip_per_minute=_int_env("RATE_LIMIT_PER_IP_PER_MINUTE", 5),
+        rate_limit_per_ip_per_day=_int_env("RATE_LIMIT_PER_IP_PER_DAY", 40),
+        rate_limit_global_per_minute=_int_env("RATE_LIMIT_GLOBAL_PER_MINUTE", 10),
     )

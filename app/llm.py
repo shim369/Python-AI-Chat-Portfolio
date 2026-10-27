@@ -25,6 +25,10 @@ class LLMError(Exception):
     user_message = "AIの応答取得中にエラーが発生しました。少し待ってから再試行してください。"
 
 
+class LLMServerError(LLMError):
+    """一時的なエラー（5xx や通信エラー）。時間に余裕があればリトライしてよい。"""
+
+
 class LLMRateLimitError(LLMError):
     status_code = 429
     code = "rate_limited"
@@ -192,9 +196,13 @@ class GeminiClient:
         except errors.APIError as e:
             if e.code == 429:
                 raise LLMRateLimitError(str(e)) from e
-            raise LLMError(f"{e.code}: {e}") from e
+            if e.code >= 500:
+                raise LLMServerError(f"{e.code}: {e.status}") from e
+            raise LLMError(f"{e.code}: {e.status}") from e
         except (TimeoutError, httpx.TimeoutException) as e:
             raise LLMTimeoutError("timeout") from e
+        except httpx.TransportError as e:
+            raise LLMServerError(f"transport: {type(e).__name__}") from e
 
         calls = [
             ToolCall(name=p.function_call.name or "", args=dict(p.function_call.args or {}), id=p.function_call.id)
