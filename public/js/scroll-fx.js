@@ -25,7 +25,33 @@
     ScrollTrigger.refresh();
   }
 
-  window.SCROLL_FX = { reveal };
+  // セクションを画面上端で固定し、縦スクロールの量に合わせて一覧を横に流す。
+  // 横並びのレイアウトは .is-horizontal が付いたときだけ効くので、無効時は通常のグリッドのまま
+  function horizontal(section, track) {
+    if (!enabled) return;
+    const trackEl = document.querySelector(track);
+    trackEl.classList.add("is-horizontal");
+    const distance = () => Math.max(0, trackEl.scrollWidth - trackEl.clientWidth);
+    gsap.to(trackEl, {
+      x: () => -distance(),
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => "+=" + distance(),
+        pin: true,
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+        // 固定で増えた高さを後ろのセクションの発火位置に反映させるため、先に計算する
+        refreshPriority: 1,
+      },
+    });
+  }
+
+  window.SCROLL_FX = { reveal, horizontal };
+
+  // 言語切り替えでカードが描画し直されると幅や高さが変わるので、描画後に計算し直す
+  if (enabled) window.I18N.onChange(() => requestAnimationFrame(() => ScrollTrigger.refresh()));
 
   if (!enabled) return;
   gsap.registerPlugin(ScrollTrigger);

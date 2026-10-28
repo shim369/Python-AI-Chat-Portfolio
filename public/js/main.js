@@ -100,7 +100,8 @@
   renderSkills();
   renderProjects();
   // 言語切り替えで描画し直したときはアニメーションさせず、そのまま表示する
-  window.SCROLL_FX.reveal("#skill-list > .skill-item, #project-list > .card");
+  window.SCROLL_FX.reveal("#skill-list > .skill-item");
+  window.SCROLL_FX.horizontal("#works", "#project-list");
   loadBlog();
   updateHeader();
   window.addEventListener("scroll", updateHeader, { passive: true });
