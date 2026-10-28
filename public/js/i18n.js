@@ -96,9 +96,6 @@
       "contact.error.contact_unavailable": "現在お問い合わせフォームは利用できません。GitHub からご連絡ください。",
       "contact.error.contact_failed": "送信に失敗しました。時間をおいて再度お試しください。",
       "contact.error.network": "通信エラーが発生しました。ネットワークを確認して再度お試しください。",
-      "footer.contact": "連絡先：",
-      "footer.contactLink": "お問い合わせフォーム",
-      "footer.source": "このサイトのソースコード (GitHub)",
     },
     en: {
       "meta.title": "Shinpei Ohtani | Portfolio",
@@ -185,9 +182,6 @@
       "contact.error.contact_unavailable": "The contact form is currently unavailable. Please reach out via GitHub.",
       "contact.error.contact_failed": "Failed to send your message. Please try again later.",
       "contact.error.network": "A network error occurred. Please check your connection and try again.",
-      "footer.contact": "Contact: ",
-      "footer.contactLink": "Contact form",
-      "footer.source": "Source code of this site (GitHub)",
     },
   };
 
