@@ -2,7 +2,7 @@
  * 日本語 / 英語の切り替え。
  * - 固定の文言は data-i18n="キー" の要素に textContent で流し込む
  *   （data-i18n-placeholder / data-i18n-aria-label / data-i18n-content は各属性に流し込む）
- * - 選んだ言語は localStorage に保存（使えない環境ではブラウザの言語設定から決める）
+ * - 選んだ言語は localStorage に保存（初回や保存できない環境では英語で表示する）
  */
 (function () {
   "use strict";
@@ -185,14 +185,15 @@
     },
   };
 
+  // 前回選んだ言語があればそれを使い、なければ英語で表示する
   function initialLang() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (SUPPORTED.includes(saved)) return saved;
     } catch {
-      // localStorage が使えない環境ではブラウザの設定にフォールバック
+      // localStorage が使えない環境では英語のまま
     }
-    return (navigator.language || "").toLowerCase().startsWith("ja") ? "ja" : "en";
+    return "en";
   }
 
   let lang = initialLang();
