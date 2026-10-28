@@ -253,6 +253,8 @@ a {
 }
 
 .skill-years {
+  flex-shrink: 0;
+  white-space: nowrap;
   color: var(--accent);
   font-size: 0.9rem;
   font-weight: 600;
@@ -351,6 +353,7 @@ a {
   color: var(--text-muted);
 }
 
+.skills-more,
 .blog-more {
   margin: 24px 0 0;
   text-align: center;
