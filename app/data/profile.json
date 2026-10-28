@@ -1,28 +1,149 @@
 {
-  "_comment": "AIチャットが回答の根拠にする公開用プロフィールです。ここに書いた内容だけをAIが答えます。住所・電話番号など公開したくない情報は書かないでください。",
+  "_comment": "AIチャットが回答の根拠にする公開用プロフィールです。ここに書いた内容だけをAIが答えます。住所・電話番号など公開したくない情報は書かないでください。skills の years は職務経歴書の各案件の月数を合算した実務期間（2026年10月時点）です。",
   "basics": {
     "name": "Shinpei Ohtani",
     "title": "Web Engineer / System Engineer",
-    "summary": "Python・JavaScript・PHP を用いた Web システムの開発・改修を経験。既存システムの調査・不具合修正から、外部サービス連携 (OAuth2.0) まで担当してきました。現在は AI エージェントを活用したチャットシステムの設計・実装に取り組んでいます。",
+    "summary": "2013年からWebサイト制作・Webシステム開発に携わり、Java・C#・JavaScript・PHP・Perlなど複数の言語で、Webアプリケーションの開発から既存システムの保守・改修まで経験。既存のコードやサーバーログを調査して障害原因・影響範囲を特定し、改修まで一貫して対応することを得意とする。現在はPythonを中心に、業務効率化ツールの開発・運用や個人開発に取り組んでいる。",
     "location": "日本",
-    "languages": ["日本語"]
+    "languages": ["日本語"],
+    "strengths": [
+      "多言語での開発経験と、Pythonを中心とした技術への適応力。Java、C#、JavaScript、PHP、Perlなどを実務で扱い、現在はPythonでの開発に注力している。",
+      "既存システムの調査・分析から改修まで一貫して対応。開発が停止したWordPressプラグインのソースコードを読み解いて改修するなど、仕様書だけに頼らず既存コードと実際の動作から問題を解決する。",
+      "業務課題を自ら見つけてPythonで改善。Webサイト調査ツールをスクラッチで設計・開発し、手作業の調査を4.4倍以上に効率化した。pytest、GitHub Actions（Ruff・Mypy・pytest）でコード品質を維持しながら継続的に改善している。"
+    ],
+    "certifications": [
+      { "name": "Python3エンジニア認定実践試験", "date": "2026年10月" },
+      { "name": "Python3エンジニア認定データ分析実践試験", "date": "2026年4月" },
+      { "name": "Python3エンジニア認定データ分析試験", "date": "2025年8月" },
+      { "name": "Python3エンジニア認定基礎試験", "date": "2025年7月" },
+      { "name": "ITパスポート試験", "date": "2024年2月" }
+    ]
   },
   "skills": [
-    { "name": "Python", "category": "言語", "years": "X年", "details": "FastAPI による API 開発、業務自動化スクリプト" },
-    { "name": "JavaScript", "category": "言語", "years": "X年", "details": "バニラJSでのフロントエンド実装、非同期通信" },
-    { "name": "PHP", "category": "言語", "years": "X年", "details": "Webアプリケーションの開発・保守" },
-    { "name": "Web制作", "category": "フロントエンド", "years": "X年", "details": "HTML / CSS、レスポンシブ対応" },
-    { "name": "システム改修", "category": "開発工程", "years": "X年", "details": "既存コードの調査、ログ確認、不具合修正" },
-    { "name": "OAuth2.0", "category": "認証・認可", "years": "X年", "details": "外部サービスとの認可フロー実装" },
-    { "name": "Gemini API", "category": "AI", "years": "1年未満", "details": "function calling を用いたエージェントループの実装 (このサイト)" }
+    { "name": "JavaScript / jQuery", "category": "言語", "years": "8年6ヶ月", "details": "Webサイト制作・改修全般、Electron / Node.jsのデスクトップアプリ開発、ASP.NET ECサイトのフロントエンド対応" },
+    { "name": "HTML / CSS (Sass)", "category": "フロントエンド", "years": "8年3ヶ月", "details": "コーポレート・EC・LP・イントラサイトのデザイン / コーディング、cshtml / aspxへの組み込み" },
+    { "name": "PHP", "category": "言語", "years": "6年8ヶ月", "details": "WordPressテーマ制作・改修、CakePHP 2系 / Smartyの改修、PHP 5〜7系サイトのPHP 8.4移行対応" },
+    { "name": "C# / .NET (ASP.NET)", "category": "言語", "years": "11ヶ月", "details": ".NETバージョンアップ、社内業務ツール（採用管理・給与計算・従業員情報）の解析・改修、ECサイト改修" },
+    { "name": "Python", "category": "言語", "years": "5ヶ月", "details": "実務では業務効率化ツール2件（PHPバージョンアップ支援、Webサイト調査）をスクラッチで設計・開発・運用。個人開発では2023年からFastAPI・Streamlit・Djangoなどで継続的に開発" },
+    { "name": "Java / JavaFX", "category": "言語", "years": "5ヶ月", "details": "生産管理システムのWindowsアプリ機能追加（端末設定・表示設定）、結合テスト" },
+    { "name": "TypeScript / React", "category": "フロントエンド", "years": "5ヶ月", "details": "生産管理システムのWebアプリ機能追加（端末設定・表示設定）、結合テスト" },
+    { "name": "Perl / CGI", "category": "言語", "years": "5ヶ月", "details": "既存システム・問い合わせフォームの改修" },
+    { "name": "Google Apps Script", "category": "言語", "years": "4ヶ月", "details": "特定メールの内容をGoogleスプレッドシートへ自動記録する機能を開発" },
+    { "name": "WordPress", "category": "フレームワーク / CMS", "years": "5年7ヶ月", "details": "テーマ制作・サイト構築、本体・プラグインの改修（開発停止プラグインを含む）" },
+    { "name": "Electron / Node.js / Wijmo", "category": "フレームワーク / CMS", "years": "5ヶ月", "details": "デスクトップアプリ新規開発（共通リスト機能・共通処理・画面の設計と実装）" },
+    { "name": "Drupal / Adobe Experience Manager", "category": "フレームワーク / CMS", "years": "1年4ヶ月", "details": "CMS上でのポータルサイト・銀行サイトの制作" },
+    { "name": "MySQL / MariaDB", "category": "データベース", "years": "7年6ヶ月", "details": "Webサイト・CMSのデータベース" },
+    { "name": "PostgreSQL", "category": "データベース", "years": "1年6ヶ月", "details": "表示速度改善のためのSQLの調査・分析" },
+    { "name": "SQL Server", "category": "データベース", "years": "1年1ヶ月", "details": "データ操作（CRUD処理）の設計、プログラム・SQLレビュー" },
+    { "name": "Gemini API / Claude Code", "category": "AI", "years": "5ヶ月", "details": "Gemini APIを組み込んでWebサイトの構成・用途の判定を補完、Claude Codeを活用した開発。個人開発ではfunction callingを用いたエージェントループを実装（このサイト）" },
+    { "name": "pytest / Ruff / Mypy / GitHub Actions", "category": "テスト / CI", "years": "5ヶ月", "details": "pytestでのテスト作成、GitHub Actionsでの静的解析・テストの自動実行" },
+    { "name": "PHPCompatibility / Rector", "category": "テスト / CI", "years": "5ヶ月", "details": "PHP 8.4互換性の静的解析と修正" },
+    { "name": "Git (GitHub / GitLab)", "category": "ツール", "years": "3年9ヶ月", "details": "ブランチ戦略に基づくマージ・リリース調整、フルリモートでのチーム開発" },
+    { "name": "Subversion", "category": "ツール", "years": "1年10ヶ月", "details": "TortoiseSVNなどによるソースコード管理" },
+    { "name": "Backlog / Redmine / Trac", "category": "ツール", "years": "2年7ヶ月", "details": "課題・進捗管理" },
+    { "name": "kintone", "category": "ツール", "years": "2年1ヶ月", "details": "業務アプリ構築（回線契約・M365ライセンス管理）、SNS配信スケジュール管理" },
+    { "name": "Photoshop / Illustrator", "category": "デザイン", "years": "6年3ヶ月", "details": "サイト・バナー・看板・デジタルサイネージのデザイン" },
+    { "name": "Premiere Pro / After Effects", "category": "デザイン", "years": "2年7ヶ月", "details": "動画制作・映像編集" },
+    { "name": "SATORI / Google Analytics / Search Console", "category": "Webマーケティング", "years": "1年9ヶ月", "details": "メール配信と効果測定分析、SNS広告配信、SEO対策" },
+    { "name": "要件定義・基本設計", "category": "開発工程", "years": "2年9ヶ月", "details": "UI / UX設計、共通機能の設計、社内ツールの要件定義" },
+    { "name": "チームリーダー", "category": "マネジメント", "years": "1年9ヶ月", "details": "5名（日本人・外国人混成）のマネジメント・進捗管理、クラウドワーカーへのディレクション、採用活動" }
   ],
   "experience": [
     {
-      "period": "20XX年 - 現在",
-      "company": "（会社名は後で記入）",
-      "role": "Webエンジニア",
-      "description": "（業務内容を後で記入）",
-      "technologies": ["PHP", "JavaScript"]
+      "period": "2026年6月 - 現在",
+      "project": "Webサイト・サーバーの技術サポートおよび保守開発業務",
+      "role": "メンバー（チーム6名 / 全体30名）",
+      "description": "サーバーのバージョンアップに伴う障害の調査（ログ解析、FTPでのファイル確認など）、原因・影響範囲の特定と対応方法の提案、レポート作成。PHPバージョンアップに伴う改修（CakePHP 2系・Smarty、フォームなど）、WordPress本体・プラグインの改修、Perl・CGIによる既存システムの改修。Pythonで業務効率化ツールを2件開発・運用：PHP 5〜7系サイトのPHP 8.4移行作業を半自動化するツール（ファイル取得・静的解析・修正・検証・レポート作成）と、複数サイトのSSL対応・CMS・サイト構成・ページ数などを自動解析してExcelに出力するWebサイト調査ツール（Gemini APIでサイト構成・用途の判定を補完し、手作業の調査を4.4倍以上に効率化）。",
+      "phases": ["調査・分析", "要件定義", "基本設計", "詳細設計", "製造・単体", "結合・総合", "環境・DB設計", "運用・保守"],
+      "technologies": ["PHP", "Perl / CGI", "Python", "JavaScript", "WordPress", "CakePHP", "Smarty", "MySQL", "MariaDB", "PostgreSQL", "PHPCompatibility", "Rector", "Gemini API", "Claude Code", "pytest", "Ruff", "Mypy", "GitHub Actions", "Git"]
+    },
+    {
+      "period": "2025年10月 - 2026年1月",
+      "project": "ECサイト改修および運営保守業務",
+      "role": "メンバー（チーム6名 / 全体9名）",
+      "description": "ECサイトの機能改修とフロントエンド対応（HTMLのcshtml / aspx形式への加工・組み込み）、grepによる影響範囲の特定、検証手順書の作成と検証担当へのディレクション、プログラム・SQLレビュー、リリース作業の立ち会い。キャンペーン設定などのサイト運営・販促施策、顧客対応部門からの問い合わせ調査・回答、マニュアル整備、ブランチ戦略に基づくGitでのマージ・リリース調整。",
+      "phases": ["調査・分析", "製造・単体", "結合・総合", "運用・保守"],
+      "technologies": ["C#", "ASP.NET", "SQL Server", "JavaScript", "HTML", "CSS", "Visual Studio", "GitHub", "GitLab"]
+    },
+    {
+      "period": "2025年6月 - 2025年9月",
+      "project": "社内システム開発・運用保守業務",
+      "role": "メンバー（チーム6名）",
+      "description": "C#による社内業務ツール（採用管理、給与計算、従業員情報管理、社内ワークフロー）の解析・要件定義・詳細設計・プログラミング・テスト・本番移行。人材派遣業界向けの請求・給与計算デスクトップアプリの新規開発。kintoneアプリの構築（回線・プロバイダ契約情報、M365利用者・ライセンス情報の管理）、Google Apps Scriptによるメール内容の自動記録、Webフィルタリングの設定。",
+      "phases": ["調査・分析", "要件定義", "基本設計", "詳細設計", "製造・単体", "環境・DB設計", "運用・保守"],
+      "technologies": ["C#", "SQL Server", "Visual Studio", "kintone", "Google Apps Script", "TortoiseSVN"]
+    },
+    {
+      "period": "2025年3月 - 2025年5月",
+      "project": "鋼業向け生産管理システム改修業務",
+      "role": "メンバー（チーム2名 / 全体7名）",
+      "description": "C#による既存システムの改修。.NETのバージョンアップ対応、共通リスト機能・共通処理の改修、UI / UX改善に伴う機能修正、表示速度改善のためのSQLの調査・分析。",
+      "phases": ["調査・分析", "要件定義", "基本設計", "詳細設計", "製造・単体", "結合・総合", "環境・DB設計"],
+      "technologies": ["C#", ".NET", "jQuery", "PostgreSQL", "Visual Studio", "TortoiseSVN"]
+    },
+    {
+      "period": "2024年10月 - 2025年2月",
+      "project": "錠剤分包機システムのUI改善業務",
+      "role": "メンバー（チーム6名）",
+      "description": "Electron・Wijmo・Node.jsによるデスクトップアプリ新規開発の一部を担当。Wijmoによる共通リスト機能（再利用性を考慮）とデータ整合性を考慮した共通処理の設計・実装、UI / UX改善方針に基づく画面設計とCRUD処理設計、バッチ一覧・薬品準備・進捗モニタ画面の詳細設計と開発。",
+      "phases": ["調査・分析", "基本設計", "詳細設計", "製造・単体", "環境・DB設計"],
+      "technologies": ["Electron", "Node.js", "Wijmo", "HTML5", "CSS3", "SQL Server", "PostgreSQL", "TortoiseSVN"]
+    },
+    {
+      "period": "2024年6月 - 2024年10月",
+      "project": "生産管理システム改修業務",
+      "role": "メンバー（チーム5名 / 全体7名）",
+      "description": "JavaFXによるWindowsアプリと、ReactによるWebアプリのカスタム対応。機能追加（端末設定機能、表示設定機能）、結合テスト仕様書の作成と結合テスト。",
+      "phases": ["製造・単体", "結合・総合", "運用・保守"],
+      "technologies": ["Java", "JavaFX", "React", "TypeScript", "PostgreSQL", "NetBeans", "GitLab", "Redmine"]
+    },
+    {
+      "period": "2021年4月 - 2023年10月",
+      "project": "顧客企業のWebサイト制作・運用業務",
+      "role": "メンバー（チーム30名 / 全体80名）",
+      "description": "幅広い業種のコーポレートサイト・ECサイトについて、更新業務を中心にWebサイト制作を担当。フルリモートでGitHubなどを使ってチームで対応。",
+      "phases": ["詳細設計", "製造・単体", "結合・総合", "運用・保守"],
+      "technologies": ["HTML5", "CSS3", "Sass", "JavaScript", "jQuery", "PHP", "WordPress", "MySQL", "Photoshop", "Illustrator", "GitHub"]
+    },
+    {
+      "period": "2019年7月 - 2019年12月",
+      "project": "顧客企業・銀行のWebサイト制作・運用",
+      "role": "メンバー（チーム20名 / 全体40名）",
+      "description": "顧客企業サイトの新規制作・改修。出向先で、Adobe Experience Managerによる銀行サイトの制作とLPのコーディング。",
+      "phases": ["製造・単体", "結合・総合"],
+      "technologies": ["HTML5", "CSS3", "Sass", "JavaScript", "PHP", "Adobe Experience Manager", "Photoshop", "Illustrator", "Backlog"]
+    },
+    {
+      "period": "2017年8月 - 2019年4月",
+      "project": "海外ポケットWiFiレンタルのECサイト制作・海外飲食店集客サイト制作",
+      "role": "リーダー（チーム5名 / 全体60名）",
+      "description": "既存ECサイトのデザイン・コーディング、LP制作、WordPressブログ改修、申し込みページのステップ化でのUI / UX設計。広告デザイン（バナー・看板・デジタルサイネージ）、マーケティングオートメーションツールでのメール配信と効果測定、SNS広告、SEO対策。日本人・外国人混成チームのマネジメントと進捗管理、クラウドワーカーへのディレクション（システム改修・新規サイト構築・多言語化）、各部署の採用活動。",
+      "phases": ["要件定義", "基本設計", "詳細設計", "製造・単体", "結合・総合"],
+      "technologies": ["HTML5", "CSS3", "JavaScript", "PHP", "WordPress", "MySQL", "Photoshop", "Illustrator", "After Effects", "Premiere Pro", "SATORI", "kintone", "Google Analytics", "Search Console"]
+    },
+    {
+      "period": "2016年5月 - 2017年2月",
+      "project": "航空券予約販売・ポケットWiFiレンタル予約のWebサイト制作",
+      "role": "メンバー（チーム20名 / 全体50名）",
+      "description": "新規・既存サイトのデザイン・コーディング・運用、WordPressサイトの構築。社内向けに自社採用サイトのWordPressテーマ制作と、動画制作・映像編集。",
+      "phases": ["製造・単体", "結合・総合", "運用・保守"],
+      "technologies": ["HTML5", "CSS3", "Sass", "JavaScript", "PHP", "WordPress", "MySQL", "Photoshop", "Illustrator", "Premiere Pro", "Backlog"]
+    },
+    {
+      "period": "2015年6月 - 2015年12月",
+      "project": "音楽配信サービス管理画面の改修・建材メーカーのイントラサイト制作",
+      "role": "メンバー（チーム10名 / 全体15名）",
+      "description": "音楽配信サービスサイトの管理画面の改修、ペット用品ECサイトのバナーデザイン。出向先で、イントラサイト新規立ち上げ時のコーディング。",
+      "phases": ["詳細設計", "製造・単体", "結合・総合"],
+      "technologies": ["HTML5", "CSS3", "JavaScript", "PHP", "Bootstrap", "MySQL", "Photoshop"]
+    },
+    {
+      "period": "2013年6月 - 2014年3月",
+      "project": "グループ企業のWebサイト・イントラネットポータルの制作",
+      "role": "メンバー（チーム5名 / 全体10名）",
+      "description": "自社グループ企業の新規Webサイトのコーディングと運用。出向先で、イントラネット上のポータルサイトの制作と運用。",
+      "phases": ["製造・単体", "結合・総合", "運用・保守"],
+      "technologies": ["XHTML", "CSS", "JavaScript", "Drupal", "MySQL", "Trac"]
     }
   ],
   "projects": [
@@ -33,16 +154,46 @@
       "url": "https://github.com/shim369/Python-AI-Chat-Portfolio"
     },
     {
-      "title": "（制作物タイトル）",
-      "summary": "（制作物の概要を後で記入）",
-      "technologies": ["PHP", "MySQL"],
-      "url": "https://github.com/shim369"
+      "title": "Python-Smart-Health-Intelligence-Platform",
+      "summary": "開発中のマルチユーザー向け健康管理Webアプリ。ルールベースの提案、Gemini によるレシピ生成、LightGBM による体重予測を備える。クリーンアーキテクチャで、Google OAuth2 / OIDC 認証、多言語対応に対応。",
+      "technologies": ["Python", "Streamlit", "PostgreSQL", "Neon", "SQLAlchemy", "Alembic", "Pydantic", "LightGBM", "MLflow", "Gemini API", "OAuth2.0"],
+      "url": "https://github.com/shim369/Python-Smart-Health-Intelligence-Platform"
     },
     {
-      "title": "（制作物タイトル）",
-      "summary": "（制作物の概要を後で記入）",
-      "technologies": ["JavaScript", "OAuth2.0"],
-      "url": "https://github.com/shim369"
+      "title": "Python-Budget-Tracker-App",
+      "summary": "オフラインで動く家計簿・サブスク管理アプリ。設計書とトレーサビリティを整備し、336件の単体・結合テストでカバレッジ99.9%。日本語 / 英語のUI、CSVインポートに対応。",
+      "technologies": ["Python", "FastAPI", "Pydantic", "Alpine.js", "Chart.js", "pytest"],
+      "url": "https://github.com/shim369/Python-Budget-Tracker-App"
+    },
+    {
+      "title": "Python-Study-App",
+      "summary": "PHPエンジニア向けのPython学習Webアプリ。コードを書いて実行・自動採点し、Gemini API によるヒントとコードレビューを受けられる。20問の演習と間隔反復での復習機能。",
+      "technologies": ["Python", "Streamlit", "SQLite", "Gemini API", "pytest"],
+      "url": "https://github.com/shim369/Python-Study-App"
+    },
+    {
+      "title": "Python-AWSSAA-Quiz",
+      "summary": "AWS SAA-C03対策の4択クイズアプリ。Excelのキーワード集から3形式の問題を自動生成し、弱点を優先した出題、学習履歴、ダッシュボード、理解度のExcelへの書き戻しに対応。",
+      "technologies": ["Python", "Streamlit", "pandas", "openpyxl", "SQLite", "pytest"],
+      "url": "https://github.com/shim369/Python-AWSSAA-Quiz"
+    },
+    {
+      "title": "Python-Spotify-Insights",
+      "summary": "Spotifyのライブラリに最近追加した曲と週間トップ10を閲覧し、プレイリストを生成できるWebアプリ。",
+      "technologies": ["Python", "FastHTML", "HTMX", "Spotify API", "mypy", "pytest", "uv"],
+      "url": "https://github.com/shim369/Python-Spotify-Insights"
+    },
+    {
+      "title": "Python-Quotes-Scraper",
+      "summary": "型安全な名言スクレイパー。CustomTkinter のGUI、SQLite への保存、デコレーターによるログ出力。pytest と GitHub Actions でテストを自動実行。",
+      "technologies": ["Python", "CustomTkinter", "httpx", "BeautifulSoup4", "SQLite", "mypy", "Ruff", "pytest", "GitHub Actions"],
+      "url": "https://github.com/shim369/Python-Quotes-Scraper"
+    },
+    {
+      "title": "Java-RecipeRev-App",
+      "summary": "レシピのバージョン管理Webアプリ。改訂履歴の記録、任意の2バージョンの差分表示、最終レシピの承認、Python による材料と評価の傾向分析に対応。",
+      "technologies": ["Java", "Spring Boot", "Thymeleaf", "MySQL", "Docker", "Python", "Chart.js"],
+      "url": "https://github.com/shim369/Java-RecipeRev-App"
     }
   ],
   "contact": {
