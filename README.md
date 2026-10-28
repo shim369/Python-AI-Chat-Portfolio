@@ -1,227 +1,229 @@
 # Python-AI-Chat-Portfolio
 
+**English** | [日本語](README.ja.md)
+
 [![Python-AI-Chat-Portfolio](https://github.com/shim369/Python-AI-Chat-Portfolio/actions/workflows/python-ai-chat-portfolio.yml/badge.svg)](https://github.com/shim369/Python-AI-Chat-Portfolio/actions/workflows/python-ai-chat-portfolio.yml)
 
-自己紹介ページと、経歴について質問できる AI チャットを1ページにまとめたポートフォリオです。
-バックエンドは Python (FastAPI) で、Gemini API の function calling を使った**手書きのエージェントループ**が、ツール（経歴データ・ブログ記事の取得）を呼びながら回答し、その過程を SSE でストリーミング表示します。
+A one-page portfolio that combines a self-introduction with an AI chat you can ask about my background.
+The backend is Python (FastAPI). A **hand-written agent loop** built on Gemini API function calling answers by calling tools (career data, blog posts) and streams its progress to the page over SSE.
 
-- デプロイ先: https://python-ai-chat-portfolio.vercel.app
-- 開発の進め方とタスク: [docs/BACKLOG.md](docs/BACKLOG.md)（3 スプリント + 追加タスク）
+- Live site: https://python-ai-chat-portfolio.vercel.app
+- Development process and tasks: [docs/BACKLOG.md](docs/BACKLOG.md) (3 sprints + extra tasks, in Japanese)
 
-## 主な機能
+## Features
 
-- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）、レスポンシブ・ダークモード対応
-- 画面右下のボタンで開閉する AI チャット（スマホでは画面いっぱいに表示）
-- お問い合わせフォーム: reCAPTCHA v3 で検証してから、Gmail の SMTP で自分宛てにメールを送る
-- 日本語 / 英語の切り替え（画面の文言・AI の回答言語・エラーメッセージ）
-- AI チャット
-  - Gemini の function calling による手動エージェントループ（最大反復回数・時間予算つき）
-  - 呼び出したツールをバッジで表示（例: 🔧 get_projects を実行）し、回答を SSE で逐次表示
-  - 経歴データ (`profile.json`) に無いことは「分かりません」と答え、推測で経歴を作らない
-- 運用面: JSON 構造化ログ、IP 単位のレート制限、入力長の上限、一時的エラーのリトライ、提供地域の制御、pytest + GitHub Actions
+- A single self-introduction page (skills / projects / latest blog posts / how this site works / contact), responsive with dark mode
+- An AI chat that opens from a button in the bottom-right corner (full screen on phones)
+- Contact form: verified with reCAPTCHA v3, then sent to my own inbox over Gmail SMTP
+- Japanese / English switching (UI text, the language of AI answers, and error messages)
+- AI chat
+  - Manual agent loop using Gemini function calling (with a maximum number of iterations and a time budget)
+  - Shows each tool call as a badge (e.g. 🔧 Ran get_projects) and streams the answer over SSE
+  - Answers "I don't know" for anything not in the career data (`profile.json`) instead of making up a career
+- Operations: JSON structured logs, per-IP rate limiting, input length limits, retries on transient errors, region restrictions, pytest + GitHub Actions
 
-## 技術構成
+## Tech stack
 
-| 層 | 技術 |
+| Layer | Technology |
 |---|---|
-| フロントエンド | HTML / CSS / バニラ JavaScript（ビルドなし、`public/`） |
-| バックエンド | Python 3.14 / FastAPI（`app/`） |
-| LLM | Google Gemini API（`google-genai` SDK、デフォルトのモデルは `gemini-3.5-flash-lite`） |
-| ホスティング | Vercel Hobby（無料プラン）。`public/` は CDN、`app/main.py` は Python Function |
-| パッケージ管理 | uv（`pyproject.toml` + `uv.lock`） |
-| テスト / CI | pytest / GitHub Actions（`astral-sh/setup-uv`） |
+| Frontend | HTML / CSS / vanilla JavaScript (no build step, `public/`), GSAP + ScrollTrigger (CDN) |
+| Backend | Python 3.14 / FastAPI (`app/`) |
+| LLM | Google Gemini API (`google-genai` SDK, default model `gemini-3.5-flash-lite`) |
+| Hosting | Vercel Hobby (free plan). `public/` is served from the CDN, `app/main.py` runs as a Python Function |
+| Package management | uv (`pyproject.toml` + `uv.lock`) |
+| Tests / CI | pytest / GitHub Actions (`astral-sh/setup-uv`) |
 
 ```
-Browser ──(GET 静的ファイル)──▶ Vercel CDN (public/)
+Browser ──(GET static files)──▶ Vercel CDN (public/)
    │
    ├─(POST /api/chat, SSE)──▶ FastAPI (Vercel Python Function)
-   │                             ├─ 提供地域の制御 / レート制限 / 入力バリデーション
-   │                             ├─ agent.py: エージェントループ ──▶ llm.py ──▶ Gemini API
+   │                             ├─ Region restriction / rate limiting / input validation
+   │                             ├─ agent.py: agent loop ──▶ llm.py ──▶ Gemini API
    │                             │      └─ tools.py ──▶ profile.json / TECH BLOG
-   │                             └─ 構造化ログ (stdout → Vercel Runtime Logs)
-   └─(POST /api/contact)────▶ FastAPI ──▶ contact.py ──▶ reCAPTCHA 検証 (Google) ──▶ Gmail SMTP
+   │                             └─ Structured logs (stdout → Vercel Runtime Logs)
+   └─(POST /api/contact)────▶ FastAPI ──▶ contact.py ──▶ reCAPTCHA verification (Google) ──▶ Gmail SMTP
 ```
 
-## ディレクトリ構成
+## Directory structure
 
 ```
 app/
-  main.py            FastAPI エントリポイント（/api/chat, /api/contact, /api/blog, /api/health）、レート制限、ログ
-  contact.py         お問い合わせ: reCAPTCHA v3 の検証と SMTP でのメール送信
-  agent.py           手動エージェントループ（関数呼び出し → 実行 → 結果返却の繰り返し、リトライ、時間予算）
-  tools.py           エージェントのツール（Python 関数）と JSON Schema
-  llm.py             LLM 呼び出しを閉じ込めるモジュール（プロバイダ非依存の型 + Gemini 実装）
-  schemas.py         リクエスト定義と入力バリデーション
-  config.py          環境変数の読み込み（上限値はすべてここで調整）
-  rate_limit.py      メモリ内のスライディングウィンドウ式レート制限
-  region.py          AI チャットの提供地域の制御（EEA・スイス・英国では提供しない）
-  logging_utils.py   JSON 構造化ログ
-  blog.py            TECH BLOG のトップページから最新記事を取得（RSS がないため HTML をパース）
-  profile.py         profile.json / system.md の読み込み
-  data/profile.json  AI が回答の根拠にする経歴データ（ここを編集すれば内容を差し替えられる）
-  prompts/system.md  システムプロンプト
-public/              静的ページ（スキル・制作物の表示内容は js/config.js、画面の文言は js/i18n.js で編集）
-scripts/dev_server.py  ローカル開発用サーバー（public/ もまとめて配信）
-tests/               pytest（実 API・外部サイトにはアクセスしない）
-docs/BACKLOG.md      スプリントごとのタスク
+  main.py            FastAPI entry point (/api/chat, /api/contact, /api/blog, /api/health), rate limiting, logging
+  contact.py         Contact form: reCAPTCHA v3 verification and sending mail over SMTP
+  agent.py           Manual agent loop (repeat: function call → run → return result; retries, time budget)
+  tools.py           Agent tools (Python functions) and their JSON Schemas
+  llm.py             Module that encapsulates LLM calls (provider-agnostic types + Gemini implementation)
+  schemas.py         Request definitions and input validation
+  config.py          Reads environment variables (all limits are tuned here)
+  rate_limit.py      In-memory sliding-window rate limiter
+  region.py          Region restriction for the AI chat (not offered in the EEA, Switzerland, or the UK)
+  logging_utils.py   JSON structured logging
+  blog.py            Fetches the latest posts from the TECH BLOG top page (parses HTML because there is no RSS)
+  profile.py         Loads profile.json / system.md
+  data/profile.json  Career data the AI bases its answers on (edit this to change the content)
+  prompts/system.md  System prompt
+public/              Static page (edit skills and projects in js/config.js, UI text in js/i18n.js)
+scripts/dev_server.py  Local development server (also serves public/)
+tests/               pytest (never calls real APIs or external sites)
+docs/BACKLOG.md      Tasks per sprint
 ```
 
-## ローカルでの起動
+## Running locally
 
-前提: [uv](https://docs.astral.sh/uv/) がインストール済みであること（Python 3.14 は uv が自動で用意します）。
+Prerequisite: [uv](https://docs.astral.sh/uv/) is installed (uv sets up Python 3.14 automatically).
 
 ```bash
-uv sync                      # .venv を作成して依存をインストール
-cp .env.example .env         # .env に GEMINI_API_KEY を記入（.env は git 管理外）
+uv sync                      # create .venv and install dependencies
+cp .env.example .env         # put GEMINI_API_KEY in .env (.env is not tracked by git)
 uv run --env-file .env python scripts/dev_server.py
 # → http://127.0.0.1:8000
 ```
 
-Vercel と同じ環境で確認したい場合は [Vercel CLI](https://vercel.com/docs/cli) を使います（`.env` は自動で読み込まれます）。
+To run in the same environment as Vercel, use the [Vercel CLI](https://vercel.com/docs/cli) (it loads `.env` automatically).
 
 ```bash
 vercel dev
 ```
 
-テスト（API キー不要。Gemini API・外部サイトにはアクセスしません）:
+Tests (no API key needed; they never call the Gemini API or external sites):
 
 ```bash
 uv run pytest
 ```
 
-> pyenv を使っている場合、このディレクトリでは `.python-version` (3.14) が参照されます。コマンドは `uv run` 経由で実行してください。
+> If you use pyenv, `.python-version` (3.14) applies in this directory. Run commands through `uv run`.
 
-## Gemini API キーの取得
+## Getting a Gemini API key
 
-1. [Google AI Studio](https://aistudio.google.com/apikey) に Google アカウントでログインする
-2. 「Create API key」でキーを発行する（無料枠で使えます。クレジットカードは不要です）
-3. ローカルでは `.env` に、本番では Vercel の環境変数に設定する。**コードやコミットには絶対に含めない**
+1. Sign in to [Google AI Studio](https://aistudio.google.com/apikey) with a Google account
+2. Create a key with "Create API key" (available on the free tier; no credit card required)
+3. Set it in `.env` locally and in Vercel's environment variables in production. **Never put it in code or commits**
 
-## Vercel へのデプロイ（GitHub 連携）
+## Deploying to Vercel (GitHub integration)
 
-1. [Vercel](https://vercel.com/) に GitHub アカウントでサインアップする（Hobby プラン、クレジットカード不要）
-2. 「Add New… → Project」から `shim369/Python-AI-Chat-Portfolio` を Import する
-3. Framework Preset は自動で FastAPI と判定されます（`pyproject.toml` の `tool.vercel.entrypoint` を参照）
-4. 「Environment Variables」で次を設定してから Deploy する
-   - `GEMINI_API_KEY`（必須）
-   - そのほかは任意（下の「環境変数」を参照）
-5. 以降は `main` への push で本番、その他のブランチや Pull Request でプレビューが自動でデプロイされます
+1. Sign up for [Vercel](https://vercel.com/) with your GitHub account (Hobby plan, no credit card required)
+2. Import `shim369/Python-AI-Chat-Portfolio` from "Add New… → Project"
+3. The Framework Preset is detected as FastAPI automatically (from `tool.vercel.entrypoint` in `pyproject.toml`)
+4. Set the following under "Environment Variables", then deploy
+   - `GEMINI_API_KEY` (required)
+   - Everything else is optional (see "Environment variables" below)
+5. From then on, pushes to `main` deploy to production, and other branches and pull requests deploy previews automatically
 
-環境変数を後から変更した場合は、再デプロイ（Deployments → Redeploy）が必要です。
-プレビュー環境は Vercel Authentication で保護されます。CLI からは `vercel curl <URL>` でアクセスできます。
+If you change environment variables later, you need to redeploy (Deployments → Redeploy).
+Preview deployments are protected by Vercel Authentication. From the CLI, access them with `vercel curl <URL>`.
 
-## 環境変数
+## Environment variables
 
-`GEMINI_API_KEY` 以外はすべて任意で、未設定時は `app/config.py` のデフォルト値を使います（一覧は `.env.example`）。
+Everything except `GEMINI_API_KEY` is optional; unset values fall back to the defaults in `app/config.py` (see `.env.example` for the full list).
 
-| 変数 | デフォルト | 内容 |
+| Variable | Default | Description |
 |---|---|---|
-| `GEMINI_API_KEY` | （必須） | Gemini API キー |
-| `GEMINI_MODEL` | `gemini-3.5-flash-lite` | 使用するモデル |
-| `LLM_TIMEOUT_SECONDS` | 15 | Gemini 1 回の呼び出しの上限秒数 |
-| `MAX_OUTPUT_TOKENS` | 1024 | 1 回の応答の最大出力トークン数 |
-| `LLM_MAX_RETRIES` | 2 | 一時的なエラー (5xx / 通信エラー) のリトライ回数 |
-| `AGENT_MAX_ITERATIONS` | 4 | エージェントループの最大反復回数 |
-| `AGENT_BUDGET_SECONDS` | 40 | 1 リクエスト全体の時間予算（`vercel.json` の `maxDuration`=60 より短く） |
-| `MAX_INPUT_CHARS` | 500 | 質問の最大文字数 |
-| `MAX_HISTORY` | 10 | サーバーに送る会話履歴の件数 |
-| `RATE_LIMIT_PER_IP_PER_MINUTE` | 5 | IP ごとの 1 分あたりの上限（0 で無効） |
-| `RATE_LIMIT_PER_IP_PER_DAY` | 40 | IP ごとの 1 日あたりの上限 |
-| `RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | インスタンス全体の 1 分あたりの上限 |
-| `CONTACT_TO_EMAIL` | （空） | お問い合わせの送信先。下の SMTP 設定と揃うまでフォームは 503 を返す |
-| `SMTP_HOST` / `SMTP_PORT` | `smtp.gmail.com` / 465 | 送信に使う SMTP サーバー（465 は SSL、それ以外は STARTTLS） |
-| `SMTP_USER` / `SMTP_PASS` | （空） | SMTP のログイン。Gmail は送信元アカウントと**アプリパスワード** |
-| `RECAPTCHA_SECRET_KEY` | （空） | reCAPTCHA v3 のシークレットキー。空なら検証を省略する（ローカル開発用。本番では必ず設定） |
-| `RECAPTCHA_MIN_SCORE` | 0.5 | 合格とする reCAPTCHA スコアの下限 |
-| `CONTACT_RATE_LIMIT_PER_IP_PER_MINUTE` | 2 | お問い合わせの IP ごとの 1 分あたりの上限 |
-| `CONTACT_RATE_LIMIT_PER_IP_PER_DAY` | 10 | お問い合わせの IP ごとの 1 日あたりの上限 |
-| `CONTACT_RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | お問い合わせのインスタンス全体の 1 分あたりの上限 |
+| `GEMINI_API_KEY` | (required) | Gemini API key |
+| `GEMINI_MODEL` | `gemini-3.5-flash-lite` | Model to use |
+| `LLM_TIMEOUT_SECONDS` | 15 | Time limit in seconds for a single Gemini call |
+| `MAX_OUTPUT_TOKENS` | 1024 | Maximum output tokens per response |
+| `LLM_MAX_RETRIES` | 2 | Retries on transient errors (5xx / network errors) |
+| `AGENT_MAX_ITERATIONS` | 4 | Maximum iterations of the agent loop |
+| `AGENT_BUDGET_SECONDS` | 40 | Time budget for a whole request (keep it below `maxDuration`=60 in `vercel.json`) |
+| `MAX_INPUT_CHARS` | 500 | Maximum length of a question |
+| `MAX_HISTORY` | 10 | Number of history messages sent to the server |
+| `RATE_LIMIT_PER_IP_PER_MINUTE` | 5 | Per-IP limit per minute (0 disables it) |
+| `RATE_LIMIT_PER_IP_PER_DAY` | 40 | Per-IP limit per day |
+| `RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | Instance-wide limit per minute |
+| `CONTACT_TO_EMAIL` | (empty) | Where contact messages go. The form returns 503 until this and the SMTP settings below are all set |
+| `SMTP_HOST` / `SMTP_PORT` | `smtp.gmail.com` / 465 | SMTP server for sending (465 uses SSL, anything else uses STARTTLS) |
+| `SMTP_USER` / `SMTP_PASS` | (empty) | SMTP login. For Gmail, the sending account and an **app password** |
+| `RECAPTCHA_SECRET_KEY` | (empty) | reCAPTCHA v3 secret key. Verification is skipped when empty (for local development; always set it in production) |
+| `RECAPTCHA_MIN_SCORE` | 0.5 | Minimum reCAPTCHA score to accept |
+| `CONTACT_RATE_LIMIT_PER_IP_PER_MINUTE` | 2 | Per-IP contact limit per minute |
+| `CONTACT_RATE_LIMIT_PER_IP_PER_DAY` | 10 | Per-IP contact limit per day |
+| `CONTACT_RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | Instance-wide contact limit per minute |
 
-reCAPTCHA の**サイトキー**（公開してよい方）は `public/js/config.js` の `RECAPTCHA_SITE_KEY` に書きます。
+The reCAPTCHA **site key** (the public one) goes in `RECAPTCHA_SITE_KEY` in `public/js/config.js`.
 
-### お問い合わせフォームの準備
+### Setting up the contact form
 
-1. [reCAPTCHA の管理画面](https://www.google.com/recaptcha/admin/create)で **reCAPTCHA v3** のキーを作る。ドメインには本番のドメインと `localhost`（`127.0.0.1`）を登録する
-2. サイトキーを `public/js/config.js` の `RECAPTCHA_SITE_KEY` に、シークレットキーを環境変数 `RECAPTCHA_SECRET_KEY` に設定する
-3. 送信元の Google アカウントで 2 段階認証を有効にし、[アプリパスワード](https://myaccount.google.com/apppasswords)を発行する
-4. `SMTP_USER`（送信元の Gmail アドレス）、`SMTP_PASS`（アプリパスワード）、`CONTACT_TO_EMAIL`（受け取るアドレス）を設定する
+1. Create a **reCAPTCHA v3** key in the [reCAPTCHA admin console](https://www.google.com/recaptcha/admin/create). Register your production domain and `localhost` (`127.0.0.1`)
+2. Put the site key in `RECAPTCHA_SITE_KEY` in `public/js/config.js`, and the secret key in the `RECAPTCHA_SECRET_KEY` environment variable
+3. Turn on 2-Step Verification for the sending Google account and create an [app password](https://myaccount.google.com/apppasswords)
+4. Set `SMTP_USER` (the sending Gmail address), `SMTP_PASS` (the app password), and `CONTACT_TO_EMAIL` (the receiving address)
 
-メールの From は送信元の Gmail アカウント、Reply-To が問い合わせた人のアドレスになるので、Gmail の「返信」でそのまま返事を書けます。
+The mail's From is the sending Gmail account and its Reply-To is the sender's address, so you can answer with Gmail's "Reply" as usual.
 
 ## API
 
 ### `POST /api/chat`
 
 ```json
-{ "lang": "ja", "messages": [{ "role": "user", "text": "制作物を教えて" }] }
+{ "lang": "en", "messages": [{ "role": "user", "text": "Tell me about your projects" }] }
 ```
 
-レスポンスは `text/event-stream`。エージェントの進行を次のイベントで返します。
+The response is `text/event-stream`. The agent's progress is sent as the following events.
 
-| event | data | 意味 |
+| event | data | Meaning |
 |---|---|---|
-| `tool` | `{"name": "get_projects"}` | ツールを実行した |
-| `delta` | `{"text": "..."}` | 回答テキストの断片 |
-| `notice` | `{"code": "partial_timeout"}` | 時間切れのため途中までの回答であること |
-| `done` | `{"tools": [...], "request_id": "..."}` | 回答完了 |
-| `error` | `{"code": "rate_limited", "detail": "...", "request_id": "..."}` | ストリーム開始後のエラー |
+| `tool` | `{"name": "get_projects"}` | A tool was run |
+| `delta` | `{"text": "..."}` | A chunk of the answer text |
+| `notice` | `{"code": "partial_timeout"}` | The answer is partial because time ran out |
+| `done` | `{"tools": [...], "request_id": "..."}` | The answer is complete |
+| `error` | `{"code": "rate_limited", "detail": "...", "request_id": "..."}` | An error after the stream started |
 
-入力エラー（422）・提供地域外（451）・レート制限（429）・設定エラー（500）は、ストリーム開始前に JSON `{"code": "...", "detail": "..."}` で返ります。
-フロントは `code` から現在の表示言語のメッセージを選びます。
+Input errors (422), unsupported regions (451), rate limits (429), and configuration errors (500) are returned before the stream starts, as JSON `{"code": "...", "detail": "..."}`.
+The frontend uses `code` to pick a message in the current display language.
 
 ### `POST /api/contact`
 
 ```json
-{ "name": "山田 太郎", "email": "taro@example.com", "message": "...", "recaptcha_token": "...", "lang": "ja" }
+{ "name": "Jane Doe", "email": "jane@example.com", "message": "...", "recaptcha_token": "...", "lang": "en" }
 ```
 
-成功すると `{"ok": true, "request_id": "..."}`。失敗は `{"code": "...", "detail": "..."}` で、
-入力エラー（422: `name_required` / `invalid_email` / `message_too_long` など）・reCAPTCHA の不合格（403: `recaptcha_failed`）・
-レート制限（429）・未設定（503: `contact_unavailable`）・送信失敗（502: `contact_failed`）を返します。
+On success it returns `{"ok": true, "request_id": "..."}`. Failures return `{"code": "...", "detail": "..."}`:
+input errors (422: `name_required` / `invalid_email` / `message_too_long`, etc.), a failed reCAPTCHA check (403: `recaptcha_failed`),
+rate limits (429), not configured (503: `contact_unavailable`), and send failures (502: `contact_failed`).
 
 ### `GET /api/blog`
 
-TECH BLOG の最新3記事。Vercel の CDN に1時間キャッシュされます。
+The 3 latest TECH BLOG posts. Cached on Vercel's CDN for 1 hour.
 
-## エージェントの仕組み
+## How the agent works
 
-ツールはすべて Python の関数で、JSON Schema で引数を宣言しています（`app/tools.py`）。
+Every tool is a Python function that declares its arguments with JSON Schema (`app/tools.py`).
 
-| ツール | 内容 |
+| Tool | Description |
 |---|---|
-| `get_skills(category?)` | スキル一覧（カテゴリで絞り込み可） |
-| `get_projects(technology?)` | 制作物一覧（技術名で絞り込み可） |
-| `get_experience()` | 基本情報と職歴 |
-| `get_contact_info()` | 連絡先 |
-| `get_site_info()` | このサイトとチャットの仕組み |
-| `get_blog_posts(limit?)` | ブログの最新記事 |
+| `get_skills(category?)` | List of skills (can filter by category) |
+| `get_projects(technology?)` | List of projects (can filter by technology) |
+| `get_experience()` | Basic info and work history |
+| `get_contact_info()` | Contact info |
+| `get_site_info()` | How this site and the chat work |
+| `get_blog_posts(limit?)` | Latest blog posts |
 
-ループ（`app/agent.py`）は次のとおりです。Gemini の自動実行（automatic function calling）は使っていません。
+The loop (`app/agent.py`) works as follows. It does not use Gemini's automatic function calling.
 
-1. 会話履歴とツール定義を渡して Gemini を呼ぶ（ストリーミング）
-2. 応答に `function_call` があれば、ツールを実行して `function_response` を履歴に追加し、1 に戻る
-3. テキスト応答になったら終了
+1. Call Gemini with the conversation history and tool definitions (streaming)
+2. If the response contains a `function_call`, run the tool, add a `function_response` to the history, and go back to 1
+3. Stop when the response is text
 
-- 反復は最大 4 回。最後の反復はツールを禁止して必ずテキストで答えさせる
-- 全体の時間予算は 40 秒。各呼び出しのタイムアウトは「15 秒」と「予算の残り」の小さい方
-- 時間切れの時点で回答の一部を返せていれば、その部分と「時間切れのため一部のみ表示しています」を表示
-- 5xx / 通信エラーは指数バックオフ（0.5 秒 → 1 秒）で最大 2 回リトライ。ただし予算が残っていて、かつテキストをまだ送っていない場合のみ（重複表示を防ぐため）
-- 429（Gemini の無料枠超過）はリトライせず、「現在アクセスが集中しています」と表示
+- At most 4 iterations. Tools are disabled on the last iteration so it always answers with text
+- The overall time budget is 40 seconds. Each call's timeout is the smaller of 15 seconds and the remaining budget
+- If part of the answer was already sent when time runs out, it shows that part plus "Time ran out, so only part of the answer is shown."
+- 5xx / network errors are retried up to 2 times with exponential backoff (0.5 s → 1 s), but only while budget remains and no text has been sent yet (to avoid showing text twice)
+- 429 (Gemini free tier exceeded) is not retried; it shows "The service is busy right now."
 
-## ログの確認
+## Checking logs
 
-ログは 1 行 1 JSON で書き出し、Vercel の **Logs**（Runtime Logs）で確認できます。
-Hobby プランの Runtime Logs は**直近 1 時間分**のみ保持されます。
+Logs are written as one JSON object per line and can be viewed in Vercel's **Logs** (Runtime Logs).
+On the Hobby plan, Runtime Logs keep **only the last hour**.
 
-- `level` が `error` のログは**標準エラー出力**、それ以外は標準出力に出します。Vercel は Python の stderr を `error`、stdout を `info` として扱うため、エラーだけを Vercel のレベルで絞り込めます
-- `warning`（レート制限・地域制限・入力エラー）は stdout に出します。Python から Vercel の `warning` レベルにする手段がなく、stderr に出すと `error` 扱いになってしまうためです。これらは 4xx を返すので、Vercel 上でもリクエスト単位で Warning として区別できます
-- SSE 開始後のエラー（Gemini のタイムアウトや 429 など）は HTTP ステータスが 200 のままなので、このレベル分けで見つけられるようにしています
+- Logs with `level` `error` go to **stderr**, everything else to stdout. Vercel treats Python's stderr as `error` and stdout as `info`, so you can filter errors alone by Vercel's level
+- `warning` (rate limits, region restrictions, input errors) goes to stdout. Python has no way to produce Vercel's `warning` level, and writing to stderr would make it `error`. These return 4xx, so Vercel still shows them as warnings per request
+- Errors after SSE starts (Gemini timeouts, 429s, etc.) keep HTTP status 200, so this level split is what makes them findable
 
 ```bash
 vercel logs --project python-ai-chat-portfolio --environment production --query 'level:error' --since 1h
 ```
 
-チャット 1 回ごとに `chat_completed` を出力します（**発言本文・回答本文は記録しません**）。
+Each chat writes a `chat_completed` entry (**the user's messages and the answers are not logged**).
 
 ```json
 {"ts": 1793105778.662, "level": "info", "event": "chat_completed", "request_id": "a5b1722863754694",
@@ -230,73 +232,73 @@ vercel logs --project python-ai-chat-portfolio --environment production --query 
  "tools": ["get_contact_info"], "usage": {"prompt_tokens": 1918, "output_tokens": 50, "total_tokens": 1968}, "error": null}
 ```
 
-| event | 出力されるとき |
+| event | When it is written |
 |---|---|
-| `chat_completed` | チャット 1 回の終了時（`outcome`: `ok` / `partial_timeout` / `empty_reply` / エラーコード） |
-| `chat_region_blocked` | 提供地域外のため拒否（国コードのみ記録） |
-| `chat_rate_limited` | レート制限で拒否（IP は SHA-256 の先頭 12 桁に匿名化） |
-| `chat_rejected` | 入力バリデーションで拒否 |
-| `chat_failed` | ストリーム開始前の LLM エラー（設定エラーなど） |
-| `blog_fetch_failed` | ブログの取得失敗 |
-| `contact_sent` | お問い合わせのメール送信成功（氏名・メールアドレス・本文は記録せず、文字数と reCAPTCHA のスコアのみ） |
-| `contact_failed` | reCAPTCHA の不合格（warning）・メール送信の失敗（error） |
-| `contact_rejected` / `contact_rate_limited` | お問い合わせの入力エラー / レート制限 |
-| `contact_recaptcha_skipped` | `RECAPTCHA_SECRET_KEY` 未設定のため検証を省略した |
+| `chat_completed` | At the end of each chat (`outcome`: `ok` / `partial_timeout` / `empty_reply` / an error code) |
+| `chat_region_blocked` | Rejected because of the region (only the country code is logged) |
+| `chat_rate_limited` | Rejected by the rate limit (IPs are anonymized to the first 12 hex digits of SHA-256) |
+| `chat_rejected` | Rejected by input validation |
+| `chat_failed` | LLM error before the stream started (configuration errors, etc.) |
+| `blog_fetch_failed` | Failed to fetch the blog |
+| `contact_sent` | Contact mail sent (name, email, and message are not logged; only lengths and the reCAPTCHA score) |
+| `contact_failed` | Failed reCAPTCHA check (warning) or mail send failure (error) |
+| `contact_rejected` / `contact_rate_limited` | Contact input error / rate limit |
+| `contact_recaptcha_skipped` | Verification was skipped because `RECAPTCHA_SECRET_KEY` is not set |
 
-画面のエラー表示には `request_id`（エラーID）を出しているので、問い合わせがあった場合はログを `request_id` で検索して原因を特定できます。
+Error messages on the page include the `request_id` (error ID), so when someone reports a problem you can search the logs by `request_id` to find the cause.
 
-## 設計判断
+## Design decisions
 
-- **FastAPI**: 型ヒントから入力バリデーション（Pydantic）を宣言的に書け、`StreamingResponse` で SSE も素直に書ける。Vercel が FastAPI をゼロコンフィグで検出し、`public/` を CDN から配信してくれる点も決め手になった。
-- **SSE（Server-Sent Events）**: サーバー → ブラウザの一方向のストリーミングで足りるため、WebSocket より単純な SSE を選んだ。ツールの実行状況（`tool`）と回答の断片（`delta`）を同じストリームで送れる。POST でリクエストを送る必要があるため、ブラウザ側は `EventSource` ではなく `fetch` のストリームを読んでいる。
-  - **Vercel 上での検証結果**: Python の SSE は途中でまとめて送られる（バッファされる）おそれがあったため、ローカルだけで判断せず、プレビュー環境で各イベントの到着時刻を計測した。`tool` イベント 2.1 秒 → 最初の `delta` 5.0 秒 → `done` 5.3 秒と逐次届いており、**フォールバック（非ストリーミング + タイピング風表示など）は不要**と判断した（2026-10-27）。
-- **ステートレス**: 会話履歴はブラウザが持ち、毎回直近 10 件を送る。サーバーレス環境ではリクエストごとに別のインスタンスが処理しうるため、サーバー側に状態を持たない方が単純で壊れにくい。
-- **手動エージェントループ**: SDK の自動実行に任せず、関数呼び出し → 実行 → 結果返却を自分で書いた。反復回数・時間予算・リトライ・ツール実行の通知（バッジ表示）を細かく制御でき、仕組みがコードから読める。
-- **LLM 呼び出しを 1 モジュールに分離**: `llm.py` にプロバイダ非依存の型（`ToolSpec` / `ModelTurn` / `TextDelta` など）と `LLMClient` プロトコルを定義し、Gemini 固有のコードはその中だけに置いた。プロバイダを差し替えやすく、テストではモック（`tests/conftest.py` の `ScriptedLLM`）に置き換えて実 API なしでループを検証できる。なお Gemini 3 系は関数呼び出しに付く thought signature を次のリクエストで返す必要があるため、モデル応答は Gemini の形のまま `ModelTurn.raw` に保持している。
-- **経歴データはツール経由で取得**: プロンプトに `profile.json` を丸ごと埋め込まず、必要な部分だけをツールで取らせる。回答の根拠がツール結果に限定され、ログの `tools` で「何を根拠に答えたか」を追える。
-- **uv**: 依存の定義（`pyproject.toml`）とロックファイル（`uv.lock`）を一本化でき、`uv sync --locked` で CI とローカルの環境をそろえられる。Vercel も `uv.lock` からのインストールに対応しているため、`requirements.txt` を二重管理する必要がない。
-- **提供地域の制御**: Gemini API 追加利用規約では、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされている。無料枠のまま公開を続けるため、Vercel が付与する `x-vercel-ip-country` ヘッダーで国を判定し、これらの地域からの `/api/chat` には 451（Unavailable For Legal Reasons）を返す。ページの他の部分はそのまま表示する。判定はレート制限より前に行い、拒否したリクエストがレート制限の枠を消費しないようにしている。
-- **ビルド不要のフロントエンド**: ページ規模に対してフレームワークは過剰と判断し、HTML / CSS / バニラ JS にした。AI の出力は常に `textContent` で描画し、XSS を防いでいる。
+- **FastAPI**: Input validation (Pydantic) can be declared from type hints, and SSE is straightforward with `StreamingResponse`. Vercel also detects FastAPI with zero configuration and serves `public/` from the CDN, which settled the choice.
+- **SSE (Server-Sent Events)**: One-way streaming from server to browser is enough, so I chose SSE over the more complex WebSocket. Tool progress (`tool`) and answer chunks (`delta`) can go over the same stream. Because the request has to be a POST, the browser reads a `fetch` stream instead of using `EventSource`.
+  - **Verified on Vercel**: There was a risk that Python SSE would be buffered and sent in one batch, so instead of judging from local runs I measured each event's arrival time on a preview deployment. The `tool` event arrived at 2.1 s → first `delta` at 5.0 s → `done` at 5.3 s, one by one, so I concluded that **no fallback (non-streaming + typewriter effect, etc.) is needed** (2026-10-27).
+- **Stateless**: The browser keeps the conversation history and sends the last 10 messages each time. On serverless, each request may be handled by a different instance, so keeping no state on the server is simpler and harder to break.
+- **Manual agent loop**: Instead of leaving it to the SDK's automatic execution, I wrote function call → run → return result myself. This gives fine control over iterations, the time budget, retries, and tool notifications (badges), and the mechanism can be read from the code.
+- **LLM calls isolated in one module**: `llm.py` defines provider-agnostic types (`ToolSpec` / `ModelTurn` / `TextDelta`, etc.) and an `LLMClient` protocol, and keeps all Gemini-specific code inside it. Providers are easy to swap, and tests replace it with a mock (`ScriptedLLM` in `tests/conftest.py`) to verify the loop without the real API. Gemini 3 models require the thought signature attached to function calls to be sent back in the next request, so model responses are kept in Gemini's own shape in `ModelTurn.raw`.
+- **Career data fetched through tools**: Instead of embedding all of `profile.json` in the prompt, the model fetches only what it needs through tools. Answers are grounded only in tool results, and the `tools` field in the logs shows what each answer was based on.
+- **uv**: Dependency definitions (`pyproject.toml`) and the lock file (`uv.lock`) live in one tool, and `uv sync --locked` keeps CI and local environments identical. Vercel also installs from `uv.lock`, so there is no `requirements.txt` to maintain in parallel.
+- **Region restriction**: The Gemini API Additional Terms of Service say that only paid services may be used when serving users in the EEA, Switzerland, or the UK. To keep running on the free tier, the country is determined from the `x-vercel-ip-country` header that Vercel adds, and `/api/chat` returns 451 (Unavailable For Legal Reasons) for those regions. The rest of the page still works. The check runs before rate limiting so that rejected requests don't use up the rate limit.
+- **No-build frontend**: A framework would be overkill for a page this size, so it is plain HTML / CSS / vanilla JS. AI output is always rendered with `textContent` to prevent XSS.
 
-## 既知の制限
+## Known limitations
 
-- **Gemini API 無料枠**
-  - モデルごとに 1 分あたり / 1 日あたりのリクエスト数・トークン数の上限がある（プロジェクト単位。具体的な値は AI Studio で確認）。1 回の質問でエージェントが最大 4 回 Gemini を呼ぶため、上限に達すると「現在アクセスが集中しています」と表示される
-  - 無料枠の入力・出力は Google の製品改善に使われ、人が確認する場合がある。そのためチャット画面に「個人情報は入力しないでください」と表示している
-  - 規約上、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされているため、これらの地域では AI チャットを提供していない（IP アドレスによる国の判定のため、VPN などでは判定が実際の所在地と異なる場合がある）
-  - モデルの提供状況は変わる。開発中、`gemini-3.8-flash` は高負荷で 503 / 504 が続き、`gemini-2.5-flash-lite` は新規ユーザーには提供終了となっていた。モデルは `GEMINI_MODEL` で切り替えられる
-- **Vercel Hobby プラン**
-  - 個人・非商用の利用に限られる（本サイトは就職活動用の個人ポートフォリオで、広告・課金の要素はない）
-  - 関数の最大実行時間は 300 秒。本サイトは `maxDuration` を 60 秒、エージェントの予算を 40 秒にしている
-  - 関数の実行回数・CPU 時間・転送量に月間の上限があり、超えると最大 30 日間停止する。面接官が少人数で触る程度なら十分収まる想定
-  - しばらくアクセスがないとコールドスタートで初回の応答が遅くなる（画面に「初回は少し時間がかかります」と表示）
-  - Runtime Logs は直近 1 時間分のみ
-- **メモリ内レート制限の限界**: 制限の記録は各インスタンスのメモリにあり、インスタンスをまたいで共有されない。インスタンスが増えたり再起動したりすると、実際の上限は設定値より緩くなる。Gemini 無料枠を使い切らないための簡易的な安全柵という位置づけ
-- **ブログの取得**: ブログに RSS / API がないため HTML をパースしている。ブログ側のマークアップが変わると取得できなくなる（その場合はブログへのリンクのみ表示）。CDN キャッシュのため、新しい記事の反映に最大 1 時間かかる
+- **Gemini API free tier**
+  - Each model has per-minute / per-day limits on requests and tokens (per project; check the actual values in AI Studio). One question can call Gemini up to 4 times, so when the limit is reached the chat shows "The service is busy right now."
+  - Free-tier inputs and outputs are used to improve Google's products and may be reviewed by humans. That's why the chat says "Please do not enter personal information."
+  - Under the terms, only paid services may be used for users in the EEA, Switzerland, or the UK, so the AI chat is not offered in those regions (the country is determined from the IP address, so it may not match the actual location when using a VPN, etc.)
+  - Model availability changes. During development, `gemini-3.8-flash` kept returning 503 / 504 under heavy load, and `gemini-2.5-flash-lite` was no longer available to new users. The model can be switched with `GEMINI_MODEL`
+- **Vercel Hobby plan**
+  - Limited to personal, non-commercial use (this site is a personal portfolio for job hunting, with no ads or payments)
+  - The maximum function duration is 300 seconds. This site sets `maxDuration` to 60 seconds and the agent budget to 40 seconds
+  - There are monthly limits on function invocations, CPU time, and data transfer; going over pauses the project for up to 30 days. A handful of interviewers trying it should stay well within them
+  - After a period without traffic, a cold start makes the first response slower (the page says "the first reply may take a moment")
+  - Runtime Logs keep only the last hour
+- **Limits of in-memory rate limiting**: Rate limit records live in each instance's memory and are not shared across instances. When instances are added or restarted, the effective limit is looser than configured. It is meant as a simple safety net to avoid using up the Gemini free tier
+- **Fetching the blog**: The blog has no RSS / API, so the HTML is parsed. If the blog's markup changes, fetching will fail (in that case only a link to the blog is shown). Because of the CDN cache, new posts can take up to 1 hour to appear
 
-## 今後の改善案
+## Ideas for improvement
 
-- レート制限をインスタンス間で共有する（外部の KV ストアの利用。無料枠で収まるか要確認）
-- 回答品質の評価（想定質問と期待する根拠ツールのセットを用意し、プロンプト変更時に自動で比較する）
-- ブラウザでの E2E テスト（Playwright で SSE 表示・言語切り替え・エラー表示を確認）
-- サニタイズ済みの Markdown 描画（現在はプレーンテキスト表示で、プロンプトで Markdown を使わないよう指示している）
-- ブログ記事の本文を取り込んだ検索（RAG）で、記事の内容についても答えられるようにする
+- Share rate limits across instances (using an external KV store; need to check whether it fits in a free tier)
+- Evaluate answer quality (prepare expected questions with the tools they should be grounded in, and compare automatically when the prompt changes)
+- End-to-end browser tests (use Playwright to check SSE rendering, language switching, and error display)
+- Sanitized Markdown rendering (currently plain text, and the prompt tells the model not to use Markdown)
+- Search over blog post content (RAG) so the chat can also answer questions about what the posts say
 
-## 利用範囲について
+## Scope of use
 
-本サイトは就職活動用の**個人・非商用のポートフォリオ**です。広告・課金・商用サービスの要素はなく、Vercel Hobby プランと Gemini API 無料枠の範囲で運用しています。
-どちらにも使用量の上限があるため、上限に達した場合は一時的にチャットが使えなくなることがあります。
+This site is a **personal, non-commercial portfolio** for job hunting. It has no ads, payments, or commercial services, and runs within the Vercel Hobby plan and the Gemini API free tier.
+Both have usage limits, so the chat may be temporarily unavailable when a limit is reached.
 
-## 参照した公式ドキュメント（確認日: 2026-10-27）
+## Official documentation referenced (checked on 2026-10-27)
 
-無料プランの仕様は変更されることがあるため、確認した時点の情報として記載します。
+Free plan terms can change, so these reflect what was confirmed at that time.
 
-- Vercel Python Runtime（対応バージョン 3.12 / 3.13 / 3.14、`pyproject.toml` / `uv.lock` に対応、ストリーミング対応）: https://vercel.com/docs/functions/runtimes/python
-- Vercel で FastAPI をデプロイ（エントリポイント、`public/` の CDN 配信、`maxDuration` の設定）: https://vercel.com/docs/frameworks/backend/fastapi
-- Vercel Functions の制限（Hobby の最大実行時間 300 秒）: https://vercel.com/docs/functions/limitations
-- Vercel のリクエストヘッダー（`x-vercel-ip-country`、`x-forwarded-for` は Vercel が上書き）: https://vercel.com/docs/headers/request-headers
-- Vercel Hobby プラン（月間の使用量、超過時の停止、非商用・個人利用のみ、Runtime Logs 1 時間）: https://vercel.com/docs/plans/hobby
-- Gemini API の料金（無料枠の対象モデル、無料枠の入力は製品改善に使われる）: https://ai.google.dev/gemini-api/docs/pricing
-- Gemini API のレート制限（モデルごと・プロジェクト単位、値は AI Studio で確認）: https://ai.google.dev/gemini-api/docs/rate-limits
-- Gemini API 追加利用規約（無料枠のデータ利用、提供地域）: https://ai.google.dev/gemini-api/terms
-- astral-sh/setup-uv（GitHub Actions）: https://github.com/astral-sh/setup-uv
+- Vercel Python Runtime (supported versions 3.12 / 3.13 / 3.14, `pyproject.toml` / `uv.lock` support, streaming support): https://vercel.com/docs/functions/runtimes/python
+- Deploying FastAPI on Vercel (entry point, serving `public/` from the CDN, configuring `maxDuration`): https://vercel.com/docs/frameworks/backend/fastapi
+- Vercel Functions limits (Hobby maximum duration of 300 seconds): https://vercel.com/docs/functions/limitations
+- Vercel request headers (`x-vercel-ip-country`; `x-forwarded-for` is overwritten by Vercel): https://vercel.com/docs/headers/request-headers
+- Vercel Hobby plan (monthly usage, pausing when exceeded, personal non-commercial use only, 1 hour of Runtime Logs): https://vercel.com/docs/plans/hobby
+- Gemini API pricing (models covered by the free tier; free-tier inputs are used for product improvement): https://ai.google.dev/gemini-api/docs/pricing
+- Gemini API rate limits (per model and per project; check values in AI Studio): https://ai.google.dev/gemini-api/docs/rate-limits
+- Gemini API Additional Terms of Service (free-tier data use, available regions): https://ai.google.dev/gemini-api/terms
+- astral-sh/setup-uv (GitHub Actions): https://github.com/astral-sh/setup-uv
