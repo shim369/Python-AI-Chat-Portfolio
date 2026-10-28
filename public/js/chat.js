@@ -12,6 +12,9 @@
   const sendBtn = document.getElementById("chat-send");
   const counter = document.getElementById("chat-counter");
   const chips = document.getElementById("chat-chips");
+  const panel = document.getElementById("chat-panel");
+  const launcher = document.getElementById("chat-launcher");
+  const closeBtn = document.getElementById("chat-close");
 
   /** @type {{role: "user" | "model", text: string}[]} */
   const history = [];
@@ -201,6 +204,34 @@
       chip.addEventListener("click", () => send(q));
       chips.append(chip);
     }
+  }
+
+  // 画面右下のボタンでパネルを開閉する（ページ内の「AIに質問する」ボタンからも開ける）
+  function setOpen(open) {
+    panel.hidden = !open;
+    launcher.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("chat-open", open);
+    if (open) {
+      scrollToBottom();
+      // スマホではキーボードが画面を覆うため、マウス操作の環境でだけ入力欄にフォーカスする
+      if (window.matchMedia("(pointer: fine)").matches) input.focus();
+      else closeBtn.focus();
+    }
+  }
+
+  launcher.addEventListener("click", () => setOpen(panel.hidden));
+  closeBtn.addEventListener("click", () => {
+    setOpen(false);
+    launcher.focus();
+  });
+  panel.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      setOpen(false);
+      launcher.focus();
+    }
+  });
+  for (const button of document.querySelectorAll("[data-open-chat]")) {
+    button.addEventListener("click", () => setOpen(true));
   }
 
   renderChips();
