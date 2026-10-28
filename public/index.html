@@ -18,7 +18,7 @@
         <li><a href="#works" data-i18n="nav.works">制作物</a></li>
         <li><a href="#blog" data-i18n="nav.blog">ブログ</a></li>
         <li><a href="#architecture" data-i18n="nav.architecture">仕組み</a></li>
-        <li><a href="#chat" data-i18n="nav.chat">AIチャット</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">お問い合わせ</a></li>
       </ul>
       <div class="lang-switch" role="group" aria-label="表示言語" data-i18n-aria-label="lang.label">
         <button type="button" data-lang="ja" aria-pressed="true">JA</button>
@@ -34,7 +34,7 @@
         <p class="hero-eyebrow">Web Engineer / System Engineer</p>
         <h1 class="hero-name">Shinpei Ohtani</h1>
         <p class="hero-lead" data-i18n="hero.lead">Python・JavaScript で、Web システムの改修から AI チャットの設計・実装まで手がけるエンジニアです。</p>
-        <a class="btn btn-primary" href="#chat" data-i18n="hero.cta">AIに質問する</a>
+        <button type="button" class="btn btn-primary" data-open-chat data-i18n="hero.cta">AIに質問する</button>
       </div>
     </section>
 
@@ -121,24 +121,36 @@
       </div>
     </section>
 
-    <!-- 5. AIチャット -->
-    <section id="chat" class="section">
+    <!-- 5. お問い合わせ（public/js/contact.js が /api/contact に送信し、サーバーが Gmail 宛てにメールを送る） -->
+    <section id="contact" class="section">
       <div class="container">
-        <h2 class="section-title" data-i18n="chat.title">AIチャット</h2>
-        <p class="section-lead" data-i18n="chat.lead">私の経歴・スキル・制作物について、AI に気軽に質問してください。</p>
-        <div class="chat">
-          <div class="chat-log" id="chat-log" aria-live="polite"></div>
-          <div class="chat-chips" id="chat-chips"></div>
-          <form class="chat-form" id="chat-form">
-            <label for="chat-input" class="visually-hidden" data-i18n="chat.inputLabel">質問を入力</label>
-            <textarea id="chat-input" rows="2" maxlength="500" placeholder="質問を入力（Enterで送信 / Shift+Enterで改行）" data-i18n-placeholder="chat.placeholder"></textarea>
-            <button type="submit" class="btn btn-primary" id="chat-send" data-i18n="chat.send">送信</button>
-          </form>
-          <div class="chat-meta">
-            <span id="chat-counter">0 / 500</span>
+        <h2 class="section-title" data-i18n="contact.title">お問い合わせ</h2>
+        <p class="section-lead" data-i18n="contact.lead">お仕事のご相談やご質問は、こちらのフォームからお送りください。</p>
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="field">
+            <label for="contact-name" data-i18n="contact.name">お名前</label>
+            <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="100" required aria-describedby="contact-name-error">
+            <p class="field-error" id="contact-name-error"></p>
           </div>
-          <p class="chat-notice" data-i18n="chat.notice">入力内容はAIサービス提供元で処理されます。個人情報は入力しないでください。AIの回答は誤りを含む場合があります。</p>
-        </div>
+          <div class="field">
+            <label for="contact-email" data-i18n="contact.email">メールアドレス</label>
+            <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="contact-email-error">
+            <p class="field-error" id="contact-email-error"></p>
+          </div>
+          <div class="field">
+            <label for="contact-message" data-i18n="contact.message">お問い合わせ内容</label>
+            <textarea id="contact-message" name="message" rows="6" maxlength="2000" required aria-describedby="contact-message-error"></textarea>
+            <p class="field-error" id="contact-message-error"></p>
+          </div>
+          <div class="contact-actions">
+            <button type="submit" class="btn btn-primary" id="contact-submit" data-i18n="contact.submit">送信する</button>
+            <p class="contact-status" id="contact-status" role="status"></p>
+          </div>
+          <!-- reCAPTCHA のバッジはチャットボタンと重なるため非表示にし、代わりに Google の規定の文言を表示する -->
+          <p class="recaptcha-note">
+            <span data-i18n="contact.recaptcha1">このサイトは reCAPTCHA で保護されており、Google の</span><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" data-i18n="contact.privacy">プライバシーポリシー</a><span data-i18n="contact.recaptcha2">と</span><a href="https://policies.google.com/terms" target="_blank" rel="noopener" data-i18n="contact.terms">利用規約</a><span data-i18n="contact.recaptcha3">が適用されます。</span>
+          </p>
+        </form>
       </div>
     </section>
   </main>
@@ -146,15 +158,47 @@
   <!-- 6. フッター -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p><span data-i18n="footer.contact">連絡先：</span><span id="contact-placeholder" data-i18n="footer.contactPlaceholder">（連絡先は準備中です）</span></p>
+      <p><span data-i18n="footer.contact">連絡先：</span><a href="#contact" data-i18n="footer.contactLink">お問い合わせフォーム</a></p>
       <p><a href="https://github.com/shim369/Python-AI-Chat-Portfolio" target="_blank" rel="noopener" data-i18n="footer.source">このサイトのソースコード (GitHub)</a></p>
       <p class="footer-copy">&copy; Shinpei Ohtani</p>
     </div>
   </footer>
 
+  <!-- AIチャット（画面右下のボタンで開閉する） -->
+  <div class="chat-widget">
+    <section class="chat-panel" id="chat-panel" role="dialog" aria-labelledby="chat-title" hidden>
+      <header class="chat-header">
+        <div>
+          <h2 class="chat-title" id="chat-title" data-i18n="chat.title">AIチャット</h2>
+          <p class="chat-lead" data-i18n="chat.lead">私の経歴・スキル・制作物について、AI に気軽に質問してください。</p>
+        </div>
+        <button type="button" class="chat-close" id="chat-close" aria-label="チャットを閉じる" data-i18n-aria-label="chat.close">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <div class="chat-chips" id="chat-chips"></div>
+      <form class="chat-form" id="chat-form">
+        <label for="chat-input" class="visually-hidden" data-i18n="chat.inputLabel">質問を入力</label>
+        <textarea id="chat-input" rows="2" maxlength="500" placeholder="質問を入力（Enterで送信 / Shift+Enterで改行）" data-i18n-placeholder="chat.placeholder"></textarea>
+        <button type="submit" class="btn btn-primary" id="chat-send" data-i18n="chat.send">送信</button>
+      </form>
+      <div class="chat-meta">
+        <span id="chat-counter">0 / 500</span>
+      </div>
+      <p class="chat-notice" data-i18n="chat.notice">入力内容はAIサービス提供元で処理されます。個人情報は入力しないでください。AIの回答は誤りを含む場合があります。</p>
+    </section>
+    <button type="button" class="chat-launcher" id="chat-launcher" aria-controls="chat-panel" aria-expanded="false">
+      <svg class="icon-open" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" fill="currentColor"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <span class="chat-launcher-label" data-i18n="chat.launcher">AIに質問</span>
+    </button>
+  </div>
+
   <script src="/js/config.js"></script>
   <script src="/js/i18n.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/chat.js"></script>
+  <script src="/js/contact.js"></script>
 </body>
 </html>

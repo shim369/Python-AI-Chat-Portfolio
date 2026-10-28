@@ -221,9 +221,9 @@
     }
   ],
   "contact": {
-    "email": "（後で記入）",
+    "form": "このページの「お問い合わせ」フォームから送信できます（ページ上部のメニューの「お問い合わせ」から移動できます）。",
     "github": "https://github.com/shim369",
-    "note": "お問い合わせはメールまたは GitHub からお願いします。"
+    "note": "お問い合わせはお問い合わせフォームまたは GitHub からお願いします。"
   },
   "site": {
     "description": "このチャットは、ブラウザから Vercel 上の FastAPI (Python) に会話履歴を送り、サーバー側で Gemini API の function calling を使ったエージェントループを回して回答しています。ツール (get_skills など) は profile.json からデータを返します。サーバーはステートレスで、会話履歴はブラウザ側で保持しています。"

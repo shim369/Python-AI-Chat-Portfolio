@@ -107,6 +107,10 @@ window.SITE_CONFIG = {
     en: ["What are his main skills?", "Tell me about his projects.", "How does this chat work?"],
   },
 
+  // reCAPTCHA v3 のサイトキー（公開して問題ない値）。空のときは reCAPTCHA を読み込まない。
+  // サーバー側には対になるシークレットキーを環境変数 RECAPTCHA_SECRET_KEY で設定する
+  RECAPTCHA_SITE_KEY: "",
+
   // サーバー側の上限と揃える
   MAX_INPUT_LENGTH: 500,
   MAX_HISTORY: 10,
