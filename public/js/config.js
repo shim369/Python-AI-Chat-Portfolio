@@ -4,19 +4,20 @@
  * （AIチャットが参照する経歴データは app/data/profile.json です）
  */
 window.SITE_CONFIG = {
-  // 市場価値の高そうなスキルのベスト9（全27件は app/data/profile.json にあり、AIチャットはそちらを参照する）
+  // 言語系スキル（全件は app/data/profile.json にあり、AIチャットはそちらを参照する。DB・テスト・AIなどは i18n.js の skills.extra に記載）
   SKILLS: [
     { name: "Python", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "実務では業務効率化ツール2件（PHPバージョンアップ支援、Webサイト調査）をスクラッチで設計・開発・運用。個人開発では2023年からFastAPI・Streamlit・Djangoなどで継続的に開発", en: "At work: designed, built and operate two automation tools from scratch (PHP upgrade support, website survey). Personal projects with FastAPI, Streamlit, Django and more since 2023" } },
-    { name: "Gemini API / Claude Code", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "Gemini APIを組み込んでWebサイトの構成・用途の判定を補完、Claude Codeを活用した開発。個人開発ではfunction callingを用いたエージェントループを実装（このサイト）", en: "Using the Gemini API to classify website structure and purpose; development with Claude Code. Built an agent loop with function calling in personal projects (this site)" } },
     { name: "TypeScript / React", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "生産管理システムのWebアプリ機能追加（端末設定・表示設定）、結合テスト", en: "New features (device and display settings) for a production management web app, integration testing" } },
+    { name: "Java / JavaFX", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "生産管理システムのWindowsアプリ機能追加（端末設定・表示設定）、結合テスト", en: "New features (device and display settings) for a production management Windows app, integration testing" } },
     { name: "C# / .NET (ASP.NET)", years: { ja: "11ヶ月", en: "11 mos" }, note: { ja: ".NETバージョンアップ、社内業務ツール（採用管理・給与計算・従業員情報）の解析・改修、ECサイト改修", en: ".NET upgrades, analysis and improvement of internal tools (recruiting, payroll, employee data), e-commerce site changes" } },
     { name: "JavaScript / jQuery", years: { ja: "8年6ヶ月", en: "8 yrs 6 mos" }, note: { ja: "Webサイト制作・改修全般、Electron / Node.jsのデスクトップアプリ開発、ASP.NET ECサイトのフロントエンド対応", en: "Website development and maintenance, Electron / Node.js desktop apps, frontend work on an ASP.NET e-commerce site" } },
     { name: "PHP", years: { ja: "6年8ヶ月", en: "6 yrs 8 mos" }, note: { ja: "WordPressテーマ制作・改修、CakePHP 2系 / Smartyの改修、PHP 5〜7系サイトのPHP 8.4移行対応", en: "WordPress themes, CakePHP 2 / Smarty maintenance, migrating PHP 5–7 sites to PHP 8.4" } },
-    { name: "MySQL / MariaDB", years: { ja: "7年6ヶ月", en: "7 yrs 6 mos" }, note: { ja: "Webサイト・CMSのデータベース", en: "Databases for websites and CMSs" } },
-    { name: "pytest / Ruff / Mypy / GitHub Actions", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "pytestでのテスト作成、GitHub Actionsでの静的解析・テストの自動実行", en: "Writing tests with pytest; automated linting, type checking and tests on GitHub Actions" } },
-    { name: { ja: "要件定義・基本設計", en: "Requirements & Basic Design" }, years: { ja: "2年9ヶ月", en: "2 yrs 9 mos" }, note: { ja: "UI / UX設計、共通機能の設計、社内ツールの要件定義", en: "UI / UX design, shared feature design, requirements for internal tools" } },
+    { name: "HTML / CSS (Sass)", years: { ja: "8年3ヶ月", en: "8 yrs 3 mos" }, note: { ja: "コーポレート・EC・LP・イントラサイトのデザイン / コーディング、cshtml / aspxへの組み込み", en: "Design and coding of corporate, e-commerce, landing and intranet sites; integration into cshtml / aspx" } },
+    { name: "Perl / CGI", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "既存システム・問い合わせフォームの改修", en: "Maintenance of existing systems and contact forms" } },
+    { name: "Google Apps Script", years: { ja: "4ヶ月", en: "4 mos" }, note: { ja: "特定メールの内容をGoogleスプレッドシートへ自動記録する機能を開発", en: "Automatically logging specific emails to Google Sheets" } },
   ],
 
+  // スキル欄の言語を裏付ける制作物（AIチャット用には app/data/profile.json にさらに3件ある）
   PROJECTS: [
     {
       title: "Python-AI-Chat-Portfolio",
@@ -46,33 +47,6 @@ window.SITE_CONFIG = {
       url: "https://github.com/shim369/Python-Budget-Tracker-App",
     },
     {
-      title: "Python-Study-App",
-      summary: {
-        ja: "PHPエンジニア向けのPython学習Webアプリ。コードの自動採点と、Gemini API によるヒント・コードレビューに対応。",
-        en: "A Python learning web app for PHP developers with auto-grading and hints and code reviews from the Gemini API.",
-      },
-      tech: ["Python", "Streamlit", "SQLite", "Gemini API"],
-      url: "https://github.com/shim369/Python-Study-App",
-    },
-    {
-      title: "Python-AWSSAA-Quiz",
-      summary: {
-        ja: "AWS SAA-C03対策の4択クイズアプリ。Excelのキーワード集から問題を自動生成し、弱点を優先して出題します。",
-        en: "A multiple-choice quiz app for AWS SAA-C03 that generates questions from an Excel keyword list and prioritizes weak areas.",
-      },
-      tech: ["Python", "Streamlit", "pandas", "openpyxl", "SQLite"],
-      url: "https://github.com/shim369/Python-AWSSAA-Quiz",
-    },
-    {
-      title: "Python-Spotify-Insights",
-      summary: {
-        ja: "Spotifyのライブラリに最近追加した曲と週間トップ10を閲覧し、プレイリストを生成できるWebアプリ。",
-        en: "A web app to browse recently added Spotify tracks and your weekly top 10, and generate playlists.",
-      },
-      tech: ["Python", "FastHTML", "HTMX", "Spotify API"],
-      url: "https://github.com/shim369/Python-Spotify-Insights",
-    },
-    {
       title: "Python-Quotes-Scraper",
       summary: {
         ja: "型安全な名言スクレイパー。CustomTkinter のGUIと SQLite への保存。pytest と GitHub Actions でテストを自動実行。",
@@ -82,6 +56,15 @@ window.SITE_CONFIG = {
       url: "https://github.com/shim369/Python-Quotes-Scraper",
     },
     {
+      title: "Electron-Investment-App",
+      summary: {
+        ja: "Electron・React・TypeScript の投資管理デスクトップアプリ。株価APIからの取得、グラフ表示、目標価格のアラート、PDF出力に対応。",
+        en: "An investment tracker desktop app built with Electron, React and TypeScript: live stock prices from an API, charts, target-price alerts and PDF export.",
+      },
+      tech: ["TypeScript", "React", "Electron", "Chart.js"],
+      url: "https://github.com/shim369/Electron-Investment-App",
+    },
+    {
       title: "Java-RecipeRev-App",
       summary: {
         ja: "レシピのバージョン管理Webアプリ。改訂履歴、2バージョン間の差分表示、Python による材料と評価の傾向分析に対応。",
@@ -89,6 +72,33 @@ window.SITE_CONFIG = {
       },
       tech: ["Java", "Spring Boot", "MySQL", "Docker", "Python"],
       url: "https://github.com/shim369/Java-RecipeRev-App",
+    },
+    {
+      title: "Electron-React-TypeScript-AspNetCore-Todo-App",
+      summary: {
+        ja: "C#（ASP.NET Core Web API）と PostgreSQL のバックエンドに、Electron・React・TypeScript のデスクトップアプリを組み合わせたタスク管理アプリ。",
+        en: "A task manager pairing a C# ASP.NET Core Web API and PostgreSQL backend with an Electron, React and TypeScript desktop app.",
+      },
+      tech: ["C#", "ASP.NET Core", "PostgreSQL", "TypeScript", "React", "Electron"],
+      url: "https://github.com/shim369/Electron-React-TypeScript-AspNetCore-Todo-App",
+    },
+    {
+      title: "Nextjs-TypeScript-Laravel-Todo-App-Backend",
+      summary: {
+        ja: "PHP（Laravel）で作ったタスク管理の REST API。MySQL とトークン認証を備え、Next.js のフロントエンドから利用。",
+        en: "A task management REST API built with PHP (Laravel), with MySQL and token authentication, used by a Next.js frontend.",
+      },
+      tech: ["PHP", "Laravel", "MySQL"],
+      url: "https://github.com/shim369/Nextjs-TypeScript-Laravel-Todo-App-Backend",
+    },
+    {
+      title: "Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
+      summary: {
+        ja: "Nuxt 3 とヘッドレスCMS（microCMS）で構築した Jamstack サイト。GSAP によるスクロールアニメーションと reCAPTCHA v3 付きフォーム。",
+        en: "A Jamstack site built with Nuxt 3 and the microCMS headless CMS, with GSAP scroll animations and a reCAPTCHA v3 form.",
+      },
+      tech: ["Nuxt", "TypeScript", "microCMS", "GSAP", "Vercel"],
+      url: "https://github.com/shim369/Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
     },
   ],
 
