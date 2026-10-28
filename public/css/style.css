@@ -312,6 +312,20 @@ a {
   gap: 20px;
 }
 
+/* 制作物の横スクロール（js/scroll-fx.js が有効にしたときだけ横一列に並べる） */
+#works {
+  overflow: hidden;
+}
+
+.card-grid.is-horizontal {
+  display: flex;
+  will-change: transform;
+}
+
+.card-grid.is-horizontal > .card {
+  flex: 0 0 min(300px, 80vw);
+}
+
 .card {
   display: flex;
   flex-direction: column;
