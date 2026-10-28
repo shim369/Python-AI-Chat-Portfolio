@@ -318,6 +318,12 @@ a {
   overflow: hidden;
 }
 
+/* 画面上端で固定している間も見出しが header に隠れないよう、上の余白を header の分だけ取る。
+   固定中に画面へ収まるよう、下の余白は減らす */
+#works:has(.card-grid.is-horizontal) {
+  padding: calc(var(--header-h) + 24px) 0 32px;
+}
+
 .card-grid.is-horizontal {
   display: flex;
   will-change: transform;
