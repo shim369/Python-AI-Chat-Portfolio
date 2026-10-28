@@ -3,9 +3,11 @@
 静的ファイル (public/) は Vercel の CDN が配信するため、ここではマウントしない。
 """
 
+import asyncio
 import json
 import time
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
+from email.message import EmailMessage
 from functools import lru_cache
 
 from fastapi import Depends, FastAPI, Request, Response
@@ -14,13 +16,14 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.agent import AgentLimits, AgentStats, run_agent
 from app.blog import BLOG_URL, fetch_latest_posts
-from app.config import get_settings
+from app.config import Settings, get_settings
+from app.contact import ContactError, build_message, send_mail, verify_recaptcha
 from app.llm import GeminiClient, LLMClient, LLMError
 from app.logging_utils import anonymize_ip, log_event, new_request_id
 from app.profile import build_system_prompt
 from app.rate_limit import RateLimiter
 from app.region import COUNTRY_HEADER, is_restricted
-from app.schemas import ChatRequest, InputError
+from app.schemas import ChatRequest, ContactRequest, InputError
 from app.tools import TOOL_SPECS
 
 app = FastAPI(title="Python-AI-Chat-Portfolio", docs_url=None, redoc_url=None)
@@ -65,6 +68,16 @@ def get_rate_limiter() -> RateLimiter:
     )
 
 
+@lru_cache
+def get_contact_rate_limiter() -> RateLimiter:
+    settings = get_settings()
+    return RateLimiter(
+        per_ip_per_minute=settings.contact_rate_limit_per_ip_per_minute,
+        per_ip_per_day=settings.contact_rate_limit_per_ip_per_day,
+        global_per_minute=settings.contact_rate_limit_global_per_minute,
+    )
+
+
 def enforce_region(request: Request, request_id: str = Depends(get_request_id)) -> None:
     country = request.headers.get(COUNTRY_HEADER)
     if is_restricted(country):
@@ -87,6 +100,32 @@ def enforce_rate_limit(
             client=anonymize_ip(client_ip(request)),
         )
         raise TooManyRequestsError(limit_name)
+
+
+def enforce_contact_rate_limit(
+    request: Request,
+    request_id: str = Depends(get_request_id),
+    limiter: RateLimiter = Depends(get_contact_rate_limiter),
+) -> None:
+    limit_name = limiter.check(client_ip(request))
+    if limit_name:
+        log_event(
+            "contact_rate_limited",
+            level="warning",
+            request_id=request_id,
+            limit=limit_name,
+            client=anonymize_ip(client_ip(request)),
+        )
+        raise TooManyRequestsError(limit_name)
+
+
+# テストで外部通信（Google / SMTP）を差し替えられるよう、依存関係として渡す
+def get_recaptcha_verifier() -> Callable[[str, Settings], Awaitable[float]]:
+    return verify_recaptcha
+
+
+def get_mail_sender() -> Callable[[EmailMessage, Settings], None]:
+    return send_mail
 
 
 def get_llm_client() -> LLMClient:
@@ -123,6 +162,25 @@ async def handle_llm_error(request: Request, exc: LLMError) -> JSONResponse:
     return JSONResponse(status_code=exc.status_code, content={"code": exc.code, "detail": exc.user_message})
 
 
+CONTACT_MESSAGES = {
+    "contact_unavailable": "現在お問い合わせフォームは利用できません。",
+    "recaptcha_failed": "送信を確認できませんでした。時間をおいて再度お試しください。",
+    "contact_failed": "送信に失敗しました。時間をおいて再度お試しください。",
+}
+
+
+@app.exception_handler(ContactError)
+async def handle_contact_error(request: Request, exc: ContactError) -> JSONResponse:
+    log_event(
+        "contact_failed",
+        level="error" if exc.status_code >= 500 else "warning",
+        request_id=getattr(request.state, "request_id", None),
+        error_code=exc.code,
+        error=f"{exc}: {exc.detail}" if exc.detail else str(exc),
+    )
+    return JSONResponse(status_code=exc.status_code, content={"code": exc.code, "detail": CONTACT_MESSAGES[exc.code]})
+
+
 @app.exception_handler(RequestValidationError)
 async def handle_validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:
     # pydantic のエラーから、ユーザー向けに定義した InputError だけを取り出す
@@ -132,7 +190,8 @@ async def handle_validation_error(request: Request, exc: RequestValidationError)
         if isinstance(ctx_error, InputError):
             code, message = ctx_error.code, str(ctx_error)
             break
-    log_event("chat_rejected", level="warning", path=request.url.path, error_code=code)
+    event = "contact_rejected" if request.url.path == "/api/contact" else "chat_rejected"
+    log_event(event, level="warning", path=request.url.path, error_code=code)
     return JSONResponse(status_code=422, content={"code": code, "detail": message})
 
 
@@ -230,3 +289,34 @@ async def chat(
         # 途中のプロキシやブラウザでバッファ・キャッシュされないようにする
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no", "X-Request-ID": request_id},
     )
+
+
+@app.post("/api/contact", dependencies=[Depends(enforce_contact_rate_limit)])
+async def contact(
+    body: ContactRequest,
+    request_id: str = Depends(get_request_id),
+    verify: Callable[[str, Settings], Awaitable[float]] = Depends(get_recaptcha_verifier),
+    sender: Callable[[EmailMessage, Settings], None] = Depends(get_mail_sender),
+) -> dict:
+    """お問い合わせを reCAPTCHA で検証してからメールで送る。失敗は ContactError として JSON で返す。"""
+    settings = get_settings()
+    if not settings.contact_enabled:
+        raise ContactError("contact_unavailable", 503, "contact form is not configured")
+
+    score = None
+    if settings.recaptcha_secret_key:
+        score = await verify(body.recaptcha_token, settings)
+    else:
+        log_event("contact_recaptcha_skipped", level="warning", request_id=request_id)
+
+    # smtplib はブロッキングなので、イベントループを止めないようスレッドで実行する
+    await asyncio.to_thread(sender, build_message(body, settings), settings)
+    # 氏名・メールアドレス・本文は残さず、メタ情報だけを記録する
+    log_event(
+        "contact_sent",
+        request_id=request_id,
+        lang=body.lang,
+        message_chars=len(body.message),
+        recaptcha_score=score,
+    )
+    return {"ok": True, "request_id": request_id}

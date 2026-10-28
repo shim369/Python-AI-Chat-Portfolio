@@ -43,6 +43,8 @@ class ScriptedLLM:
 def isolate_environment(monkeypatch: pytest.MonkeyPatch):
     # 実 API キーが環境にあっても使われないようにする
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    for name in ("CONTACT_TO_EMAIL", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "RECAPTCHA_SECRET_KEY"):
+        monkeypatch.delenv(name, raising=False)
     monkeypatch.setattr(blog, "_cache", None)
 
     async def no_network(*args, **kwargs):
