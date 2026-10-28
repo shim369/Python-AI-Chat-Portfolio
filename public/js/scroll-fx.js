@@ -56,6 +56,21 @@
   if (!enabled) return;
   gsap.registerPlugin(ScrollTrigger);
 
+  // CSS の scroll-behavior: smooth があると、ScrollTrigger が位置を計算し直すときの
+  // スクロールまでアニメーションになり、固定の開始位置がずれて空白ができる。
+  // そのため CSS 側は無効にし、ページ内リンクのなめらかなスクロールは JS で行う
+  document.documentElement.style.scrollBehavior = "auto";
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    const target = link && document.getElementById(link.hash.slice(1));
+    if (!target) return;
+    e.preventDefault();
+    // 固定中のセクションは位置が変わるので、ScrollTrigger が挿入する外側の要素を基準にする
+    const spacer = target.parentElement.classList.contains("pin-spacer") ? target.parentElement : target;
+    spacer.scrollIntoView({ behavior: "smooth" });
+    history.pushState(null, "", link.hash);
+  });
+
   // hero: 読み込み時に上から順に表示し、スクロールに合わせて文字を上へ流しながら薄くする
   gsap.from(".hero .container > *", { autoAlpha: 0, y: 24, duration: 0.8, ease: "power2.out", stagger: 0.12 });
   gsap.to(".hero .container", {
