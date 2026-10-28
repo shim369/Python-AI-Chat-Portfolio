@@ -84,15 +84,26 @@
       if (!res.ok || data.posts.length === 0) throw new Error("no posts");
       blogPosts = data.posts;
       renderBlogPosts();
+      window.SCROLL_FX.reveal("#blog-list > .card");
     } catch {
       status.dataset.i18n = "blog.error";
       status.textContent = t("blog.error");
     }
   }
 
+  const header = document.querySelector(".site-header");
+
+  function updateHeader() {
+    header.classList.toggle("is-scrolled", window.scrollY > 0);
+  }
+
   renderSkills();
   renderProjects();
+  // 言語切り替えで描画し直したときはアニメーションさせず、そのまま表示する
+  window.SCROLL_FX.reveal("#skill-list > .skill-item, #project-list > .card");
   loadBlog();
+  updateHeader();
+  window.addEventListener("scroll", updateHeader, { passive: true });
 
   window.I18N.onChange(() => {
     renderSkills();
