@@ -10,7 +10,9 @@
 
 ## 主な機能
 
-- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / AI チャット）、レスポンシブ・ダークモード対応
+- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）、レスポンシブ・ダークモード対応
+- 画面右下のボタンで開閉する AI チャット（スマホでは画面いっぱいに表示）
+- お問い合わせフォーム: reCAPTCHA v3 で検証してから、Gmail の SMTP で自分宛てにメールを送る
 - 日本語 / 英語の切り替え（画面の文言・AI の回答言語・エラーメッセージ）
 - AI チャット
   - Gemini の function calling による手動エージェントループ（最大反復回数・時間予算つき）
@@ -32,18 +34,20 @@
 ```
 Browser ──(GET 静的ファイル)──▶ Vercel CDN (public/)
    │
-   └─(POST /api/chat, SSE)──▶ FastAPI (Vercel Python Function)
-                                 ├─ 提供地域の制御 / レート制限 / 入力バリデーション
-                                 ├─ agent.py: エージェントループ ──▶ llm.py ──▶ Gemini API
-                                 │      └─ tools.py ──▶ profile.json / TECH BLOG
-                                 └─ 構造化ログ (stdout → Vercel Runtime Logs)
+   ├─(POST /api/chat, SSE)──▶ FastAPI (Vercel Python Function)
+   │                             ├─ 提供地域の制御 / レート制限 / 入力バリデーション
+   │                             ├─ agent.py: エージェントループ ──▶ llm.py ──▶ Gemini API
+   │                             │      └─ tools.py ──▶ profile.json / TECH BLOG
+   │                             └─ 構造化ログ (stdout → Vercel Runtime Logs)
+   └─(POST /api/contact)────▶ FastAPI ──▶ contact.py ──▶ reCAPTCHA 検証 (Google) ──▶ Gmail SMTP
 ```
 
 ## ディレクトリ構成
 
 ```
 app/
-  main.py            FastAPI エントリポイント（/api/chat, /api/blog, /api/health）、レート制限、ログ
+  main.py            FastAPI エントリポイント（/api/chat, /api/contact, /api/blog, /api/health）、レート制限、ログ
+  contact.py         お問い合わせ: reCAPTCHA v3 の検証と SMTP でのメール送信
   agent.py           手動エージェントループ（関数呼び出し → 実行 → 結果返却の繰り返し、リトライ、時間予算）
   tools.py           エージェントのツール（Python 関数）と JSON Schema
   llm.py             LLM 呼び出しを閉じ込めるモジュール（プロバイダ非依存の型 + Gemini 実装）
@@ -124,6 +128,25 @@ uv run pytest
 | `RATE_LIMIT_PER_IP_PER_MINUTE` | 5 | IP ごとの 1 分あたりの上限（0 で無効） |
 | `RATE_LIMIT_PER_IP_PER_DAY` | 40 | IP ごとの 1 日あたりの上限 |
 | `RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | インスタンス全体の 1 分あたりの上限 |
+| `CONTACT_TO_EMAIL` | （空） | お問い合わせの送信先。下の SMTP 設定と揃うまでフォームは 503 を返す |
+| `SMTP_HOST` / `SMTP_PORT` | `smtp.gmail.com` / 465 | 送信に使う SMTP サーバー（465 は SSL、それ以外は STARTTLS） |
+| `SMTP_USER` / `SMTP_PASS` | （空） | SMTP のログイン。Gmail は送信元アカウントと**アプリパスワード** |
+| `RECAPTCHA_SECRET_KEY` | （空） | reCAPTCHA v3 のシークレットキー。空なら検証を省略する（ローカル開発用。本番では必ず設定） |
+| `RECAPTCHA_MIN_SCORE` | 0.5 | 合格とする reCAPTCHA スコアの下限 |
+| `CONTACT_RATE_LIMIT_PER_IP_PER_MINUTE` | 2 | お問い合わせの IP ごとの 1 分あたりの上限 |
+| `CONTACT_RATE_LIMIT_PER_IP_PER_DAY` | 10 | お問い合わせの IP ごとの 1 日あたりの上限 |
+| `CONTACT_RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | お問い合わせのインスタンス全体の 1 分あたりの上限 |
+
+reCAPTCHA の**サイトキー**（公開してよい方）は `public/js/config.js` の `RECAPTCHA_SITE_KEY` に書きます。
+
+### お問い合わせフォームの準備
+
+1. [reCAPTCHA の管理画面](https://www.google.com/recaptcha/admin/create)で **reCAPTCHA v3** のキーを作る。ドメインには本番のドメインと `localhost`（`127.0.0.1`）を登録する
+2. サイトキーを `public/js/config.js` の `RECAPTCHA_SITE_KEY` に、シークレットキーを環境変数 `RECAPTCHA_SECRET_KEY` に設定する
+3. 送信元の Google アカウントで 2 段階認証を有効にし、[アプリパスワード](https://myaccount.google.com/apppasswords)を発行する
+4. `SMTP_USER`（送信元の Gmail アドレス）、`SMTP_PASS`（アプリパスワード）、`CONTACT_TO_EMAIL`（受け取るアドレス）を設定する
+
+メールの From は送信元の Gmail アカウント、Reply-To が問い合わせた人のアドレスになるので、Gmail の「返信」でそのまま返事を書けます。
 
 ## API
 
@@ -145,6 +168,16 @@ uv run pytest
 
 入力エラー（422）・提供地域外（451）・レート制限（429）・設定エラー（500）は、ストリーム開始前に JSON `{"code": "...", "detail": "..."}` で返ります。
 フロントは `code` から現在の表示言語のメッセージを選びます。
+
+### `POST /api/contact`
+
+```json
+{ "name": "山田 太郎", "email": "taro@example.com", "message": "...", "recaptcha_token": "...", "lang": "ja" }
+```
+
+成功すると `{"ok": true, "request_id": "..."}`。失敗は `{"code": "...", "detail": "..."}` で、
+入力エラー（422: `name_required` / `invalid_email` / `message_too_long` など）・reCAPTCHA の不合格（403: `recaptcha_failed`）・
+レート制限（429）・未設定（503: `contact_unavailable`）・送信失敗（502: `contact_failed`）を返します。
 
 ### `GET /api/blog`
 
@@ -205,6 +238,10 @@ vercel logs --project python-ai-chat-portfolio --environment production --query 
 | `chat_rejected` | 入力バリデーションで拒否 |
 | `chat_failed` | ストリーム開始前の LLM エラー（設定エラーなど） |
 | `blog_fetch_failed` | ブログの取得失敗 |
+| `contact_sent` | お問い合わせのメール送信成功（氏名・メールアドレス・本文は記録せず、文字数と reCAPTCHA のスコアのみ） |
+| `contact_failed` | reCAPTCHA の不合格（warning）・メール送信の失敗（error） |
+| `contact_rejected` / `contact_rate_limited` | お問い合わせの入力エラー / レート制限 |
+| `contact_recaptcha_skipped` | `RECAPTCHA_SECRET_KEY` 未設定のため検証を省略した |
 
 画面のエラー表示には `request_id`（エラーID）を出しているので、問い合わせがあった場合はログを `request_id` で検索して原因を特定できます。
 
