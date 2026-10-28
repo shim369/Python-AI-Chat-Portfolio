@@ -166,6 +166,42 @@
       "url": "https://github.com/shim369/Python-Budget-Tracker-App"
     },
     {
+      "title": "Python-Quotes-Scraper",
+      "summary": "型安全な名言スクレイパー。CustomTkinter のGUI、SQLite への保存、デコレーターによるログ出力。pytest と GitHub Actions でテストを自動実行。",
+      "technologies": ["Python", "CustomTkinter", "httpx", "BeautifulSoup4", "SQLite", "mypy", "Ruff", "pytest", "GitHub Actions"],
+      "url": "https://github.com/shim369/Python-Quotes-Scraper"
+    },
+    {
+      "title": "Electron-Investment-App",
+      "summary": "Electron・React・TypeScript で作った投資管理のデスクトップアプリ。Alpha Vantage API から株価を取得し、Chart.js でのグラフ表示、目標価格のアラート、関連ニュースの表示、jsPDF での PDF 出力に対応。",
+      "technologies": ["TypeScript", "React", "Electron", "Chart.js", "Alpha Vantage API", "Bootstrap"],
+      "url": "https://github.com/shim369/Electron-Investment-App"
+    },
+    {
+      "title": "Java-RecipeRev-App",
+      "summary": "レシピのバージョン管理Webアプリ。改訂履歴の記録、任意の2バージョンの差分表示、最終レシピの承認、Python による材料と評価の傾向分析に対応。",
+      "technologies": ["Java", "Spring Boot", "Thymeleaf", "MySQL", "Docker", "Python", "Chart.js"],
+      "url": "https://github.com/shim369/Java-RecipeRev-App"
+    },
+    {
+      "title": "Electron-React-TypeScript-AspNetCore-Todo-App",
+      "summary": "C#（ASP.NET Core Web API・Entity Framework Core）と PostgreSQL のバックエンドに、Electron・React・TypeScript・Redux Toolkit のデスクトップアプリを組み合わせたタスク管理アプリ。",
+      "technologies": ["C#", "ASP.NET Core", "Entity Framework Core", "PostgreSQL", "TypeScript", "React", "Redux Toolkit", "Electron"],
+      "url": "https://github.com/shim369/Electron-React-TypeScript-AspNetCore-Todo-App"
+    },
+    {
+      "title": "Nextjs-TypeScript-Laravel-Todo-App-Backend",
+      "summary": "PHP（Laravel）で作ったタスク管理の REST API。MySQL へのマイグレーションとトークン認証を備え、Next.js（TypeScript）のフロントエンドから利用する。",
+      "technologies": ["PHP", "Laravel", "MySQL", "REST API"],
+      "url": "https://github.com/shim369/Nextjs-TypeScript-Laravel-Todo-App-Backend"
+    },
+    {
+      "title": "Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
+      "summary": "Nuxt 3 とヘッドレスCMS（microCMS）で構築した Jamstack サイト。GSAP ScrollTrigger・AOS によるスクロールアニメーションと、reCAPTCHA v3 付きのフォームを備える。Vercel で公開（https://nuxtbase-gsap.vercel.app）。",
+      "technologies": ["Nuxt", "TypeScript", "microCMS", "GSAP", "Sass", "Vercel"],
+      "url": "https://github.com/shim369/Nuxtjs-TypeScript-Gsap-MicroCMS-Site"
+    },
+    {
       "title": "Python-Study-App",
       "summary": "PHPエンジニア向けのPython学習Webアプリ。コードを書いて実行・自動採点し、Gemini API によるヒントとコードレビューを受けられる。20問の演習と間隔反復での復習機能。",
       "technologies": ["Python", "Streamlit", "SQLite", "Gemini API", "pytest"],
@@ -182,18 +218,6 @@
       "summary": "Spotifyのライブラリに最近追加した曲と週間トップ10を閲覧し、プレイリストを生成できるWebアプリ。",
       "technologies": ["Python", "FastHTML", "HTMX", "Spotify API", "mypy", "pytest", "uv"],
       "url": "https://github.com/shim369/Python-Spotify-Insights"
-    },
-    {
-      "title": "Python-Quotes-Scraper",
-      "summary": "型安全な名言スクレイパー。CustomTkinter のGUI、SQLite への保存、デコレーターによるログ出力。pytest と GitHub Actions でテストを自動実行。",
-      "technologies": ["Python", "CustomTkinter", "httpx", "BeautifulSoup4", "SQLite", "mypy", "Ruff", "pytest", "GitHub Actions"],
-      "url": "https://github.com/shim369/Python-Quotes-Scraper"
-    },
-    {
-      "title": "Java-RecipeRev-App",
-      "summary": "レシピのバージョン管理Webアプリ。改訂履歴の記録、任意の2バージョンの差分表示、最終レシピの承認、Python による材料と評価の傾向分析に対応。",
-      "technologies": ["Java", "Spring Boot", "Thymeleaf", "MySQL", "Docker", "Python", "Chart.js"],
-      "url": "https://github.com/shim369/Java-RecipeRev-App"
     }
   ],
   "contact": {

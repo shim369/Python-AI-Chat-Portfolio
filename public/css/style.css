@@ -260,6 +260,12 @@ a {
   font-weight: 600;
 }
 
+.skills-extra {
+  margin: 24px 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
 .skill-note {
   margin: 4px 0 0;
   color: var(--text-muted);
@@ -354,6 +360,7 @@ a {
 }
 
 .skills-more,
+.works-more,
 .blog-more {
   margin: 24px 0 0;
   text-align: center;
