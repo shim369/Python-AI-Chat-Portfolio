@@ -218,6 +218,12 @@
       "summary": "Spotifyのライブラリに最近追加した曲と週間トップ10を閲覧し、プレイリストを生成できるWebアプリ。",
       "technologies": ["Python", "FastHTML", "HTMX", "Spotify API", "mypy", "pytest", "uv"],
       "url": "https://github.com/shim369/Python-Spotify-Insights"
+    },
+    {
+      "title": "Python-Encryption-Tool",
+      "summary": "ファイル・フォルダを一括で暗号化 / 復号するデスクトップツール。cryptography（Fernet）による暗号化、os.urandom のソルトと SHA-256 ストレッチングによる鍵の強化、CustomTkinter のGUI、PEP 695 のジェネリクスを使った Mypy Strict 準拠の型付け、デコレーターによる処理時間計測・ログ出力、GitHub Actions での CI。",
+      "technologies": ["Python", "cryptography", "CustomTkinter", "Mypy", "Ruff", "pytest", "GitHub Actions"],
+      "url": "https://github.com/shim369/Python-Encryption-Tool"
     }
   ],
   "contact": {

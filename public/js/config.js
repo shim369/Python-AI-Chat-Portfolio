@@ -17,7 +17,7 @@ window.SITE_CONFIG = {
     { name: "Google Apps Script", years: { ja: "4ヶ月", en: "4 mos" }, note: { ja: "特定メールの内容をGoogleスプレッドシートへ自動記録する機能を開発", en: "Automatically logging specific emails to Google Sheets" } },
   ],
 
-  // スキル欄の言語を裏付ける制作物（AIチャット用には app/data/profile.json にさらに3件ある）
+  // スキル欄の言語を裏付ける制作物（AIチャットは app/data/profile.json を参照する）
   PROJECTS: [
     {
       title: "Python-AI-Chat-Portfolio",
@@ -45,6 +45,42 @@ window.SITE_CONFIG = {
       },
       tech: ["Python", "FastAPI", "Pydantic", "Alpine.js", "pytest"],
       url: "https://github.com/shim369/Python-Budget-Tracker-App",
+    },
+    {
+      title: "Python-Study-App",
+      summary: {
+        ja: "PHPエンジニア向けのPython学習Webアプリ。コードを実行・自動採点し、Gemini API によるヒントとコードレビュー、間隔反復での復習に対応。",
+        en: "A Python learning web app for PHP developers: run and auto-grade your code, get hints and code reviews from the Gemini API, and review with spaced repetition.",
+      },
+      tech: ["Python", "Streamlit", "SQLite", "Gemini API", "pytest"],
+      url: "https://github.com/shim369/Python-Study-App",
+    },
+    {
+      title: "Python-AWSSAA-Quiz",
+      summary: {
+        ja: "AWS SAA-C03対策の4択クイズアプリ。Excelのキーワード集から問題を自動生成し、弱点優先の出題・ダッシュボード・理解度のExcel書き戻しに対応。",
+        en: "An AWS SAA-C03 quiz app that generates questions from an Excel keyword list, prioritizes weak areas, and writes progress back to Excel.",
+      },
+      tech: ["Python", "Streamlit", "pandas", "openpyxl", "SQLite"],
+      url: "https://github.com/shim369/Python-AWSSAA-Quiz",
+    },
+    {
+      title: "Python-Encryption-Tool",
+      summary: {
+        ja: "ファイル・フォルダを一括で暗号化 / 復号するデスクトップツール。ソルトとストレッチングによる鍵の強化、Mypy Strict 準拠の型付け、GitHub Actions での CI。",
+        en: "A desktop tool that encrypts and decrypts files and whole folders, with salted, stretched keys, Mypy-strict typing and CI on GitHub Actions.",
+      },
+      tech: ["Python", "cryptography", "CustomTkinter", "Mypy", "GitHub Actions"],
+      url: "https://github.com/shim369/Python-Encryption-Tool",
+    },
+    {
+      title: "Python-Spotify-Insights",
+      summary: {
+        ja: "Spotifyのライブラリに最近追加した曲と週間トップ10を閲覧し、プレイリストを生成できるWebアプリ。",
+        en: "A web app to browse your recently added Spotify tracks and weekly top 10, and generate playlists from them.",
+      },
+      tech: ["Python", "FastHTML", "HTMX", "Spotify API", "pytest"],
+      url: "https://github.com/shim369/Python-Spotify-Insights",
     },
     {
       title: "Python-Quotes-Scraper",
