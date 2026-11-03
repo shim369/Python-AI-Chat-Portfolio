@@ -5,15 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shinpei Ohtani | Portfolio</title>
   <meta name="description" content="Portfolio of Shinpei Ohtani. Ask the AI chat about his background, skills, and projects." data-i18n-content="meta.description">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
   <!-- 文言は js/i18n.js の辞書から data-i18n のキーで流し込む（ここに書いた英語は読み込み前の初期表示） -->
   <header class="site-header">
     <nav class="container nav">
-      <a class="nav-brand" href="#top">S. Ohtani</a>
+      <a class="nav-brand" href="#top" aria-label="S. Ohtani"><i aria-hidden="true"></i>S. Ohtani</a>
       <ul class="nav-links">
         <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
         <li><a href="#works" data-i18n="nav.works">Works</a></li>
@@ -33,17 +37,22 @@
     <section class="hero">
       <video class="hero-video" src="/images/water.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="container">
+        <p class="hero-kicker">Portfolio / 2026</p>
+        <h1 class="hero-name" aria-label="Shinpei Ohtani"><span><b>Shinpei</b></span><span><b>Ohtani</b></span></h1>
         <p class="hero-eyebrow">Web Engineer / System Engineer</p>
-        <h1 class="hero-name">Shinpei Ohtani</h1>
         <p class="hero-lead" data-i18n="hero.lead">An engineer working across Python and JavaScript, from maintaining web systems to designing and building AI chat applications.</p>
         <button type="button" class="btn btn-primary" data-open-chat data-i18n="hero.cta">Ask the AI</button>
       </div>
     </section>
 
+    <!-- 流れるキーワード帯（スクロールに連動して横に動く） -->
+    <div class="band" aria-hidden="true"><div>PYTHON<em>/</em>JAVASCRIPT<em>/</em>FASTAPI<em>/</em>AI CHAT<em>/</em>SQL<em>/</em>PYTHON<em>/</em>JAVASCRIPT<em>/</em>FASTAPI<em>/</em>AI CHAT<em>/</em>SQL<em>/</em>PYTHON<em>/</em>JAVASCRIPT<em>/</em>FASTAPI<em>/</em>AI CHAT<em>/</em>SQL</div></div>
+
     <!-- 2. スキル（内容は js/config.js の SKILLS を編集） -->
     <section id="skills" class="section">
       <div class="container">
-        <h2 class="section-title" data-i18n="skills.title">Skills</h2>
+        <p class="eyebrow"><b>01</b><span data-i18n="nav.skills">Skills</span></p>
+        <h2 class="section-title" data-i18n="skills.heading">What I work with</h2>
         <ul class="skill-grid" id="skill-list"></ul>
         <p class="skills-extra" data-i18n="skills.extra">Also experienced with MySQL, PostgreSQL and SQL Server (SQL investigation and reviews), requirements definition and basic design, testing and CI with pytest, Ruff, Mypy and GitHub Actions, and development with the Gemini API and Claude Code.</p>
         <p class="skills-more">
@@ -52,10 +61,12 @@
       </div>
     </section>
 
+    <div class="seam seam-in" aria-hidden="true"></div>
     <!-- 3. 制作物（内容は js/config.js の PROJECTS を編集） -->
     <section id="works" class="section section-alt">
       <div class="container">
-        <h2 class="section-title" data-i18n="works.title">Works</h2>
+        <p class="eyebrow"><b>02</b><span data-i18n="nav.works">Works</span></p>
+        <h2 class="section-title" data-i18n="works.heading">Selected projects</h2>
         <div class="card-grid" id="project-list"></div>
         <p class="works-more">
           <a class="btn btn-ghost" href="https://github.com/shim369?tab=repositories" target="_blank" rel="noopener" data-i18n="works.more">See more projects on GitHub →</a>
@@ -63,10 +74,12 @@
       </div>
     </section>
 
+    <div class="seam seam-out" aria-hidden="true"></div>
     <!-- ブログ（最新記事は /api/blog が TECH BLOG から取得） -->
     <section id="blog" class="section">
       <div class="container">
-        <h2 class="section-title" data-i18n="blog.title">Blog</h2>
+        <p class="eyebrow"><b>03</b><span data-i18n="nav.blog">Blog</span></p>
+        <h2 class="section-title">TECH BLOG</h2>
         <p class="section-lead" data-i18n="blog.lead">Latest posts from my tech blog, TECH BLOG.</p>
         <div class="card-grid" id="blog-list">
           <p class="blog-status" id="blog-status" data-i18n="blog.loading">Loading posts…</p>
@@ -77,12 +90,14 @@
       </div>
     </section>
 
+    <div class="seam seam-in seam-ink" aria-hidden="true"></div>
     <!-- 4. このサイトの技術解説 -->
-    <section id="architecture" class="section section-alt">
+    <section id="architecture" class="section section-dark">
       <div class="container">
+        <p class="eyebrow"><b>04</b><span data-i18n="nav.architecture">Architecture</span></p>
         <h2 class="section-title" data-i18n="arch.title">How This Site Works</h2>
         <figure class="arch">
-          <svg viewBox="0 0 720 260" role="img" aria-labelledby="arch-title arch-desc">
+          <svg viewBox="0 0 960 330" role="img" aria-labelledby="arch-title arch-desc">
             <title id="arch-title" data-i18n="arch.svgTitle">Architecture diagram</title>
             <desc id="arch-desc" data-i18n="arch.svgDesc">The browser calls FastAPI on Vercel, where an agent loop goes back and forth between the Gemini API and tool functions to build an answer.</desc>
             <defs>
@@ -91,27 +106,31 @@
               </marker>
             </defs>
             <!-- Browser -->
-            <rect x="10" y="90" width="150" height="80" rx="10" class="arch-box"/>
-            <text x="85" y="122" class="arch-label">Browser</text>
-            <text x="85" y="144" class="arch-sub">HTML/CSS/JS</text>
-            <!-- Vercel -->
-            <rect x="210" y="20" width="300" height="220" rx="12" class="arch-group"/>
-            <text x="360" y="44" class="arch-sub">Vercel (Hobby)</text>
-            <rect x="230" y="60" width="260" height="44" rx="8" class="arch-box"/>
-            <text x="360" y="87" class="arch-label" data-i18n="arch.cdn">CDN: static files in public/</text>
-            <rect x="230" y="120" width="260" height="104" rx="8" class="arch-box arch-accent"/>
-            <text x="360" y="146" class="arch-label">FastAPI (Python Function)</text>
-            <text x="360" y="170" class="arch-sub" data-i18n="arch.loop">/api/chat · agent loop</text>
-            <text x="360" y="192" class="arch-sub">tools.py ← profile.json</text>
-            <text x="360" y="212" class="arch-sub" data-i18n="arch.ops">structured logs · rate limiting</text>
+            <rect class="arch-box" x="20" y="120" width="170" height="90" rx="6"/>
+            <text class="arch-label" x="40" y="158">Browser</text>
+            <text class="arch-sub" x="40" y="180">HTML / CSS / JS</text>
+            <!-- Vercel CDN -->
+            <rect class="arch-box" x="300" y="20" width="250" height="84" rx="6"/>
+            <text class="arch-label" x="320" y="58">Vercel CDN</text>
+            <text class="arch-sub" x="320" y="80" data-i18n="arch.cdnSub">static files from public/</text>
+            <!-- FastAPI -->
+            <rect class="arch-box arch-accent" x="300" y="200" width="250" height="110" rx="6"/>
+            <text class="arch-label" x="320" y="238">FastAPI Function</text>
+            <text class="arch-sub" x="320" y="260" data-i18n="arch.loop">/api/chat · agent loop</text>
+            <text class="arch-sub" x="320" y="280" data-i18n="arch.ops">structured logs · rate limiting</text>
             <!-- Gemini -->
-            <rect x="560" y="132" width="150" height="80" rx="10" class="arch-box"/>
-            <text x="635" y="164" class="arch-label">Gemini API</text>
-            <text x="635" y="186" class="arch-sub">function calling</text>
-            <!-- arrows -->
-            <line x1="160" y1="115" x2="228" y2="84" class="arch-line" marker-end="url(#arrow)"/>
-            <line x1="160" y1="150" x2="228" y2="166" class="arch-line" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
-            <line x1="490" y1="166" x2="558" y2="166" class="arch-line" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+            <rect class="arch-box" x="690" y="110" width="250" height="84" rx="6"/>
+            <text class="arch-label" x="710" y="148">Gemini API</text>
+            <text class="arch-sub" x="710" y="170">function calling</text>
+            <!-- tools.py -->
+            <rect class="arch-box" x="690" y="226" width="250" height="84" rx="6"/>
+            <text class="arch-label" x="710" y="264">tools.py</text>
+            <text class="arch-sub" x="710" y="286" data-i18n="arch.toolsSub">reads profile.json</text>
+            <!-- arrows（線は画面に入ると順に描かれる） -->
+            <path class="arch-line" pathLength="1" marker-end="url(#arrow)" d="M190 150 C245 150 245 62 300 62"/>
+            <path class="arch-line" pathLength="1" marker-start="url(#arrow)" marker-end="url(#arrow)" d="M190 182 C245 182 245 255 300 255"/>
+            <path class="arch-line" pathLength="1" marker-start="url(#arrow)" marker-end="url(#arrow)" d="M550 235 C620 235 620 152 690 152"/>
+            <path class="arch-line" pathLength="1" marker-end="url(#arrow)" d="M550 275 L690 268"/>
           </svg>
         </figure>
         <ul class="design-notes">
@@ -125,9 +144,13 @@
 
     <!-- 5. お問い合わせ（public/js/contact.js が /api/contact に送信し、サーバーが Gmail 宛てにメールを送る） -->
     <section id="contact" class="section">
-      <div class="container">
-        <h2 class="section-title" data-i18n="contact.title">Contact</h2>
-        <p class="section-lead" data-i18n="contact.lead">For work inquiries or questions, please use the form below.</p>
+      <div class="container contact-grid">
+        <div class="contact-intro">
+          <p class="eyebrow"><b>05</b><span data-i18n="nav.contact">Contact</span></p>
+          <h2 class="section-title" data-i18n="contact.heading">Get in touch</h2>
+          <p class="section-lead" data-i18n="contact.lead">For work inquiries or questions, please use the form below.</p>
+          <div class="circle-deco" aria-hidden="true"></div>
+        </div>
         <form class="contact-form" id="contact-form" novalidate>
           <div class="field">
             <label for="contact-name" data-i18n="contact.name">Name</label>
@@ -160,7 +183,10 @@
   <!-- 6. フッター -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">&copy; Shinpei Ohtani</p>
+      <div class="footer-big" aria-hidden="true">OHTANI</div>
+      <div class="footer-row">
+        <p class="footer-copy">&copy; Shinpei Ohtani</p>
+      </div>
     </div>
   </footer>
 

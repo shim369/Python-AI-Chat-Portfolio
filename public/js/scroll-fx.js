@@ -71,8 +71,8 @@
     history.pushState(null, "", link.hash);
   });
 
-  // hero: 読み込み時に上から順に表示し、スクロールに合わせて文字を上へ流しながら薄くする
-  gsap.from(".hero .container > *", { autoAlpha: 0, y: 24, duration: 0.8, ease: "power2.out", stagger: 0.12 });
+  // hero: 読み込み時に上から順に表示し（名前の見出しは CSS で下からせり上がる）、スクロールに合わせて文字を上へ流しながら薄くする
+  gsap.from(".hero .container > :not(h1)", { autoAlpha: 0, y: 24, duration: 0.8, ease: "power2.out", stagger: 0.12 });
   gsap.to(".hero .container", {
     y: -60,
     autoAlpha: 0.2,
@@ -81,6 +81,6 @@
   });
 
   reveal(
-    ".section-title, .section-lead, .skills-extra, .skills-more, .works-more, .blog-more, .arch, .design-notes li, .contact-form"
+    ".eyebrow, .section-title, .section-lead, .skills-extra, .skills-more, .works-more, .blog-more, .arch, .design-notes li, .contact-form"
   );
 })();

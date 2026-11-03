@@ -92,9 +92,41 @@
   }
 
   const header = document.querySelector(".site-header");
+  const progress = document.getElementById("progress");
+  const root = document.documentElement;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let ticking = false;
 
-  function updateHeader() {
-    header.classList.toggle("is-scrolled", window.scrollY > 0);
+  // スクロール量に連動: 上部の進捗バー、視差用の --sy（太陽・帯・フッターの文字）、header の背景
+  function updateScroll() {
+    const y = window.scrollY || 0;
+    const max = Math.max(1, document.body.scrollHeight - window.innerHeight);
+    root.style.setProperty("--sy", reduceMotion ? 0 : y);
+    progress.style.transform = "scaleX(" + Math.min(1, y / max) + ")";
+    header.classList.toggle("is-scrolled", y > 60);
+    ticking = false;
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateScroll);
+    }
+  }
+
+  // アーキテクチャ図: 画面に入ったら線を順に描く
+  function watchDiagram() {
+    const diagram = document.querySelector(".arch");
+    if (reduceMotion || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          diagram.classList.add("go");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    ).observe(diagram);
   }
 
   renderSkills();
@@ -103,8 +135,9 @@
   window.SCROLL_FX.reveal("#skill-list > .skill-item");
   window.SCROLL_FX.horizontal("#works", "#project-list");
   loadBlog();
-  updateHeader();
-  window.addEventListener("scroll", updateHeader, { passive: true });
+  updateScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  watchDiagram();
 
   window.I18N.onChange(() => {
     renderSkills();
