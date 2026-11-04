@@ -505,7 +505,14 @@ main {
   background: var(--paper);
   overflow: hidden;
   counter-increment: skill;
-  transition: background 0.35s, color 0.35s;
+}
+
+/* 拡大する円は文字の背面に置く */
+.skill-item::before,
+.skill-head,
+.skill-note {
+  position: relative;
+  z-index: 1;
 }
 
 .skill-item::before {
@@ -520,7 +527,6 @@ main {
   color: var(--vm);
   font-family: var(--mono);
   font-size: 14px;
-  transition: background 0.5s, color 0.5s;
 }
 
 .skill-item::after {
@@ -532,23 +538,27 @@ main {
   height: 110px;
   border-radius: 50%;
   background: var(--mist);
+  z-index: 0;
   opacity: 0.5;
-  transition: transform 0.5s, background 0.5s;
 }
 
+/* 色の変化は入るときだけ。離れるときは即座に戻し、隣のカードへ移る際の二重のクロスフェード（チカつき）を避ける */
 .skill-item:hover {
   background: var(--indigo);
   color: #fff;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 .skill-item:hover::before {
   background: var(--vm);
   color: #fff;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 .skill-item:hover::after {
   transform: scale(2.4);
   background: rgba(var(--lt-rgb), 0.25);
+  transition: transform 0.35s ease, background 0.35s ease;
 }
 
 .skill-head {
@@ -569,22 +579,22 @@ main {
   color: var(--vm);
   font-family: var(--mono);
   font-size: 13px;
-  transition: color 0.35s;
 }
 
 .skill-item:hover .skill-years {
   color: var(--vm-lt);
+  transition: color 0.35s ease;
 }
 
 .skill-note {
   margin: 0;
   color: var(--text-muted);
   font-size: 15px;
-  transition: color 0.35s;
 }
 
 .skill-item:hover .skill-note {
   color: rgba(255, 255, 255, 0.82);
+  transition: color 0.35s ease;
 }
 
 .skills-extra {
