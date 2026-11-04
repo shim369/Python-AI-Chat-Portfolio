@@ -787,6 +787,17 @@ main {
   color: #fff;
 }
 
+/* カード全体をクリックでリンク先へ飛べるようにする。
+   `#works .card > *` が position: relative を付けるため、リンクの ::after がカードではなくリンク自身の範囲に収まってしまう。
+   リンクを static に戻してカード基準に広げ、他の子要素（z-index: 1）より前に出す */
+#works .card > .card-link {
+  position: static;
+}
+
+#works .card > .card-link::after {
+  z-index: 2;
+}
+
 /* Blog */
 .blog-card {
   padding: 0;
