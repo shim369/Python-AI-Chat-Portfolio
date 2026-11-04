@@ -327,12 +327,38 @@ html[data-theme="pop"] .pop-chat-slot {
 }
 
 /* --- チャット: ヒーロー内に常時表示 --- */
+/* 右下のボタン（ヒーローを抜けたら出る）。パネルを浮かせて開く */
 html[data-theme="pop"] .chat-launcher {
+  border: var(--bw) solid #111;
+  background: #111;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 4px 4px 0 var(--pink);
+}
+
+html[data-theme="pop"] .chat-launcher:hover {
+  background: #111;
+}
+
+/* 定位置（ヒーロー内）では閉じるボタンは不要 */
+html[data-theme="pop"] .pop-chat-slot .chat-close {
   display: none;
 }
 
+html[data-theme="pop"] .chat-widget .chat-panel {
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--sh);
+}
+
 html[data-theme="pop"] .chat-close {
-  display: none;
+  color: #111;
+}
+
+html[data-theme="pop"] .chat-close:hover {
+  background: rgba(17, 17, 17, 0.12);
+  color: #111;
 }
 
 html[data-theme="pop"] .pop-chat-slot .chat-panel {

@@ -206,11 +206,22 @@
     }
   }
 
+  const widget = launcher.closest(".chat-widget");
+  const slot = document.getElementById("pop-chat-slot");
+  const isPop = () => document.documentElement.dataset.theme === "pop";
+
   // 画面右下のボタンでパネルを開閉する（ページ内の「AIに質問する」ボタンからも開ける）
   function setOpen(open) {
+    // Pop: ヒーローの外では右下のボタンでパネルを浮かせて開き、閉じたらヒーロー内の定位置へ戻す
+    if (isPop() && slot) {
+      if (open) widget.prepend(panel);
+      else slot.append(panel);
+    }
     panel.hidden = !open;
     launcher.setAttribute("aria-expanded", String(open));
     document.body.classList.toggle("chat-open", open);
+    // 定位置（ヒーロー内）に戻したパネルは、開閉せず常時表示する
+    if (isPop() && slot && !open) panel.hidden = false;
     if (open) {
       scrollToBottom();
       // スマホではキーボードが画面を覆うため、マウス操作の環境でだけ入力欄にフォーカスする
@@ -219,7 +230,8 @@
     }
   }
 
-  launcher.addEventListener("click", () => setOpen(panel.hidden));
+  // 開閉の判定は aria-expanded で行う（Pop ではパネルが常時表示で hidden が使えないため）
+  launcher.addEventListener("click", () => setOpen(launcher.getAttribute("aria-expanded") !== "true"));
   closeBtn.addEventListener("click", () => {
     setOpen(false);
     launcher.focus();
@@ -254,10 +266,7 @@
     update();
   }
 
-  // Pop デザインのときは、パネルを開閉せずヒーロー内のスロットに常時表示する
-  const widget = launcher.closest(".chat-widget");
-  const slot = document.getElementById("pop-chat-slot");
-  const isPop = () => document.documentElement.dataset.theme === "pop";
+  // Pop デザインのときは、パネルを普段ヒーロー内のスロットに常時表示する（ヒーローを抜けたら右下のボタンで浮かせて開く）
 
   function placePanel() {
     if (!slot) return;
@@ -276,7 +285,7 @@
 
   for (const button of document.querySelectorAll("[data-open-chat]")) {
     button.addEventListener("click", () => {
-      if (!isPop()) return setOpen(true);
+      if (!isPop() || panel.parentElement !== slot) return setOpen(true);
       slot.scrollIntoView({ behavior: "smooth", block: "center" });
       setTimeout(() => input.focus({ preventScroll: true }), 350);
     });
