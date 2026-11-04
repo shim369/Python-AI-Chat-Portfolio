@@ -324,9 +324,15 @@ h3 {
 }
 
 .hero-name span {
-  display: block;
+  display: inline-block;
+  vertical-align: top;
   overflow: hidden;
   padding-bottom: 0.08em;
+}
+
+/* 名と姓の間の空白（幅が足りないときは自然に折り返す） */
+.hero-name span + span {
+  margin-left: 0.25em;
 }
 
 .hero-name b {
