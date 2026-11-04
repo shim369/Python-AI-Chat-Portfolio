@@ -1496,6 +1496,27 @@ body.in-hero:not(.chat-open) .chat-launcher {
 }
 
 @media (max-width: 600px) {
+  /* スマホではヘッダーが窮屈なので、ロゴの文字を小さくする */
+  .nav {
+    gap: 8px;
+  }
+
+  .nav-brand {
+    gap: 8px;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .nav-tools {
+    gap: 6px;
+  }
+
+  .lang-switch button,
+  .theme-switch button {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
   .msg {
     max-width: 92%;
   }

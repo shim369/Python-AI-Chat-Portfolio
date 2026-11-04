@@ -812,3 +812,20 @@ html[data-theme="pop"] .footer-big {
     display: none;
   }
 }
+
+@media (max-width: 600px) {
+  html[data-theme="pop"] .nav-brand {
+    gap: 8px;
+    font-size: 15px;
+  }
+
+  html[data-theme="pop"] .nav-brand i {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  html[data-theme="pop"] .nav-brand i::before {
+    font-size: 12px;
+  }
+}
