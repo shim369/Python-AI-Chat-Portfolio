@@ -369,6 +369,11 @@ h3 {
   animation: pulse 2s infinite;
 }
 
+/* 斜めの帯などが画面幅からはみ出しても、スマホでレイアウトビューポートが広がらないように main 内で切り取る */
+main {
+  overflow-x: clip;
+}
+
 @keyframes pulse {
   50% { transform: scale(0.5); opacity: 0.5; }
 }
