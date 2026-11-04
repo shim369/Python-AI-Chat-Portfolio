@@ -230,6 +230,30 @@
       launcher.focus();
     }
   });
+  // 右下のボタンが hero 領域に重なっている間は隠し、抜けたらふんわり表示する（CSS は body.in-hero を参照）
+  const hero = document.querySelector(".hero");
+  if (hero) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      // ボタンの位置（画面下端から約 90px）より hero の下端が上に来たら hero を抜けたとみなす
+      const inHero = hero.getBoundingClientRect().bottom > window.innerHeight - 90;
+      document.body.classList.toggle("in-hero", inHero);
+    };
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true }
+    );
+    window.addEventListener("resize", update);
+    update();
+  }
+
   for (const button of document.querySelectorAll("[data-open-chat]")) {
     button.addEventListener("click", () => setOpen(true));
   }

@@ -1104,6 +1104,26 @@ main {
   filter: brightness(1.08);
 }
 
+/* hero 領域にいる間は隠し、抜けたらふんわり出す（パネルを開いている間は常に表示） */
+.chat-launcher {
+  transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
+}
+
+body.in-hero:not(.chat-open) .chat-launcher {
+  opacity: 0;
+  transform: translateY(12px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-launcher,
+  body.in-hero:not(.chat-open) .chat-launcher {
+    transition: none;
+  }
+}
+
 .chat-launcher .icon-close,
 .chat-launcher[aria-expanded="true"] .icon-open,
 .chat-launcher[aria-expanded="true"] .chat-launcher-label {
