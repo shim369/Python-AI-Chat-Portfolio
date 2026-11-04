@@ -488,7 +488,7 @@ main {
 .skill-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: 2px;
+  gap: 0; /* カード間に隙間があると、移動中にどのカードにも乗らない瞬間ができてチカつく。区切り線は box-shadow で描く */
   margin: 56px 0 0;
   padding: 0;
   list-style: none;
@@ -504,6 +504,7 @@ main {
   padding: 34px 30px 38px;
   background: var(--paper);
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--mist);
   counter-increment: skill;
 }
 
@@ -542,23 +543,21 @@ main {
   opacity: 0.5;
 }
 
-/* 色の変化は入るときだけ。離れるときは即座に戻し、隣のカードへ移る際の二重のクロスフェード（チカつき）を避ける */
+/* 色は瞬時に切り替える（フェードすると途中で『薄い背景に灰色の文字』の瞬間ができ、カード間の移動でチカつく）。動きは円の拡大だけ */
 .skill-item:hover {
   background: var(--indigo);
   color: #fff;
-  transition: background 0.35s ease, color 0.35s ease;
 }
 
 .skill-item:hover::before {
   background: var(--vm);
   color: #fff;
-  transition: background 0.35s ease, color 0.35s ease;
 }
 
 .skill-item:hover::after {
   transform: scale(2.4);
   background: rgba(var(--lt-rgb), 0.25);
-  transition: transform 0.35s ease, background 0.35s ease;
+  transition: transform 0.35s ease;
 }
 
 .skill-head {
@@ -583,7 +582,6 @@ main {
 
 .skill-item:hover .skill-years {
   color: var(--vm-lt);
-  transition: color 0.35s ease;
 }
 
 .skill-note {
@@ -594,7 +592,6 @@ main {
 
 .skill-item:hover .skill-note {
   color: rgba(255, 255, 255, 0.82);
-  transition: color 0.35s ease;
 }
 
 .skills-extra {
