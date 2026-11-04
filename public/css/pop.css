@@ -1,0 +1,774 @@
+/*
+ * Pop デザイン: 白いドット背景に、太い枠線とハードシャドウのタイル、黄・ミント・ピンク・水色。
+ * <html data-theme="pop"> のときだけ有効。通常のデザイン（style.css）に上書きする形で、HTML の構造は共通。
+ * ホバーの移動は gsap がインラインで transform を書くため、transform ではなく個別プロパティの translate を使う。
+ */
+
+/* 通常デザインでは Pop 専用の要素を出さない */
+.pop-badge,
+.pop-chat-slot {
+  display: none;
+}
+
+/* 切り替えボタン（通常デザイン側の見た目） */
+.nav-tools {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-switch {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--mono);
+}
+
+.theme-switch button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.theme-switch button[aria-pressed="true"] {
+  background: #fff;
+  color: var(--ink);
+}
+
+@media (max-width: 820px) {
+  .nav-tools {
+    margin-left: auto;
+  }
+}
+
+/* ===== ここから Pop ===== */
+html[data-theme="pop"] {
+  --yellow: #ffe14d;
+  --mint: #6fe3c1;
+  --pink: #ff9ec4;
+  --sky: #8ec5ff;
+  --pop-ink: #111;
+  --pop-soft: #555;
+  --bw: 3px;
+  --sh: 6px 6px 0 var(--pop-ink);
+
+  --ink: #111;
+  --ink-rgb: 17, 17, 17;
+  --paper: #fff;
+  --bg: #fff;
+  --bg-alt: #fff;
+  --surface: #fff;
+  --text: #111;
+  --text-muted: var(--pop-soft);
+  --border: #111;
+  --accent: #111;
+  --accent-contrast: #fff;
+  --accent-soft: #fff;
+  --bubble-user: var(--yellow);
+  --bubble-user-text: #111;
+  --bubble-ai: var(--sky);
+  --vm: #111;
+  --vm-dark: #111;
+  --vm-lt: var(--yellow);
+  --display: "Dela Gothic One", "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --mono: "DM Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --radius: 20px;
+}
+
+html[data-theme="pop"] body {
+  background: #fff radial-gradient(#d9d9d9 1.2px, transparent 1.3px) 0 0 / 22px 22px;
+  font-weight: 500;
+}
+
+html[data-theme="pop"] h1,
+html[data-theme="pop"] h2,
+html[data-theme="pop"] h3 {
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+html[data-theme="pop"] :focus-visible {
+  outline: 4px solid #111;
+}
+
+html[data-theme="pop"] .progress {
+  background: var(--pink);
+  height: 4px;
+}
+
+/* --- header --- */
+html[data-theme="pop"] .site-header,
+html[data-theme="pop"] .site-header.is-scrolled {
+  background: #fff;
+  backdrop-filter: none;
+  color: #111;
+  border-bottom: var(--bw) solid #111;
+}
+
+html[data-theme="pop"] .nav-brand {
+  color: #111;
+  font-size: 18px;
+}
+
+/* ロゴのマーク: 黄色い角丸の四角に「SO」。スクロール量（--sy）に合わせて回る */
+html[data-theme="pop"] .nav-brand i {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: var(--bw) solid #111;
+  border-radius: 12px;
+  background: var(--yellow);
+  transform: rotate(calc(var(--sy) * 0.05deg));
+}
+
+html[data-theme="pop"] .nav-brand i::before {
+  content: "SO";
+  color: #111;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1;
+}
+
+html[data-theme="pop"] .nav-links a {
+  padding: 7px 14px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  color: #111;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+html[data-theme="pop"] .nav-links a::after {
+  display: none;
+}
+
+html[data-theme="pop"] .nav-links a:hover {
+  border-color: #111;
+  background: var(--yellow);
+}
+
+html[data-theme="pop"] .lang-switch,
+html[data-theme="pop"] .theme-switch {
+  border: 2px solid #111;
+}
+
+html[data-theme="pop"] .lang-switch button,
+html[data-theme="pop"] .theme-switch button {
+  background: #fff;
+  color: #111;
+}
+
+html[data-theme="pop"] .lang-switch button[aria-pressed="true"],
+html[data-theme="pop"] .theme-switch button[aria-pressed="true"] {
+  background: #111;
+  color: #fff;
+}
+
+/* --- buttons --- */
+html[data-theme="pop"] .btn {
+  border: var(--bw) solid #111;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+html[data-theme="pop"] .btn-primary {
+  background: #111;
+  color: #fff;
+  box-shadow: 4px 4px 0 var(--pink);
+  transition: translate 0.15s, box-shadow 0.15s;
+}
+
+html[data-theme="pop"] .btn-primary:hover {
+  background: #111;
+  transform: none;
+  translate: -2px -2px;
+  box-shadow: 7px 7px 0 var(--pink);
+}
+
+html[data-theme="pop"] .btn-primary:active {
+  translate: 3px 3px;
+  box-shadow: 1px 1px 0 var(--pink);
+}
+
+html[data-theme="pop"] .btn-ghost {
+  min-height: 48px;
+  padding: 10px 22px;
+  border: var(--bw) solid #111;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font-weight: 900;
+  box-shadow: 4px 4px 0 #111;
+  transition: translate 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+html[data-theme="pop"] .btn-ghost:hover,
+html[data-theme="pop"] .section-alt .btn-ghost:hover {
+  background: var(--yellow);
+  color: #111;
+  translate: -2px -2px;
+  box-shadow: 6px 6px 0 #111;
+}
+
+html[data-theme="pop"] .section-alt .btn-ghost {
+  color: #111;
+  border-color: #111;
+}
+
+/* --- hero: 黄色のタイル + チャットのタイル --- */
+html[data-theme="pop"] .hero {
+  overflow: visible;
+  padding: calc(var(--header-h) + clamp(28px, 5vw, 64px)) 0 clamp(36px, 5vw, 64px);
+  background: transparent;
+  color: #111;
+  clip-path: none;
+}
+
+html[data-theme="pop"] .hero-video,
+html[data-theme="pop"] .hero::before {
+  display: none;
+}
+
+html[data-theme="pop"] .hero > .container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 32px);
+  align-items: stretch;
+}
+
+html[data-theme="pop"] .hero-intro {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 48px);
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: var(--yellow);
+  box-shadow: var(--sh);
+}
+
+html[data-theme="pop"] .hero-kicker {
+  display: inline-flex;
+  margin-bottom: 22px;
+  padding: 3px 14px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+html[data-theme="pop"] .hero-kicker::before {
+  display: none;
+}
+
+html[data-theme="pop"] .hero-name {
+  font-size: clamp(40px, 6.4vw, 96px);
+  line-height: 1.02;
+}
+
+html[data-theme="pop"] .hero-name span {
+  display: block;
+}
+
+html[data-theme="pop"] .hero-name span + span {
+  margin-left: 0;
+}
+
+html[data-theme="pop"] .hero-eyebrow {
+  margin-top: 22px;
+  font-family: var(--font);
+  font-weight: 900;
+}
+
+html[data-theme="pop"] .hero-lead {
+  color: #111;
+}
+
+html[data-theme="pop"] .hero .btn::before {
+  background: var(--yellow);
+}
+
+html[data-theme="pop"] .pop-badge {
+  display: block;
+  position: absolute;
+  right: -26px;
+  bottom: -30px;
+  width: clamp(120px, 16vw, 190px);
+  height: clamp(120px, 16vw, 190px);
+  transform: rotate(calc(var(--sy) * 0.25deg));
+}
+
+html[data-theme="pop"] .pop-badge svg {
+  width: 100%;
+  height: 100%;
+}
+
+html[data-theme="pop"] .pop-badge text {
+  fill: #111;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+html[data-theme="pop"] .pop-chat-slot {
+  display: flex;
+  min-width: 0;
+}
+
+/* --- チャット: ヒーロー内に常時表示 --- */
+html[data-theme="pop"] .chat-launcher {
+  display: none;
+}
+
+html[data-theme="pop"] .chat-close {
+  display: none;
+}
+
+html[data-theme="pop"] .pop-chat-slot .chat-panel {
+  flex: 1;
+  width: 100%;
+  height: auto;
+  min-height: 420px;
+  max-height: 640px;
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--sh);
+  animation: none;
+}
+
+html[data-theme="pop"] .chat-header {
+  border-bottom: var(--bw) solid #111;
+  background: var(--mint);
+  color: #111;
+}
+
+html[data-theme="pop"] .chat-lead {
+  color: #111;
+}
+
+html[data-theme="pop"] .bubble {
+  border: 2px solid #111;
+}
+
+html[data-theme="pop"] .msg-error .bubble {
+  background: #fff;
+}
+
+html[data-theme="pop"] .chip {
+  border: 2px solid #111;
+  background: #fff;
+  color: #111;
+  font-weight: 700;
+}
+
+html[data-theme="pop"] .chip:hover {
+  border-color: #111;
+  background: var(--pink);
+  color: #111;
+}
+
+html[data-theme="pop"] .chat-form textarea {
+  border: 2px solid #111;
+  border-radius: 14px;
+  background: #fff;
+}
+
+html[data-theme="pop"] .chat-form textarea:focus {
+  outline: none;
+  box-shadow: 4px 4px 0 var(--pink);
+}
+
+html[data-theme="pop"] .chat-notice,
+html[data-theme="pop"] .chat-meta {
+  color: var(--pop-soft);
+}
+
+/* --- ティッカー（通常デザインの斜めの帯） --- */
+html[data-theme="pop"] .band {
+  margin: 0;
+  background: #111;
+  color: #fff;
+  border-block: var(--bw) solid #111;
+  transform: none;
+}
+
+html[data-theme="pop"] .band div {
+  letter-spacing: 0;
+}
+
+html[data-theme="pop"] .band em {
+  color: var(--yellow);
+  opacity: 1;
+}
+
+html[data-theme="pop"] .seam {
+  display: none;
+}
+
+/* --- sections --- */
+html[data-theme="pop"] .section {
+  padding: clamp(64px, 9vw, 120px) 0;
+}
+
+html[data-theme="pop"] .eyebrow,
+html[data-theme="pop"] .section-alt .eyebrow,
+html[data-theme="pop"] .section-dark .eyebrow {
+  color: #111;
+  letter-spacing: 0.1em;
+}
+
+html[data-theme="pop"] .eyebrow b {
+  width: 64px;
+  height: 64px;
+  border: var(--bw) solid #111;
+  background: var(--pink);
+  box-shadow: 3px 3px 0 #111;
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 400;
+}
+
+html[data-theme="pop"] .section-title {
+  font-size: clamp(34px, 6vw, 76px);
+}
+
+html[data-theme="pop"] .section-lead,
+html[data-theme="pop"] .section-alt .section-lead,
+html[data-theme="pop"] .section-dark .section-lead {
+  color: var(--pop-soft);
+}
+
+html[data-theme="pop"] .skills-extra {
+  color: var(--pop-soft);
+}
+
+/* --- skills: タイルを色違いで並べる --- */
+html[data-theme="pop"] .skill-grid {
+  gap: 22px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+html[data-theme="pop"] .skill-item {
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  box-shadow: var(--sh);
+  background: var(--mint);
+  color: #111;
+  transition: translate 0.2s, box-shadow 0.2s;
+}
+
+html[data-theme="pop"] .skill-item:nth-child(4n + 2) {
+  background: var(--pink);
+}
+
+html[data-theme="pop"] .skill-item:nth-child(4n + 3) {
+  background: var(--sky);
+}
+
+html[data-theme="pop"] .skill-item:nth-child(4n) {
+  background: var(--yellow);
+}
+
+html[data-theme="pop"] .skill-item::before {
+  width: auto;
+  height: auto;
+  margin-bottom: 16px;
+  padding: 2px 12px;
+  place-items: initial;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  justify-self: start;
+}
+
+html[data-theme="pop"] .skill-item::after {
+  display: none;
+}
+
+html[data-theme="pop"] .skill-item:hover {
+  background: var(--mint);
+  color: #111;
+  translate: -3px -3px;
+  box-shadow: 9px 9px 0 #111;
+}
+
+html[data-theme="pop"] .skill-item:nth-child(4n + 2):hover {
+  background: var(--pink);
+}
+
+html[data-theme="pop"] .skill-item:nth-child(4n + 3):hover {
+  background: var(--sky);
+}
+
+html[data-theme="pop"] .skill-item:nth-child(4n):hover {
+  background: var(--yellow);
+}
+
+html[data-theme="pop"] .skill-item:hover::before {
+  background: #fff;
+  color: #111;
+}
+
+html[data-theme="pop"] .skill-years,
+html[data-theme="pop"] .skill-item:hover .skill-years {
+  color: #111;
+  font-weight: 500;
+}
+
+html[data-theme="pop"] .skill-note,
+html[data-theme="pop"] .skill-item:hover .skill-note {
+  color: #111;
+}
+
+html[data-theme="pop"] .skill-name {
+  font-size: clamp(22px, 2.4vw, 30px);
+}
+
+/* --- works / blog のカード --- */
+html[data-theme="pop"] .section-alt {
+  background: var(--sky);
+  color: #111;
+  border-block: var(--bw) solid #111;
+}
+
+html[data-theme="pop"] #works:has(.card-grid.is-horizontal) {
+  padding: clamp(64px, 9vw, 120px) 0;
+}
+
+html[data-theme="pop"] .card {
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff;
+  color: #111;
+  box-shadow: var(--sh);
+  transition: translate 0.2s, box-shadow 0.2s;
+}
+
+/* ホバー: 左上に 3px 浮いて影が 9px に伸びる（モックの .tile.hov と同じ）。通常デザインの translateY(-8px) は打ち消す */
+html[data-theme="pop"] .card:hover,
+html[data-theme="pop"] .card:has(.card-link:hover) {
+  transform: none;
+  translate: -3px -3px;
+  box-shadow: 9px 9px 0 #111;
+  border-color: #111;
+}
+
+html[data-theme="pop"] #works .card {
+  border: var(--bw) solid #111;
+  background: #fff;
+  color: #111;
+}
+
+/* 制作物カード: モックの「ブラウザのウィンドウ」風。上のバーに3つの丸と PROJECT 番号を出す */
+html[data-theme="pop"] #works .card {
+  padding: 0 28px 28px;
+}
+
+html[data-theme="pop"] #works .card::before {
+  align-self: stretch;
+  margin: 0 -28px 22px;
+  padding: 12px 16px 12px 88px;
+  border-bottom: var(--bw) solid #111;
+  background:
+    radial-gradient(circle at 12px 50%, #fff 4px, #111 4.5px 6.5px, transparent 7px),
+    radial-gradient(circle at 36px 50%, #fff 4px, #111 4.5px 6.5px, transparent 7px),
+    radial-gradient(circle at 60px 50%, #fff 4px, #111 4.5px 6.5px, transparent 7px),
+    var(--yellow);
+  background-origin: padding-box;
+  background-repeat: no-repeat;
+  background-size: 72px 100%, 72px 100%, 72px 100%, auto;
+  background-position: 16px 0, 16px 0, 16px 0, 0 0;
+  color: #111;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  padding-left: 16px;
+}
+
+html[data-theme="pop"] #works .card::after {
+  display: none;
+}
+
+html[data-theme="pop"] #works .card-summary,
+html[data-theme="pop"] .card-summary {
+  color: var(--pop-soft);
+}
+
+html[data-theme="pop"] .tag,
+html[data-theme="pop"] #works .tag {
+  border: 2px solid #111;
+  background: #fff;
+  color: #111;
+}
+
+html[data-theme="pop"] .card-link,
+html[data-theme="pop"] #works .card-link {
+  color: #111;
+  font-weight: 900;
+}
+
+html[data-theme="pop"] .blog-card-img {
+  border-bottom: var(--bw) solid #111;
+}
+
+html[data-theme="pop"] .blog-card-date {
+  color: var(--pop-soft);
+}
+
+/* --- architecture --- */
+html[data-theme="pop"] .section-dark {
+  background: var(--mint);
+  color: #111;
+  border-block: var(--bw) solid #111;
+}
+
+html[data-theme="pop"] .arch {
+  padding: 18px;
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff radial-gradient(#cfcfcf 1px, transparent 1.2px) 0 0 / 16px 16px;
+  box-shadow: var(--sh);
+}
+
+html[data-theme="pop"] .arch-box {
+  fill: #fff;
+  stroke: #111;
+  stroke-width: 3;
+  rx: 14;
+}
+
+html[data-theme="pop"] .arch-accent {
+  fill: var(--pink);
+  stroke: #111;
+}
+
+html[data-theme="pop"] .arch-label {
+  fill: #111;
+}
+
+html[data-theme="pop"] .arch-sub {
+  fill: #444;
+}
+
+/* 矢じりは線の太さに比例して大きくなるため、枠線(3px)より細くしている */
+html[data-theme="pop"] .arch-line {
+  stroke: #111;
+  stroke-width: 2;
+}
+
+html[data-theme="pop"] .arch-arrowhead {
+  fill: #111;
+}
+
+html[data-theme="pop"] .arch-caption {
+  color: var(--pop-soft);
+}
+
+html[data-theme="pop"] .design-notes {
+  gap: 22px;
+}
+
+html[data-theme="pop"] .design-notes li {
+  padding: 22px;
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--sh);
+  color: #111;
+}
+
+html[data-theme="pop"] .design-notes li::before {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #111;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: #111;
+}
+
+html[data-theme="pop"] .design-notes strong {
+  color: #111;
+}
+
+/* --- contact --- */
+html[data-theme="pop"] #contact {
+  background: var(--yellow);
+  border-top: var(--bw) solid #111;
+}
+
+html[data-theme="pop"] #contact .eyebrow b {
+  background: #fff;
+}
+
+html[data-theme="pop"] .contact-form {
+  padding: clamp(20px, 3vw, 34px);
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--sh);
+}
+
+html[data-theme="pop"] .field input,
+html[data-theme="pop"] .field textarea {
+  padding: 12px 14px;
+  border: var(--bw) solid #111;
+  border-radius: 14px;
+  background: #fff;
+}
+
+html[data-theme="pop"] .field input:focus,
+html[data-theme="pop"] .field textarea:focus {
+  border-color: #111;
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--pink);
+}
+
+html[data-theme="pop"] .field [aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+html[data-theme="pop"] .recaptcha-note {
+  color: var(--pop-soft);
+}
+
+/* --- footer --- */
+html[data-theme="pop"] .site-footer {
+  background: #111;
+}
+
+/* 文字全体が収まる大きさにしておき、一番下までスクロールするにつれて、少し右から左（© の行の左端）へずれて揃う（--footer-p は js/theme.js が 0〜1 で更新） */
+html[data-theme="pop"] .footer-big {
+  color: var(--yellow);
+  font-size: clamp(40px, 11vw, 130px);
+  -webkit-text-stroke: 0;
+  transform: translateX(calc((1 - var(--footer-p, 1)) * 12%));
+}
+
+@media (max-width: 860px) {
+  html[data-theme="pop"] .hero > .container {
+    grid-template-columns: 1fr;
+  }
+
+  html[data-theme="pop"] .nav-links {
+    display: none;
+  }
+}

@@ -25,14 +25,17 @@
     ScrollTrigger.refresh();
   }
 
-  // セクションを画面上端で固定し、縦スクロールの量に合わせて一覧を横に流す。
-  // 横並びのレイアウトは .is-horizontal が付いたときだけ効くので、無効時は通常のグリッドのまま
-  function horizontal(section, track) {
-    if (!enabled) return;
+  let hConfig = null;
+  let hTween = null;
+  const isPop = () => document.documentElement.dataset.theme === "pop";
+
+  function enableHorizontal() {
+    if (!enabled || !hConfig || hTween || isPop()) return;
+    const { section, track } = hConfig;
     const trackEl = document.querySelector(track);
     trackEl.classList.add("is-horizontal");
     const distance = () => Math.max(0, trackEl.scrollWidth - trackEl.clientWidth);
-    gsap.to(trackEl, {
+    hTween = gsap.to(trackEl, {
       x: () => -distance(),
       ease: "none",
       scrollTrigger: {
@@ -46,6 +49,34 @@
         refreshPriority: 1,
       },
     });
+  }
+
+  // Pop デザインでは横スクロール固定をやめて通常のグリッドにする
+  function disableHorizontal() {
+    if (!hTween) return;
+    const trackEl = document.querySelector(hConfig.track);
+    hTween.scrollTrigger.kill(true);
+    hTween.kill();
+    hTween = null;
+    gsap.set(trackEl, { clearProps: "transform" });
+    trackEl.classList.remove("is-horizontal");
+    ScrollTrigger.refresh();
+  }
+
+  window.addEventListener("themechange", () => {
+    if (!enabled) return;
+    if (isPop()) disableHorizontal();
+    else {
+      enableHorizontal();
+      ScrollTrigger.refresh();
+    }
+  });
+
+  // セクションを画面上端で固定し、縦スクロールの量に合わせて一覧を横に流す。
+  // 横並びのレイアウトは .is-horizontal が付いたときだけ効くので、無効時は通常のグリッドのまま
+  function horizontal(section, track) {
+    hConfig = { section, track };
+    enableHorizontal();
   }
 
   window.SCROLL_FX = { reveal, horizontal };

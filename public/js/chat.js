@@ -254,8 +254,32 @@
     update();
   }
 
+  // Pop デザインのときは、パネルを開閉せずヒーロー内のスロットに常時表示する
+  const widget = launcher.closest(".chat-widget");
+  const slot = document.getElementById("pop-chat-slot");
+  const isPop = () => document.documentElement.dataset.theme === "pop";
+
+  function placePanel() {
+    if (!slot) return;
+    if (isPop()) {
+      slot.append(panel);
+      panel.hidden = false;
+      launcher.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("chat-open");
+    } else if (panel.parentElement === slot) {
+      widget.prepend(panel);
+      panel.hidden = true;
+    }
+  }
+  placePanel();
+  window.addEventListener("themechange", placePanel);
+
   for (const button of document.querySelectorAll("[data-open-chat]")) {
-    button.addEventListener("click", () => setOpen(true));
+    button.addEventListener("click", () => {
+      if (!isPop()) return setOpen(true);
+      slot.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => input.focus({ preventScroll: true }), 350);
+    });
   }
 
   renderChips();

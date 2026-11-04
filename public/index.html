@@ -9,8 +9,10 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Dela+Gothic+One&family=DM+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/pop.css">
+  <script>try{if(localStorage.getItem("theme")==="pop")document.documentElement.dataset.theme="pop"}catch(e){}</script>
 </head>
 <body>
   <div class="progress" id="progress" aria-hidden="true"></div>
@@ -25,9 +27,15 @@
         <li><a href="#architecture" data-i18n="nav.architecture">Architecture</a></li>
         <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
       </ul>
-      <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria-label="lang.label">
-        <button type="button" data-lang="ja" aria-pressed="false">JA</button>
-        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <div class="nav-tools">
+        <div class="theme-switch" role="group" aria-label="Design" data-i18n-aria-label="theme.label">
+          <button type="button" data-theme-set="normal" aria-pressed="true" data-i18n="theme.normal">Normal</button>
+          <button type="button" data-theme-set="pop" aria-pressed="false" data-i18n="theme.pop">Pop</button>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria-label="lang.label">
+          <button type="button" data-lang="ja" aria-pressed="false">JA</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        </div>
       </div>
     </nav>
   </header>
@@ -37,11 +45,23 @@
     <section class="hero">
       <video class="hero-video" src="/images/water.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="container">
+        <div class="hero-intro">
         <p class="hero-kicker">Portfolio / 2026</p>
         <h1 class="hero-name" aria-label="Shinpei Ohtani"><span><b>Shinpei</b></span><span><b>Ohtani</b></span></h1>
         <p class="hero-eyebrow">Web Engineer / System Engineer</p>
         <p class="hero-lead" data-i18n="hero.lead">An engineer working across Python and JavaScript, from maintaining web systems to designing and building AI chat applications.</p>
         <button type="button" class="btn btn-primary" data-open-chat data-i18n="hero.cta">Ask the AI</button>
+        <div class="pop-badge" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="98" fill="#FF9EC4" stroke="#111" stroke-width="3"/>
+            <defs><path id="pop-circ" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs>
+            <text><textPath href="#pop-circ">WEB * SYSTEM * AI * PYTHON * JS *</textPath></text>
+            <circle cx="100" cy="100" r="22" fill="#111"/>
+          </svg>
+        </div>
+        </div>
+        <!-- Pop デザインのときだけ、AIチャットのパネルがここに入る（js/chat.js） -->
+        <div class="pop-chat-slot" id="pop-chat-slot"></div>
       </div>
     </section>
 
@@ -229,5 +249,6 @@
   <script src="/js/main.js"></script>
   <script src="/js/chat.js"></script>
   <script src="/js/contact.js"></script>
+  <script src="/js/theme.js"></script>
 </body>
 </html>
