@@ -7,8 +7,11 @@
   const root = document.documentElement;
   const buttons = document.querySelectorAll("[data-theme-set]");
 
+  const favicon = document.getElementById("favicon");
+
   function sync() {
     const current = root.dataset.theme === "pop" ? "pop" : "normal";
+    favicon.href = current === "pop" ? "/favicon-pop.svg" : "/favicon.svg";
     for (const button of buttons) {
       button.setAttribute("aria-pressed", String(button.dataset.themeSet === current));
     }
