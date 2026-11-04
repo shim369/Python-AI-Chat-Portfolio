@@ -73,12 +73,29 @@
 
   // hero: 読み込み時に上から順に表示し（名前の見出しは CSS で下からせり上がる）、スクロールに合わせて文字を上へ流しながら薄くする
   gsap.from(".hero .container > :not(h1)", { autoAlpha: 0, y: 24, duration: 0.8, ease: "power2.out", stagger: 0.12 });
-  gsap.to(".hero .container", {
-    y: -60,
-    autoAlpha: 0.2,
-    ease: "none",
-    scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
-  });
+  // スクロールで薄くする演出は通常デザインだけ（Pop ではヒーローのタイルを薄くしない）
+  let heroFade = null;
+  const isPop = () => document.documentElement.dataset.theme === "pop";
+
+  function syncHeroFade() {
+    if (isPop()) {
+      if (!heroFade) return;
+      heroFade.scrollTrigger.kill();
+      heroFade.kill();
+      heroFade = null;
+      gsap.set(".hero .container", { clearProps: "opacity,visibility,transform" });
+    } else if (!heroFade) {
+      heroFade = gsap.to(".hero .container", {
+        y: -60,
+        autoAlpha: 0.2,
+        ease: "none",
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+      });
+    }
+  }
+
+  syncHeroFade();
+  window.addEventListener("themechange", syncHeroFade);
 
   reveal(
     ".eyebrow, .section-title, .section-lead, .skills-extra, .skills-more, .works-more, .blog-more, .arch, .design-notes li, .contact-form"
