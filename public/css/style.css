@@ -595,6 +595,35 @@ html:not([data-theme="pop"]) .band {
   opacity: 0.5;
 }
 
+/* スクロールで画面に入ったとき、番号の円がポンと現れて塗りつぶされる（通常デザインのみ。is-pre は scroll-fx.js が付ける） */
+html:not([data-theme="pop"]) .skill-item::before {
+  background: var(--vm);
+  color: #fff;
+}
+
+html:not([data-theme="pop"]) .skill-item.is-pre::before {
+  background: transparent;
+  color: var(--vm);
+}
+
+html:not([data-theme="pop"]) .skill-item.is-in::before {
+  animation: skill-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes skill-pop {
+  from {
+    transform: scale(0.6);
+    background: transparent;
+    color: var(--vm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-item::before {
+    animation: none !important;
+  }
+}
+
 /* 色は瞬時に切り替える（フェードすると途中で『薄い背景に灰色の文字』の瞬間ができ、カード間の移動でチカつく）。動きは円の拡大だけ */
 .skill-item:hover {
   background: var(--indigo);

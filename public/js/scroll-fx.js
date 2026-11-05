@@ -19,7 +19,7 @@
       start: "top 88%",
       once: true,
       onEnter: (batch) =>
-        gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.08, overwrite: true }),
+        gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.08, overwrite: "auto" }),
     });
     // 後から描画された要素でページの高さが変わるので、発火位置を計算し直す
     ScrollTrigger.refresh();
@@ -96,6 +96,69 @@
 
   syncHeroFade();
   window.addEventListener("themechange", syncHeroFade);
+
+  // 通常デザインだけの追加の動き。Pop に切り替えたら gsap.context ごと片付ける（インラインスタイルも元に戻る）
+  let normalFx = null;
+
+  function syncNormalFx() {
+    if (isPop()) {
+      if (normalFx) normalFx.revert();
+      normalFx = null;
+      return;
+    }
+    if (normalFx) return;
+    normalFx = gsap.context(() => {
+      // ストリップ: 罫線が中央から伸び、キーワードが左から順に現れる
+      gsap
+        .timeline({ scrollTrigger: { trigger: ".strip", start: "top 92%", once: true } })
+        .fromTo(
+          ".strip",
+          { clipPath: "inset(0 50% 0 50%)" },
+          { clipPath: "inset(0 0% 0 0%)", duration: 0.7, ease: "power2.out" }
+        )
+        .from(".strip span", { autoAlpha: 0, x: -24, duration: 0.5, ease: "power2.out", stagger: 0.07 }, "-=0.3");
+
+      // ヒーロー背景: 本文より遅く動かして奥行きを出す（拡大して、動いても端が見えないようにする）
+      gsap.fromTo(
+        ".hero-video",
+        { scale: 1.2, yPercent: 0 },
+        {
+          yPercent: 9,
+          ease: "none",
+          scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+        }
+      );
+
+      // 見出し: 上から下へ現れるマスク（フェードとせり上がりは reveal 側）
+      gsap.utils.toArray(".section-title").forEach((title) => {
+        gsap.fromTo(
+          title,
+          { clipPath: "inset(0 0 100% 0)" },
+          {
+            clipPath: "inset(0 0 0% 0)",
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: { trigger: title, start: "top 88%", once: true },
+          }
+        );
+      });
+
+      // スキル: 番号の円がポンと現れて塗りつぶされる。言語切り替えで描画し直した分は最初から塗りつぶし
+      const cards = gsap.utils.toArray("#skill-list > .skill-item");
+      cards.forEach((card) => card.classList.add("is-pre"));
+      ScrollTrigger.batch(cards, {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) =>
+          batch.forEach((card, i) =>
+            gsap.delayedCall(i * 0.08 + 0.2, () => card.classList.replace("is-pre", "is-in"))
+          ),
+      });
+    });
+  }
+
+  syncNormalFx();
+  window.addEventListener("themechange", syncNormalFx);
 
   reveal(
     ".eyebrow, .section-title, .section-lead, .skills-extra, .skills-more, .works-more, .blog-more, .arch, .design-notes li, .contact-form"
