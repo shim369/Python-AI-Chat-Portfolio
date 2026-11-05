@@ -384,7 +384,53 @@ main {
   50% { transform: scale(0.5); opacity: 0.5; }
 }
 
-/* 斜めに傾いた流れるキーワード帯 */
+/* 罫線で挟んだキーワード帯（Pop デザインでは .band のティッカーを使う） */
+.strip {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 0;
+  margin: calc(var(--slant) * -0.4) var(--gutter) 0;
+  padding: 12px 0;
+  border-block: 1px solid var(--text);
+  background: var(--paper);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.strip span {
+  padding: 0 16px;
+}
+
+.strip span + span {
+  border-left: 1px solid var(--text);
+}
+
+/* 折り返す幅では、行頭に縦線が残らないよう区切り線をやめる */
+@media (max-width: 960px) {
+  .strip {
+    gap: 8px 0;
+    font-size: 12px;
+  }
+
+  .strip span {
+    padding: 0 12px;
+  }
+
+  .strip span + span {
+    border-left: 0;
+  }
+}
+
+html:not([data-theme="pop"]) .band {
+  display: none;
+}
+
+/* 流れるキーワード帯（Pop デザインのティッカー） */
 .band {
   position: relative;
   z-index: 3;

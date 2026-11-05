@@ -421,6 +421,10 @@ html[data-theme="pop"] .chat-meta {
   color: var(--pop-soft);
 }
 
+html[data-theme="pop"] .strip {
+  display: none;
+}
+
 /* --- ティッカー（通常デザインの斜めの帯） --- */
 html[data-theme="pop"] .band {
   margin: 0;
