@@ -148,6 +148,12 @@
   ],
   "projects": [
     {
+      "title": "Python-Web-Analyzer",
+      "summary": "Excelのドメイン一覧から、SSL対応（常時SSL判定）・CMS・総ページ数などを並列クロールで自動解析し、ビジネス評価を付ける Streamlit 製アプリ。ThreadPoolExecutor による並列処理と排他制御、SQLite（WAL）による状態永続化と強制終了後の復旧、クローラーブロックやアクセス拒否ページの検知を備える。",
+      "technologies": ["Python", "Streamlit", "SQLite", "Playwright"],
+      "url": "https://github.com/shim369/Python-Web-Analyzer"
+    },
+    {
       "title": "Python-AI-Chat-Portfolio",
       "summary": "このサイト。自己紹介ページと、Gemini の function calling を使った手動エージェントループの AI チャット。Vercel 上の FastAPI で動作し、構造化ログ・レート制限・テスト・CI を備える。",
       "technologies": ["Python", "FastAPI", "Gemini API", "JavaScript", "Vercel", "GitHub Actions", "uv"],

@@ -20,6 +20,15 @@ window.SITE_CONFIG = {
   // スキル欄の言語を裏付ける制作物（AIチャットは app/data/profile.json を参照する）
   PROJECTS: [
     {
+      title: "Python-Web-Analyzer",
+      summary: {
+        ja: "Excelのドメイン一覧から、SSL対応・CMS・総ページ数などを並列クロールで自動解析し、ビジネス評価を付けるStreamlit製アプリ。SQLiteで状態を永続化し、強制終了後も復旧します。",
+        en: "A Streamlit app that crawls a list of domains in parallel to detect SSL setup, CMS and page count, then rates each site. State is persisted in SQLite and recovered after a crash.",
+      },
+      tech: ["Python", "Streamlit", "SQLite", "Playwright"],
+      url: "https://github.com/shim369/Python-Web-Analyzer",
+    },
+    {
       title: "Python-AI-Chat-Portfolio",
       summary: {
         ja: "このサイト。Gemini の function calling を使った手動エージェントループのAIチャットを、Vercel 上の FastAPI で動かしています。",
