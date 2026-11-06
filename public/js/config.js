@@ -8,13 +8,13 @@ window.SITE_CONFIG = {
   SKILLS: [
     { name: "Python", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "実務では業務効率化ツール2件（PHPバージョンアップ支援、Webサイト調査）をスクラッチで設計・開発・運用。個人開発では2023年からFastAPI・Streamlit・Djangoなどで継続的に開発", en: "At work: designed, built and operate two automation tools from scratch (PHP upgrade support, website survey). Personal projects with FastAPI, Streamlit, Django and more since 2023" } },
     { name: "TypeScript / React", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "生産管理システムのWebアプリ機能追加（端末設定・表示設定）、結合テスト", en: "New features (device and display settings) for a production management web app, integration testing" } },
-    { name: "Java / JavaFX", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "生産管理システムのWindowsアプリ機能追加（端末設定・表示設定）、結合テスト", en: "New features (device and display settings) for a production management Windows app, integration testing" } },
     { name: "C# / .NET (ASP.NET)", years: { ja: "11ヶ月", en: "11 mos" }, note: { ja: ".NETバージョンアップ、社内業務ツール（採用管理・給与計算・従業員情報）の解析・改修、ECサイト改修", en: ".NET upgrades, analysis and improvement of internal tools (recruiting, payroll, employee data), e-commerce site changes" } },
     { name: "JavaScript / jQuery", years: { ja: "8年6ヶ月", en: "8 yrs 6 mos" }, note: { ja: "Webサイト制作・改修全般、Electron / Node.jsのデスクトップアプリ開発、ASP.NET ECサイトのフロントエンド対応", en: "Website development and maintenance, Electron / Node.js desktop apps, frontend work on an ASP.NET e-commerce site" } },
     { name: "PHP", years: { ja: "6年8ヶ月", en: "6 yrs 8 mos" }, note: { ja: "WordPressテーマ制作・改修、CakePHP 2系 / Smartyの改修、PHP 5〜7系サイトのPHP 8.4移行対応", en: "WordPress themes, CakePHP 2 / Smarty maintenance, migrating PHP 5–7 sites to PHP 8.4" } },
     { name: "HTML / CSS (Sass)", years: { ja: "8年3ヶ月", en: "8 yrs 3 mos" }, note: { ja: "コーポレート・EC・LP・イントラサイトのデザイン / コーディング、cshtml / aspxへの組み込み", en: "Design and coding of corporate, e-commerce, landing and intranet sites; integration into cshtml / aspx" } },
     { name: "WordPress", years: { ja: "5年7ヶ月", en: "5 yrs 7 mos" }, note: { ja: "テーマ制作・サイト構築、本体・プラグインの改修（開発停止プラグインを含む）", en: "Theme development and site builds, core and plugin maintenance (including discontinued plugins)" } },
-    { name: "Google Apps Script", years: { ja: "4ヶ月", en: "4 mos" }, note: { ja: "特定メールの内容をGoogleスプレッドシートへ自動記録する機能を開発", en: "Automatically logging specific emails to Google Sheets" } },
+    { name: "MySQL / MariaDB", years: { ja: "7年6ヶ月", en: "7 yrs 6 mos" }, note: { ja: "Webサイト・CMSのデータベース", en: "Databases behind websites and CMSs" } },
+    { name: "Git (GitHub / GitLab)", years: { ja: "3年9ヶ月", en: "3 yrs 9 mos" }, note: { ja: "ブランチ戦略に基づくマージ・リリース調整、フルリモートでのチーム開発", en: "Merges and release coordination under a branching strategy, fully remote team development" } },
   ],
 
   // スキル欄の言語を裏付ける制作物（AIチャットは app/data/profile.json を参照する）
