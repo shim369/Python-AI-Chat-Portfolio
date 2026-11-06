@@ -13,7 +13,7 @@ window.SITE_CONFIG = {
     { name: "JavaScript / jQuery", years: { ja: "8年6ヶ月", en: "8 yrs 6 mos" }, note: { ja: "Webサイト制作・改修全般、Electron / Node.jsのデスクトップアプリ開発、ASP.NET ECサイトのフロントエンド対応", en: "Website development and maintenance, Electron / Node.js desktop apps, frontend work on an ASP.NET e-commerce site" } },
     { name: "PHP", years: { ja: "6年8ヶ月", en: "6 yrs 8 mos" }, note: { ja: "WordPressテーマ制作・改修、CakePHP 2系 / Smartyの改修、PHP 5〜7系サイトのPHP 8.4移行対応", en: "WordPress themes, CakePHP 2 / Smarty maintenance, migrating PHP 5–7 sites to PHP 8.4" } },
     { name: "HTML / CSS (Sass)", years: { ja: "8年3ヶ月", en: "8 yrs 3 mos" }, note: { ja: "コーポレート・EC・LP・イントラサイトのデザイン / コーディング、cshtml / aspxへの組み込み", en: "Design and coding of corporate, e-commerce, landing and intranet sites; integration into cshtml / aspx" } },
-    { name: "Perl / CGI", years: { ja: "5ヶ月", en: "5 mos" }, note: { ja: "既存システム・問い合わせフォームの改修", en: "Maintenance of existing systems and contact forms" } },
+    { name: "WordPress", years: { ja: "5年7ヶ月", en: "5 yrs 7 mos" }, note: { ja: "テーマ制作・サイト構築、本体・プラグインの改修（開発停止プラグインを含む）", en: "Theme development and site builds, core and plugin maintenance (including discontinued plugins)" } },
     { name: "Google Apps Script", years: { ja: "4ヶ月", en: "4 mos" }, note: { ja: "特定メールの内容をGoogleスプレッドシートへ自動記録する機能を開発", en: "Automatically logging specific emails to Google Sheets" } },
   ],
 
