@@ -1545,15 +1545,15 @@ body.in-hero:not(.chat-open) .chat-launcher {
 /* 通常デザインの S.OHTANI（線画）。Pop では .footer-big の文字を使う */
 .footer-svg {
   display: block;
-  width: 100%;
+  width: 50%;
   height: auto;
   overflow: visible;
 }
 
 .footer-svg path {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.55);
-  stroke-width: 1.2;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 0.45;
   stroke-linecap: round;
   stroke-linejoin: round;
 }

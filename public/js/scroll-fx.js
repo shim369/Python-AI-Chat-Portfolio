@@ -143,15 +143,19 @@
         );
       });
 
-      // フッターの S.OHTANI: 画面に届いたら、線が一文字ずつ引かれていく
+      // フッターの S.OHTANI: スクロールがページの一番下（フッター）に届いたら、全文字の輪郭が同時に、ペンでなぞるように一周して描かれる（塗りはしない）
+      // strokeDashoffset を GSAP で直接動かすと途中の値にならず、終わりで突然現れてしまうため、数値だけを動かして自分で書き込む
       const strokes = gsap.utils.toArray(".footer-strokes path");
-      gsap.set(strokes, { strokeDasharray: 1, strokeDashoffset: 1 });
-      gsap.to(strokes, {
-        strokeDashoffset: 0,
-        duration: 1.1,
-        ease: "power1.inOut",
-        stagger: 0.28,
-        scrollTrigger: { trigger: ".site-footer", start: "top 85%", once: true },
+      const draw = { offset: 1 };
+      const setOffset = () => strokes.forEach((path) => path.style.setProperty("stroke-dashoffset", draw.offset));
+      strokes.forEach((path) => path.style.setProperty("stroke-dasharray", "1"));
+      setOffset();
+      gsap.to(draw, {
+        offset: 0,
+        duration: 1,
+        ease: "none",
+        onUpdate: setOffset,
+        scrollTrigger: { trigger: ".site-footer", start: "bottom bottom+=40", once: true },
       });
 
       // スキル: 番号の円がポンと現れて塗りつぶされる。言語切り替えで描画し直した分は最初から塗りつぶし
