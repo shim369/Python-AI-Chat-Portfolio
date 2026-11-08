@@ -29,6 +29,15 @@ window.SITE_CONFIG = {
       url: "https://github.com/shim369/Python-Web-Analyzer",
     },
     {
+      title: "Python-Health-Insight-Agent",
+      summary: {
+        ja: "食事・運動・睡眠ログを分析するAIエージェント。Gemini が解釈と説明を担当し、統計は型付きツールで計算して、根拠つきで回答します。RAG、読み取り専用SQL、LightGBM、MCPサーバーも備えます（合成データのデモ）。",
+        en: "A data-analysis AI agent over meal, workout and sleep logs. Gemini interprets and explains while typed tools compute the statistics, so answers come with evidence. Also has RAG, guarded read-only SQL, LightGBM and an MCP server (synthetic demo data).",
+      },
+      tech: ["Python", "FastAPI", "Gemini API", "PostgreSQL", "LightGBM", "React", "Docker"],
+      url: "https://github.com/shim369/Python-Health-Insight-Agent",
+    },
+    {
       title: "Python-AI-Chat-Portfolio",
       summary: {
         ja: "このサイト。Gemini の function calling を使った手動エージェントループのAIチャットを、Vercel 上の FastAPI で動かしています。",
@@ -36,6 +45,15 @@ window.SITE_CONFIG = {
       },
       tech: ["Python", "FastAPI", "Gemini API", "JavaScript", "Vercel"],
       url: "https://github.com/shim369/Python-AI-Chat-Portfolio",
+    },
+    {
+      title: "Python-Defect-Hunter-Game",
+      summary: {
+        ja: "表面欠陥データセット KolektorSDD2 を使った「人間 vs AI」のブラウザゲーム。CPUで学習した小さな U-Net と人間が同じ画像の欠陥をなぞり、IoU で比較します。",
+        en: "A Human vs AI browser game on the KolektorSDD2 surface-defect dataset. You and a small CPU-trained U-Net trace the same defect, and both are scored by IoU.",
+      },
+      tech: ["Python", "PyTorch", "FastAPI", "OpenCV", "Docker"],
+      url: "https://github.com/shim369/Python-Defect-Hunter-Game",
     },
     {
       title: "Python-Smart-Health-Intelligence-Platform",
@@ -65,15 +83,6 @@ window.SITE_CONFIG = {
       url: "https://github.com/shim369/Python-Study-App",
     },
     {
-      title: "Python-AWSSAA-Quiz",
-      summary: {
-        ja: "AWS SAA-C03対策の4択クイズアプリ。Excelのキーワード集から問題を自動生成し、弱点優先の出題・ダッシュボード・理解度のExcel書き戻しに対応。",
-        en: "An AWS SAA-C03 quiz app that generates questions from an Excel keyword list, prioritizes weak areas, and writes progress back to Excel.",
-      },
-      tech: ["Python", "Streamlit", "pandas", "openpyxl", "SQLite"],
-      url: "https://github.com/shim369/Python-AWSSAA-Quiz",
-    },
-    {
       title: "Python-Encryption-Tool",
       summary: {
         ja: "ファイル・フォルダを一括で暗号化 / 復号するデスクトップツール。ソルトとストレッチングによる鍵の強化、Mypy Strict 準拠の型付け、GitHub Actions での CI。",
@@ -81,60 +90,6 @@ window.SITE_CONFIG = {
       },
       tech: ["Python", "cryptography", "CustomTkinter", "Mypy", "GitHub Actions"],
       url: "https://github.com/shim369/Python-Encryption-Tool",
-    },
-    {
-      title: "Python-Spotify-Insights",
-      summary: {
-        ja: "Spotifyのライブラリに最近追加した曲と週間トップ10を閲覧し、プレイリストを生成できるWebアプリ。",
-        en: "A web app to browse your recently added Spotify tracks and weekly top 10, and generate playlists from them.",
-      },
-      tech: ["Python", "FastHTML", "HTMX", "Spotify API", "pytest"],
-      url: "https://github.com/shim369/Python-Spotify-Insights",
-    },
-    {
-      title: "Python-Quotes-Scraper",
-      summary: {
-        ja: "型安全な名言スクレイパー。CustomTkinter のGUIと SQLite への保存。pytest と GitHub Actions でテストを自動実行。",
-        en: "A type-safe quotes scraper with a CustomTkinter GUI and SQLite storage, tested with pytest on GitHub Actions.",
-      },
-      tech: ["Python", "CustomTkinter", "BeautifulSoup4", "SQLite", "GitHub Actions"],
-      url: "https://github.com/shim369/Python-Quotes-Scraper",
-    },
-    {
-      title: "Electron-Investment-App",
-      summary: {
-        ja: "Electron・React・TypeScript の投資管理デスクトップアプリ。株価APIからの取得、グラフ表示、目標価格のアラート、PDF出力に対応。",
-        en: "An investment tracker desktop app built with Electron, React and TypeScript: live stock prices from an API, charts, target-price alerts and PDF export.",
-      },
-      tech: ["TypeScript", "React", "Electron", "Chart.js"],
-      url: "https://github.com/shim369/Electron-Investment-App",
-    },
-    {
-      title: "Java-RecipeRev-App",
-      summary: {
-        ja: "レシピのバージョン管理Webアプリ。改訂履歴、2バージョン間の差分表示、Python による材料と評価の傾向分析に対応。",
-        en: "A recipe version-control web app: revision history, diffs between versions, and ingredient-vs-rating analysis with Python.",
-      },
-      tech: ["Java", "Spring Boot", "MySQL", "Docker", "Python"],
-      url: "https://github.com/shim369/Java-RecipeRev-App",
-    },
-    {
-      title: "Electron-React-TypeScript-AspNetCore-Todo-App",
-      summary: {
-        ja: "C#（ASP.NET Core Web API）と PostgreSQL のバックエンドに、Electron・React・TypeScript のデスクトップアプリを組み合わせたタスク管理アプリ。",
-        en: "A task manager pairing a C# ASP.NET Core Web API and PostgreSQL backend with an Electron, React and TypeScript desktop app.",
-      },
-      tech: ["C#", "ASP.NET Core", "PostgreSQL", "TypeScript", "React", "Electron"],
-      url: "https://github.com/shim369/Electron-React-TypeScript-AspNetCore-Todo-App",
-    },
-    {
-      title: "Nextjs-TypeScript-Laravel-Todo-App-Backend",
-      summary: {
-        ja: "PHP（Laravel）で作ったタスク管理の REST API。MySQL とトークン認証を備え、Next.js のフロントエンドから利用。",
-        en: "A task management REST API built with PHP (Laravel), with MySQL and token authentication, used by a Next.js frontend.",
-      },
-      tech: ["PHP", "Laravel", "MySQL"],
-      url: "https://github.com/shim369/Nextjs-TypeScript-Laravel-Todo-App-Backend",
     },
     {
       title: "Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
