@@ -143,6 +143,17 @@
         );
       });
 
+      // フッターの S.OHTANI: 画面に届いたら、線が一文字ずつ引かれていく
+      const strokes = gsap.utils.toArray(".footer-strokes path");
+      gsap.set(strokes, { strokeDasharray: 1, strokeDashoffset: 1 });
+      gsap.to(strokes, {
+        strokeDashoffset: 0,
+        duration: 1.1,
+        ease: "power1.inOut",
+        stagger: 0.28,
+        scrollTrigger: { trigger: ".site-footer", start: "top 85%", once: true },
+      });
+
       // スキル: 番号の円がポンと現れて塗りつぶされる。言語切り替えで描画し直した分は最初から塗りつぶし
       const cards = gsap.utils.toArray("#skill-list > .skill-item");
       cards.forEach((card) => card.classList.add("is-pre"));

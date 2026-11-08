@@ -799,6 +799,10 @@ html[data-theme="pop"] .site-footer {
   background: #111;
 }
 
+html[data-theme="pop"] .footer-svg {
+  display: none;
+}
+
 /* 文字全体が収まる大きさにしておき、一番下までスクロールするにつれて、少し右から左（© の行の左端）へずれて揃う（--footer-p は js/theme.js が 0〜1 で更新） */
 html[data-theme="pop"] .footer-big {
   color: var(--yellow);
