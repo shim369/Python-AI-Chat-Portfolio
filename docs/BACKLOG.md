@@ -61,5 +61,5 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] 旧サイト（`public/`）と、それを配信していた `scripts/dev_server.py` を削除
 - [x] GitHub Actions を backend（pytest）と frontend（型チェック・ビルド）の2ジョブにする
 - [x] ローカルで、実ブラウザ（puppeteer）による動作確認（チャットの応答、Works の横スクロール、日英・デザインの切り替え、フォームの入力チェック）
-- [ ] Vercel のプレビューで、2サービス構成のデプロイと `/api/chat` の応答を確認
-- [ ] 本番に反映し、ページと AI チャットの動作を確認
+- [x] Vercel のプレビューで、2サービス構成のデプロイと `/api/chat` の応答を確認（初回は `backend` の `entrypoint` 不足で失敗したため、`vercel.json` に追加して解消）
+- [x] 本番に反映し、ページと AI チャットの動作を確認（ページ・`/api/blog`・`/api/chat` のストリーミング応答を本番 URL で確認）
