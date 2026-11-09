@@ -837,3 +837,12 @@ html[data-theme="pop"] .footer-big {
     font-size: 12px;
   }
 }
+
+/* Works: スマホ幅のPop（固定中の高さに収める） */
+@media (max-width: 600px) {
+  html[data-theme="pop"] #works .card { padding: 0 18px 18px; }
+  html[data-theme="pop"] #works .card::before { margin: 0 -18px 12px; padding-block: 8px; }
+  html[data-theme="pop"] #works .card-title { font-size: 17px; }
+  html[data-theme="pop"] #works .card-summary { font-size: 0.78rem; line-height: 1.5; }
+  html[data-theme="pop"] .card-grid.is-horizontal { padding: 4px 12px 10px 4px; }
+}

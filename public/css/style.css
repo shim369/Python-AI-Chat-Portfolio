@@ -1652,3 +1652,24 @@ html:not([data-theme="pop"]) .footer-big {
     display: none;
   }
 }
+
+/* Works: スマホでは固定中に画面の高さへ収める（見出し・カード・リンクを詰める） */
+@media (max-width: 600px) {
+  #works:has(.card-grid.is-horizontal) {
+    min-height: 100svh;
+    padding: calc(var(--header-h) + 8px) 0 12px;
+  }
+  #works .eyebrow { margin-bottom: 4px; }
+  #works .eyebrow b { width: 26px; height: 26px; font-size: 11px; }
+  #works .section-title { font-size: clamp(22px, 6.4vw, 28px); line-height: 1.15; }
+  #works .card-grid.is-horizontal { margin-top: 12px; }
+  #works .card-grid.is-horizontal > .card { flex-basis: min(320px, 84vw); }
+  #works .card { min-height: 0; padding: 18px; }
+  #works .card::before { margin-bottom: 4px; }
+  #works .card-title { margin-bottom: 4px; font-size: 19px; }
+  #works .card-summary { margin-bottom: 8px; font-size: 0.82rem; line-height: 1.55; }
+  #works .tag-list { margin-bottom: 10px; gap: 4px; }
+  #works .tag { padding: 1px 8px; font-size: 0.68rem; }
+  #works .works-more { margin-top: 8px; }
+  #works .works-more .btn { min-height: 40px; padding: 8px 18px; font-size: 14px; }
+}
