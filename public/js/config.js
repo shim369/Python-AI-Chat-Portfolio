@@ -74,15 +74,6 @@ window.SITE_CONFIG = {
       url: "https://github.com/shim369/Python-Budget-Tracker-App",
     },
     {
-      title: "Python-Study-App",
-      summary: {
-        ja: "PHPエンジニア向けのPython学習Webアプリ。コードを実行・自動採点し、Gemini API によるヒントとコードレビュー、間隔反復での復習に対応。",
-        en: "A Python learning web app for PHP developers: run and auto-grade your code, get hints and code reviews from the Gemini API, and review with spaced repetition.",
-      },
-      tech: ["Python", "Streamlit", "SQLite", "Gemini API", "pytest"],
-      url: "https://github.com/shim369/Python-Study-App",
-    },
-    {
       title: "Python-Encryption-Tool",
       summary: {
         ja: "ファイル・フォルダを一括で暗号化 / 復号するデスクトップツール。ソルトとストレッチングによる鍵の強化、Mypy Strict 準拠の型付け、GitHub Actions での CI。",
@@ -90,6 +81,15 @@ window.SITE_CONFIG = {
       },
       tech: ["Python", "cryptography", "CustomTkinter", "Mypy", "GitHub Actions"],
       url: "https://github.com/shim369/Python-Encryption-Tool",
+    },
+    {
+      title: "Nextjs-TypeScript-AspNetCore-Todo-App",
+      summary: {
+        ja: "Next.js（TypeScript）のフロントエンドと ASP.NET Core のバックエンドを分離した Todo アプリ。SQLite にデータを保存します。",
+        en: "A Todo app with a Next.js (TypeScript) frontend decoupled from an ASP.NET Core backend, storing data in SQLite.",
+      },
+      tech: ["TypeScript", "Next.js", "C#", "ASP.NET Core", "SQLite"],
+      url: "https://github.com/shim369/Nextjs-TypeScript-AspNetCore-Todo-App",
     },
     {
       title: "Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
