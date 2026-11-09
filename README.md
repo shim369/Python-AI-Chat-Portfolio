@@ -26,15 +26,15 @@ The backend is Python (FastAPI). A **hand-written agent loop** built on Gemini A
 
 | Layer | Technology |
 |---|---|
-| Frontend | HTML / CSS / vanilla JavaScript (no build step, `public/`), GSAP + ScrollTrigger (CDN) |
-| Backend | Python 3.14 / FastAPI (`app/`) |
+| Frontend | Next.js (App Router) / React / TypeScript (`frontend/`), GSAP + ScrollTrigger |
+| Backend | Python 3.14 / FastAPI (`backend/`) |
 | LLM | Google Gemini API (`google-genai` SDK, default model `gemini-3.5-flash-lite`) |
-| Hosting | Vercel Hobby (free plan). `public/` is served from the CDN, `app/main.py` runs as a Python Function |
-| Package management | uv (`pyproject.toml` + `uv.lock`) |
-| Tests / CI | pytest / GitHub Actions (`astral-sh/setup-uv`) |
+| Hosting | Vercel Hobby (free plan). One project with two [services](https://vercel.com/docs/services) (`vercel.json`): `frontend` (Next.js) and `backend` (a Python Function); `/api/*` goes to the backend |
+| Package management | uv (`backend/pyproject.toml` + `backend/uv.lock`) / npm (`frontend/package-lock.json`) |
+| Tests / CI | pytest, `tsc` and `next build` / GitHub Actions |
 
 ```
-Browser ──(GET static files)──▶ Vercel CDN (public/)
+Browser ──(GET pages)──▶ Next.js (frontend/)
    │
    ├─(POST /api/chat, SSE)──▶ FastAPI (Vercel Python Function)
    │                             ├─ Region restriction / rate limiting / input validation
@@ -47,51 +47,60 @@ Browser ──(GET static files)──▶ Vercel CDN (public/)
 ## Directory structure
 
 ```
-app/
-  main.py            FastAPI entry point (/api/chat, /api/contact, /api/blog, /api/health), rate limiting, logging
-  contact.py         Contact form: reCAPTCHA v3 verification and sending mail over SMTP
-  agent.py           Manual agent loop (repeat: function call → run → return result; retries, time budget)
-  tools.py           Agent tools (Python functions) and their JSON Schemas
-  llm.py             Module that encapsulates LLM calls (provider-agnostic types + Gemini implementation)
-  schemas.py         Request definitions and input validation
-  config.py          Reads environment variables (all limits are tuned here)
-  rate_limit.py      In-memory sliding-window rate limiter
-  region.py          Region restriction for the AI chat (not offered in the EEA, Switzerland, or the UK)
-  logging_utils.py   JSON structured logging
-  blog.py            Fetches the latest posts from the TECH BLOG top page (parses HTML because there is no RSS)
-  profile.py         Loads profile.json / system.md
-  data/profile.json  Career data the AI bases its answers on (edit this to change the content)
-  prompts/system.md  System prompt
-public/              Static page (edit skills and projects in js/config.js, UI text in js/i18n.js)
-scripts/dev_server.py  Local development server (also serves public/)
-tests/               pytest (never calls real APIs or external sites)
+backend/             Python (FastAPI) — the AI chat API
+  app/
+    main.py            FastAPI entry point (/api/chat, /api/contact, /api/blog, /api/health), rate limiting, logging
+    contact.py         Contact form: reCAPTCHA v3 verification and sending mail over SMTP
+    agent.py           Manual agent loop (repeat: function call → run → return result; retries, time budget)
+    tools.py           Agent tools (Python functions) and their JSON Schemas
+    llm.py             Module that encapsulates LLM calls (provider-agnostic types + Gemini implementation)
+    schemas.py         Request definitions and input validation
+    config.py          Reads environment variables (all limits are tuned here)
+    rate_limit.py      In-memory sliding-window rate limiter
+    region.py          Region restriction for the AI chat (not offered in the EEA, Switzerland, or the UK)
+    logging_utils.py   JSON structured logging
+    blog.py            Fetches the latest posts from the TECH BLOG top page (parses HTML because there is no RSS)
+    profile.py         Loads profile.json / system.md
+    data/profile.json  Career data the AI bases its answers on (edit this to change the content)
+    prompts/system.md  System prompt
+  tests/             pytest (never calls real APIs or external sites)
+  pyproject.toml, uv.lock, .env.example
+frontend/            Next.js (App Router, TypeScript) — the page
+  app/               Layout, metadata (Open Graph) and the page
+  components/        One component per section (Hero, Skills, Works, Blog, Architecture, Contact, Footer) plus ChatWidget
+  lib/               Typed content (config.ts: skills and projects), UI text (messages.ts), i18n / theme providers, chat hook, GSAP effects
+  styles/            style.css (Normal design) and pop.css (Pop design)
+vercel.json          Two services (frontend / backend) and the /api/* routing
 docs/BACKLOG.md      Tasks per sprint
 ```
 
 ## Running locally
 
-Prerequisite: [uv](https://docs.astral.sh/uv/) is installed (uv sets up Python 3.14 automatically).
+Prerequisites: [uv](https://docs.astral.sh/uv/) (it sets up Python 3.14 automatically) and Node.js 24.
 
 ```bash
-uv sync                      # create .venv and install dependencies
-cp .env.example .env         # put GEMINI_API_KEY in .env (.env is not tracked by git)
-uv run --env-file .env python scripts/dev_server.py
-# → http://127.0.0.1:8000
+# 1) the API (backend/)
+cd backend
+uv sync                          # create .venv and install dependencies
+cp .env.example .env             # put GEMINI_API_KEY in .env (.env is not tracked by git)
+uv run --env-file .env uvicorn app.main:app --port 8000
+
+# 2) the page (frontend/) in another terminal; /api/* is proxied to :8000
+cd frontend
+npm ci
+npm run dev                      # → http://localhost:3000
 ```
 
-To run in the same environment as Vercel, use the [Vercel CLI](https://vercel.com/docs/cli) (it loads `.env` automatically).
+To run both services the way Vercel does, use the [Vercel CLI](https://vercel.com/docs/cli) from the repository root (`vercel dev`).
+
+Checks (no API key needed; the tests never call the Gemini API or external sites):
 
 ```bash
-vercel dev
+cd backend && uv run pytest
+cd frontend && npm run typecheck && npm run build
 ```
 
-Tests (no API key needed; they never call the Gemini API or external sites):
-
-```bash
-uv run pytest
-```
-
-> If you use pyenv, `.python-version` (3.14) applies in this directory. Run commands through `uv run`.
+> If you use pyenv, `backend/.python-version` (3.14) applies in that directory. Run commands through `uv run`.
 
 ## Getting a Gemini API key
 
@@ -103,7 +112,7 @@ uv run pytest
 
 1. Sign up for [Vercel](https://vercel.com/) with your GitHub account (Hobby plan, no credit card required)
 2. Import `shim369/Python-AI-Chat-Portfolio` from "Add New… → Project"
-3. The Framework Preset is detected as FastAPI automatically (from `tool.vercel.entrypoint` in `pyproject.toml`)
+3. `vercel.json` defines two services, `frontend` (Next.js) and `backend` (FastAPI, from `tool.vercel.entrypoint` in `backend/pyproject.toml`), so no Framework Preset needs to be chosen
 4. Set the following under "Environment Variables", then deploy
    - `GEMINI_API_KEY` (required)
    - Everything else is optional (see "Environment variables" below)
@@ -114,7 +123,7 @@ Preview deployments are protected by Vercel Authentication. From the CLI, access
 
 ## Environment variables
 
-Everything except `GEMINI_API_KEY` is optional; unset values fall back to the defaults in `app/config.py` (see `.env.example` for the full list).
+Everything except `GEMINI_API_KEY` is optional; unset values fall back to the defaults in `backend/app/config.py` (see `backend/.env.example` for the full list).
 
 | Variable | Default | Description |
 |---|---|---|
@@ -139,12 +148,12 @@ Everything except `GEMINI_API_KEY` is optional; unset values fall back to the de
 | `CONTACT_RATE_LIMIT_PER_IP_PER_DAY` | 10 | Per-IP contact limit per day |
 | `CONTACT_RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | Instance-wide contact limit per minute |
 
-The reCAPTCHA **site key** (the public one) goes in `RECAPTCHA_SITE_KEY` in `public/js/config.js`.
+The reCAPTCHA **site key** (the public one) goes in `RECAPTCHA_SITE_KEY` in `frontend/lib/config.ts`.
 
 ### Setting up the contact form
 
 1. Create a **reCAPTCHA v3** key in the [reCAPTCHA admin console](https://www.google.com/recaptcha/admin/create). Register your production domain and `localhost` (`127.0.0.1`)
-2. Put the site key in `RECAPTCHA_SITE_KEY` in `public/js/config.js`, and the secret key in the `RECAPTCHA_SECRET_KEY` environment variable
+2. Put the site key in `RECAPTCHA_SITE_KEY` in `frontend/lib/config.ts`, and the secret key in the `RECAPTCHA_SECRET_KEY` environment variable
 3. Turn on 2-Step Verification for the sending Google account and create an [app password](https://myaccount.google.com/apppasswords)
 4. Set `SMTP_USER` (the sending Gmail address), `SMTP_PASS` (the app password), and `CONTACT_TO_EMAIL` (the receiving address)
 
@@ -187,7 +196,7 @@ The 3 latest TECH BLOG posts. Cached on Vercel's CDN for 1 hour.
 
 ## How the agent works
 
-Every tool is a Python function that declares its arguments with JSON Schema (`app/tools.py`).
+Every tool is a Python function that declares its arguments with JSON Schema (`backend/app/tools.py`).
 
 | Tool | Description |
 |---|---|
@@ -198,7 +207,7 @@ Every tool is a Python function that declares its arguments with JSON Schema (`a
 | `get_site_info()` | How this site and the chat work |
 | `get_blog_posts(limit?)` | Latest blog posts |
 
-The loop (`app/agent.py`) works as follows. It does not use Gemini's automatic function calling.
+The loop (`backend/app/agent.py`) works as follows. It does not use Gemini's automatic function calling.
 
 1. Call Gemini with the conversation history and tool definitions (streaming)
 2. If the response contains a `function_call`, run the tool, add a `function_response` to the history, and go back to 1
@@ -249,7 +258,7 @@ Error messages on the page include the `request_id` (error ID), so when someone 
 
 ## Design decisions
 
-- **FastAPI**: Input validation (Pydantic) can be declared from type hints, and SSE is straightforward with `StreamingResponse`. Vercel also detects FastAPI with zero configuration and serves `public/` from the CDN, which settled the choice.
+- **FastAPI**: Input validation (Pydantic) can be declared from type hints, and SSE is straightforward with `StreamingResponse`. Vercel also runs it as a Python Function with little configuration, which settled the choice.
 - **SSE (Server-Sent Events)**: One-way streaming from server to browser is enough, so I chose SSE over the more complex WebSocket. Tool progress (`tool`) and answer chunks (`delta`) can go over the same stream. Because the request has to be a POST, the browser reads a `fetch` stream instead of using `EventSource`.
   - **Verified on Vercel**: There was a risk that Python SSE would be buffered and sent in one batch, so instead of judging from local runs I measured each event's arrival time on a preview deployment. The `tool` event arrived at 2.1 s → first `delta` at 5.0 s → `done` at 5.3 s, one by one, so I concluded that **no fallback (non-streaming + typewriter effect, etc.) is needed** (2026-10-27).
 - **Stateless**: The browser keeps the conversation history and sends the last 10 messages each time. On serverless, each request may be handled by a different instance, so keeping no state on the server is simpler and harder to break.
@@ -258,7 +267,7 @@ Error messages on the page include the `request_id` (error ID), so when someone 
 - **Career data fetched through tools**: Instead of embedding all of `profile.json` in the prompt, the model fetches only what it needs through tools. Answers are grounded only in tool results, and the `tools` field in the logs shows what each answer was based on.
 - **uv**: Dependency definitions (`pyproject.toml`) and the lock file (`uv.lock`) live in one tool, and `uv sync --locked` keeps CI and local environments identical. Vercel also installs from `uv.lock`, so there is no `requirements.txt` to maintain in parallel.
 - **Region restriction**: The Gemini API Additional Terms of Service say that only paid services may be used when serving users in the EEA, Switzerland, or the UK. To keep running on the free tier, the country is determined from the `x-vercel-ip-country` header that Vercel adds, and `/api/chat` returns 451 (Unavailable For Legal Reasons) for those regions. The rest of the page still works. The check runs before rate limiting so that rejected requests don't use up the rate limit.
-- **No-build frontend**: A framework would be overkill for a page this size, so it is plain HTML / CSS / vanilla JS. AI output is always rendered with `textContent` to prevent XSS.
+- **Next.js + TypeScript frontend**: Typed content (`lib/config.ts`), one component per section, and the metadata API for Open Graph. The AI's output is always rendered as text (React escapes it) to prevent XSS. The frontend and the API are two Vercel services in one project, so they deploy and roll back together.
 
 ## Known limitations
 
@@ -294,7 +303,7 @@ Both have usage limits, so the chat may be temporarily unavailable when a limit 
 Free plan terms can change, so these reflect what was confirmed at that time.
 
 - Vercel Python Runtime (supported versions 3.12 / 3.13 / 3.14, `pyproject.toml` / `uv.lock` support, streaming support): https://vercel.com/docs/functions/runtimes/python
-- Deploying FastAPI on Vercel (entry point, serving `public/` from the CDN, configuring `maxDuration`): https://vercel.com/docs/frameworks/backend/fastapi
+- Deploying FastAPI on Vercel (entry point, configuring `maxDuration`): https://vercel.com/docs/frameworks/backend/fastapi
 - Vercel Functions limits (Hobby maximum duration of 300 seconds): https://vercel.com/docs/functions/limitations
 - Vercel request headers (`x-vercel-ip-country`; `x-forwarded-for` is overwritten by Vercel): https://vercel.com/docs/headers/request-headers
 - Vercel Hobby plan (monthly usage, pausing when exceeded, personal non-commercial use only, 1 hour of Runtime Logs): https://vercel.com/docs/plans/hobby

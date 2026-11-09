@@ -26,15 +26,15 @@
 
 | 層 | 技術 |
 |---|---|
-| フロントエンド | HTML / CSS / バニラ JavaScript（ビルドなし、`public/`）、GSAP + ScrollTrigger（CDN） |
-| バックエンド | Python 3.14 / FastAPI（`app/`） |
+| フロントエンド | Next.js（App Router）/ React / TypeScript（`frontend/`）、GSAP + ScrollTrigger |
+| バックエンド | Python 3.14 / FastAPI（`backend/`） |
 | LLM | Google Gemini API（`google-genai` SDK、デフォルトのモデルは `gemini-3.5-flash-lite`） |
-| ホスティング | Vercel Hobby（無料プラン）。`public/` は CDN、`app/main.py` は Python Function |
-| パッケージ管理 | uv（`pyproject.toml` + `uv.lock`） |
-| テスト / CI | pytest / GitHub Actions（`astral-sh/setup-uv`） |
+| ホスティング | Vercel Hobby（無料プラン）。1つのプロジェクトに2つの[サービス](https://vercel.com/docs/services)（`vercel.json`）: `frontend`（Next.js）と `backend`（Python Function）。`/api/*` は backend へ |
+| パッケージ管理 | uv（`backend/pyproject.toml` + `backend/uv.lock`）/ npm（`frontend/package-lock.json`） |
+| テスト / CI | pytest、`tsc`、`next build` / GitHub Actions |
 
 ```
-Browser ──(GET 静的ファイル)──▶ Vercel CDN (public/)
+Browser ──(GET ページ)──▶ Next.js (frontend/)
    │
    ├─(POST /api/chat, SSE)──▶ FastAPI (Vercel Python Function)
    │                             ├─ 提供地域の制御 / レート制限 / 入力バリデーション
@@ -47,51 +47,60 @@ Browser ──(GET 静的ファイル)──▶ Vercel CDN (public/)
 ## ディレクトリ構成
 
 ```
-app/
-  main.py            FastAPI エントリポイント（/api/chat, /api/contact, /api/blog, /api/health）、レート制限、ログ
-  contact.py         お問い合わせ: reCAPTCHA v3 の検証と SMTP でのメール送信
-  agent.py           手動エージェントループ（関数呼び出し → 実行 → 結果返却の繰り返し、リトライ、時間予算）
-  tools.py           エージェントのツール（Python 関数）と JSON Schema
-  llm.py             LLM 呼び出しを閉じ込めるモジュール（プロバイダ非依存の型 + Gemini 実装）
-  schemas.py         リクエスト定義と入力バリデーション
-  config.py          環境変数の読み込み（上限値はすべてここで調整）
-  rate_limit.py      メモリ内のスライディングウィンドウ式レート制限
-  region.py          AI チャットの提供地域の制御（EEA・スイス・英国では提供しない）
-  logging_utils.py   JSON 構造化ログ
-  blog.py            TECH BLOG のトップページから最新記事を取得（RSS がないため HTML をパース）
-  profile.py         profile.json / system.md の読み込み
-  data/profile.json  AI が回答の根拠にする経歴データ（ここを編集すれば内容を差し替えられる）
-  prompts/system.md  システムプロンプト
-public/              静的ページ（スキル・制作物の表示内容は js/config.js、画面の文言は js/i18n.js で編集）
-scripts/dev_server.py  ローカル開発用サーバー（public/ もまとめて配信）
-tests/               pytest（実 API・外部サイトにはアクセスしない）
+backend/             Python（FastAPI）— AI チャットの API
+  app/
+    main.py            FastAPI エントリポイント（/api/chat, /api/contact, /api/blog, /api/health）、レート制限、ログ
+    contact.py         お問い合わせ: reCAPTCHA v3 の検証と SMTP でのメール送信
+    agent.py           手動エージェントループ（関数呼び出し → 実行 → 結果返却の繰り返し、リトライ、時間予算）
+    tools.py           エージェントのツール（Python 関数）と JSON Schema
+    llm.py             LLM 呼び出しを閉じ込めるモジュール（プロバイダ非依存の型 + Gemini 実装）
+    schemas.py         リクエスト定義と入力バリデーション
+    config.py          環境変数の読み込み（上限値はすべてここで調整）
+    rate_limit.py      メモリ内のスライディングウィンドウ式レート制限
+    region.py          AI チャットの提供地域の制御（EEA・スイス・英国では提供しない）
+    logging_utils.py   JSON 構造化ログ
+    blog.py            TECH BLOG のトップページから最新記事を取得（RSS がないため HTML をパース）
+    profile.py         profile.json / system.md の読み込み
+    data/profile.json  AI が回答の根拠にする経歴データ（ここを編集すれば内容を差し替えられる）
+    prompts/system.md  システムプロンプト
+  tests/             pytest（実 API・外部サイトにはアクセスしない）
+  pyproject.toml, uv.lock, .env.example
+frontend/            Next.js（App Router・TypeScript）— ページ
+  app/               レイアウト、メタ情報（Open Graph）、ページ
+  components/        セクションごとのコンポーネント（Hero, Skills, Works, Blog, Architecture, Contact, Footer）と ChatWidget
+  lib/               型つきの表示内容（config.ts: スキル・制作物）、画面の文言（messages.ts）、言語・デザインの切り替え、チャットのフック、GSAP の演出
+  styles/            style.css（Normal デザイン）と pop.css（Pop デザイン）
+vercel.json          2つのサービス（frontend / backend）と /api/* の振り分け
 docs/BACKLOG.md      スプリントごとのタスク
 ```
 
 ## ローカルでの起動
 
-前提: [uv](https://docs.astral.sh/uv/) がインストール済みであること（Python 3.14 は uv が自動で用意します）。
+前提: [uv](https://docs.astral.sh/uv/)（Python 3.14 は uv が自動で用意します）と Node.js 24 がインストール済みであること。
 
 ```bash
-uv sync                      # .venv を作成して依存をインストール
-cp .env.example .env         # .env に GEMINI_API_KEY を記入（.env は git 管理外）
-uv run --env-file .env python scripts/dev_server.py
-# → http://127.0.0.1:8000
+# 1) API（backend/）
+cd backend
+uv sync                          # .venv を作成して依存をインストール
+cp .env.example .env             # .env に GEMINI_API_KEY を記入（.env は git 管理外）
+uv run --env-file .env uvicorn app.main:app --port 8000
+
+# 2) ページ（frontend/）。別のターミナルで。/api/* は :8000 へ転送されます
+cd frontend
+npm ci
+npm run dev                      # → http://localhost:3000
 ```
 
-Vercel と同じ環境で確認したい場合は [Vercel CLI](https://vercel.com/docs/cli) を使います（`.env` は自動で読み込まれます）。
+Vercel と同じ形で2つのサービスをまとめて動かしたい場合は、リポジトリのルートで [Vercel CLI](https://vercel.com/docs/cli) を使います（`vercel dev`）。
+
+確認（API キー不要。テストは Gemini API・外部サイトにはアクセスしません）:
 
 ```bash
-vercel dev
+cd backend && uv run pytest
+cd frontend && npm run typecheck && npm run build
 ```
 
-テスト（API キー不要。Gemini API・外部サイトにはアクセスしません）:
-
-```bash
-uv run pytest
-```
-
-> pyenv を使っている場合、このディレクトリでは `.python-version` (3.14) が参照されます。コマンドは `uv run` 経由で実行してください。
+> pyenv を使っている場合、`backend/` では `.python-version` (3.14) が参照されます。コマンドは `uv run` 経由で実行してください。
 
 ## Gemini API キーの取得
 
@@ -103,7 +112,7 @@ uv run pytest
 
 1. [Vercel](https://vercel.com/) に GitHub アカウントでサインアップする（Hobby プラン、クレジットカード不要）
 2. 「Add New… → Project」から `shim369/Python-AI-Chat-Portfolio` を Import する
-3. Framework Preset は自動で FastAPI と判定されます（`pyproject.toml` の `tool.vercel.entrypoint` を参照）
+3. `vercel.json` が `frontend`（Next.js）と `backend`（FastAPI。`backend/pyproject.toml` の `tool.vercel.entrypoint` を参照）の2つのサービスを定義しているので、Framework Preset を選ぶ必要はありません
 4. 「Environment Variables」で次を設定してから Deploy する
    - `GEMINI_API_KEY`（必須）
    - そのほかは任意（下の「環境変数」を参照）
@@ -114,7 +123,7 @@ uv run pytest
 
 ## 環境変数
 
-`GEMINI_API_KEY` 以外はすべて任意で、未設定時は `app/config.py` のデフォルト値を使います（一覧は `.env.example`）。
+`GEMINI_API_KEY` 以外はすべて任意で、未設定時は `backend/app/config.py` のデフォルト値を使います（一覧は `backend/.env.example`）。
 
 | 変数 | デフォルト | 内容 |
 |---|---|---|
@@ -139,12 +148,12 @@ uv run pytest
 | `CONTACT_RATE_LIMIT_PER_IP_PER_DAY` | 10 | お問い合わせの IP ごとの 1 日あたりの上限 |
 | `CONTACT_RATE_LIMIT_GLOBAL_PER_MINUTE` | 10 | お問い合わせのインスタンス全体の 1 分あたりの上限 |
 
-reCAPTCHA の**サイトキー**（公開してよい方）は `public/js/config.js` の `RECAPTCHA_SITE_KEY` に書きます。
+reCAPTCHA の**サイトキー**（公開してよい方）は `frontend/lib/config.ts` の `RECAPTCHA_SITE_KEY` に書きます。
 
 ### お問い合わせフォームの準備
 
 1. [reCAPTCHA の管理画面](https://www.google.com/recaptcha/admin/create)で **reCAPTCHA v3** のキーを作る。ドメインには本番のドメインと `localhost`（`127.0.0.1`）を登録する
-2. サイトキーを `public/js/config.js` の `RECAPTCHA_SITE_KEY` に、シークレットキーを環境変数 `RECAPTCHA_SECRET_KEY` に設定する
+2. サイトキーを `frontend/lib/config.ts` の `RECAPTCHA_SITE_KEY` に、シークレットキーを環境変数 `RECAPTCHA_SECRET_KEY` に設定する
 3. 送信元の Google アカウントで 2 段階認証を有効にし、[アプリパスワード](https://myaccount.google.com/apppasswords)を発行する
 4. `SMTP_USER`（送信元の Gmail アドレス）、`SMTP_PASS`（アプリパスワード）、`CONTACT_TO_EMAIL`（受け取るアドレス）を設定する
 
@@ -249,7 +258,7 @@ vercel logs --project python-ai-chat-portfolio --environment production --query 
 
 ## 設計判断
 
-- **FastAPI**: 型ヒントから入力バリデーション（Pydantic）を宣言的に書け、`StreamingResponse` で SSE も素直に書ける。Vercel が FastAPI をゼロコンフィグで検出し、`public/` を CDN から配信してくれる点も決め手になった。
+- **FastAPI**: 型ヒントから入力バリデーション（Pydantic）を宣言的に書け、`StreamingResponse` で SSE も素直に書ける。Vercel が Python Function としてほぼ設定なしで動かせる点も決め手になった。
 - **SSE（Server-Sent Events）**: サーバー → ブラウザの一方向のストリーミングで足りるため、WebSocket より単純な SSE を選んだ。ツールの実行状況（`tool`）と回答の断片（`delta`）を同じストリームで送れる。POST でリクエストを送る必要があるため、ブラウザ側は `EventSource` ではなく `fetch` のストリームを読んでいる。
   - **Vercel 上での検証結果**: Python の SSE は途中でまとめて送られる（バッファされる）おそれがあったため、ローカルだけで判断せず、プレビュー環境で各イベントの到着時刻を計測した。`tool` イベント 2.1 秒 → 最初の `delta` 5.0 秒 → `done` 5.3 秒と逐次届いており、**フォールバック（非ストリーミング + タイピング風表示など）は不要**と判断した（2026-10-27）。
 - **ステートレス**: 会話履歴はブラウザが持ち、毎回直近 10 件を送る。サーバーレス環境ではリクエストごとに別のインスタンスが処理しうるため、サーバー側に状態を持たない方が単純で壊れにくい。
@@ -258,7 +267,7 @@ vercel logs --project python-ai-chat-portfolio --environment production --query 
 - **経歴データはツール経由で取得**: プロンプトに `profile.json` を丸ごと埋め込まず、必要な部分だけをツールで取らせる。回答の根拠がツール結果に限定され、ログの `tools` で「何を根拠に答えたか」を追える。
 - **uv**: 依存の定義（`pyproject.toml`）とロックファイル（`uv.lock`）を一本化でき、`uv sync --locked` で CI とローカルの環境をそろえられる。Vercel も `uv.lock` からのインストールに対応しているため、`requirements.txt` を二重管理する必要がない。
 - **提供地域の制御**: Gemini API 追加利用規約では、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされている。無料枠のまま公開を続けるため、Vercel が付与する `x-vercel-ip-country` ヘッダーで国を判定し、これらの地域からの `/api/chat` には 451（Unavailable For Legal Reasons）を返す。ページの他の部分はそのまま表示する。判定はレート制限より前に行い、拒否したリクエストがレート制限の枠を消費しないようにしている。
-- **ビルド不要のフロントエンド**: ページ規模に対してフレームワークは過剰と判断し、HTML / CSS / バニラ JS にした。AI の出力は常に `textContent` で描画し、XSS を防いでいる。
+- **Next.js + TypeScript のフロントエンド**: 表示内容を型つきで持ち（`lib/config.ts`）、セクションごとにコンポーネントへ分け、Open Graph などのメタ情報は Next.js の仕組みで書く。AI の出力は常にテキストとして描画し（React が自動でエスケープする）、XSS を防いでいる。フロントと API は1つの Vercel プロジェクトの2つのサービスなので、一緒にデプロイ・ロールバックできる。
 
 ## 既知の制限
 
@@ -294,7 +303,7 @@ vercel logs --project python-ai-chat-portfolio --environment production --query 
 無料プランの仕様は変更されることがあるため、確認した時点の情報として記載します。
 
 - Vercel Python Runtime（対応バージョン 3.12 / 3.13 / 3.14、`pyproject.toml` / `uv.lock` に対応、ストリーミング対応）: https://vercel.com/docs/functions/runtimes/python
-- Vercel で FastAPI をデプロイ（エントリポイント、`public/` の CDN 配信、`maxDuration` の設定）: https://vercel.com/docs/frameworks/backend/fastapi
+- Vercel で FastAPI をデプロイ（エントリポイント、`maxDuration` の設定）: https://vercel.com/docs/frameworks/backend/fastapi
 - Vercel Functions の制限（Hobby の最大実行時間 300 秒）: https://vercel.com/docs/functions/limitations
 - Vercel のリクエストヘッダー（`x-vercel-ip-country`、`x-forwarded-for` は Vercel が上書き）: https://vercel.com/docs/headers/request-headers
 - Vercel Hobby プラン（月間の使用量、超過時の停止、非商用・個人利用のみ、Runtime Logs 1 時間）: https://vercel.com/docs/plans/hobby

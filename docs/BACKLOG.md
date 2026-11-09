@@ -14,7 +14,7 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] LLM 呼び出しを `app/llm.py` に分離（`LLMClient` プロトコル）
 - [x] 入力長・履歴件数のバリデーション、日本語エラーメッセージ
 - [x] チャットUI（吹き出し、ローディング、再試行、Enter送信、サンプル質問チップ、注意書き）
-- [x] ローカル開発サーバー（`scripts/dev_server.py`）
+- [x] ローカル開発サーバー（当時は `scripts/dev_server.py`。現在は Next.js の開発サーバーが `/api/*` を FastAPI へ転送する）
 - [x] ローカルで Gemini 実接続を確認（`gemini-3.5-flash-lite`）
 - [x] GitHub へ push
 - [x] Vercel に GitHub 連携でデプロイし、`GEMINI_API_KEY` を設定
@@ -26,7 +26,7 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] Blog セクション: TECH BLOG の最新3記事をカード表示（`GET /api/blog` がトップページを取得・パース、CDN に1時間キャッシュ）
 - [x] ブログのパーサーのテスト（`tests/test_blog.py`）
 - [x] 本番 URL で Blog セクションの表示を確認
-- [x] 日本語 / 英語の切り替え（ヘッダーの JA / EN。文言は `public/js/i18n.js`、AI の回答言語はリクエストの `lang` で指定）
+- [x] 日本語 / 英語の切り替え（ヘッダーの JA / EN。文言は `frontend/lib/messages.ts`、AI の回答言語はリクエストの `lang` で指定）
 - [x] 本番 URL で言語切り替えを確認
 
 ## Sprint 2: ストリーミング + エージェントループ
