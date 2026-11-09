@@ -1,0 +1,7 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+# next dev が自動で生成するエージェント向けの案内（リポジトリには含めない）
+AGENTS.md
