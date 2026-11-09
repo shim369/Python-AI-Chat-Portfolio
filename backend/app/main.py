@@ -1,6 +1,6 @@
 """FastAPI エントリポイント（Vercel は pyproject.toml の tool.vercel.entrypoint からこの app を読み込む）。
 
-静的ファイル (public/) は Vercel の CDN が配信するため、ここではマウントしない。
+画面（Next.js、frontend/）は別のサービスとして配信されるため、ここでは静的ファイルを扱わない。
 """
 
 import asyncio

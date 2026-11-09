@@ -14,7 +14,7 @@ from app.config import Settings
 from app.schemas import ContactRequest
 
 RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
-# フロント（public/js/contact.js）の grecaptcha.execute に渡す action と揃える
+# フロント（frontend/components/Contact.tsx）の grecaptcha.execute に渡す action と揃える
 RECAPTCHA_ACTION = "contact"
 VERIFY_TIMEOUT_SECONDS = 5
 SMTP_TIMEOUT_SECONDS = 10

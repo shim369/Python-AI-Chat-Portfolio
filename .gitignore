@@ -1,9 +1,16 @@
+# Python (backend)
 .venv/
+__pycache__/
+.pytest_cache/
+
+# 環境変数（値は .env に書く。backend/.env.example は変数名だけ）
 .env
 .env.*
 !.env.example
+
+# Vercel / macOS
 .vercel/
-__pycache__/
-.pytest_cache/
 .DS_Store
+
+# 手元のバックアップ
 backup
