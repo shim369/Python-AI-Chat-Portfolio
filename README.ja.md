@@ -8,12 +8,12 @@
 バックエンドは Python (FastAPI) で、Gemini API の function calling を使った**手書きのエージェントループ**が、ツール（経歴データ・ブログ記事の取得）を呼びながら回答し、その過程を SSE でストリーミング表示します。
 
 - デプロイ先: https://python-ai-chat-portfolio.vercel.app
-- 開発の進め方とタスク: [docs/BACKLOG.md](docs/BACKLOG.md)（3 スプリント + 追加タスク）
+- 開発の進め方とタスク: [docs/BACKLOG.md](docs/BACKLOG.md)（3 スプリント + 追加タスク。Next.js への移行を含む）
 
 ## 主な機能
 
-- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）、レスポンシブ・ダークモード対応
-- 画面右下のボタンで開閉する AI チャット（スマホでは画面いっぱいに表示）
+- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）。レスポンシブ対応で、2つのデザイン（Normal / Pop）と GSAP のスクロール演出を備える
+- 画面右下のボタンで開閉する AI チャット（スマホでは画面いっぱいに表示）。Pop デザインではヒーロー内にも表示する
 - お問い合わせフォーム: reCAPTCHA v3 で検証してから、Gmail の SMTP で自分宛てにメールを送る
 - 日本語 / 英語の切り替え（画面の文言・AI の回答言語・エラーメッセージ）
 - AI チャット
@@ -70,6 +70,7 @@ frontend/            Next.js（App Router・TypeScript）— ページ
   components/        セクションごとのコンポーネント（Hero, Skills, Works, Blog, Architecture, Contact, Footer）と ChatWidget
   lib/               型つきの表示内容（config.ts: スキル・制作物）、画面の文言（messages.ts）、言語・デザインの切り替え、チャットのフック、GSAP の演出
   styles/            style.css（Normal デザイン）と pop.css（Pop デザイン）
+  public/            ファビコンとヒーローの背景動画
 vercel.json          2つのサービス（frontend / backend）と /api/* の振り分け
 docs/BACKLOG.md      スプリントごとのタスク
 ```
@@ -263,7 +264,7 @@ vercel logs --project python-ai-chat-portfolio --environment production --query 
   - **Vercel 上での検証結果**: Python の SSE は途中でまとめて送られる（バッファされる）おそれがあったため、ローカルだけで判断せず、プレビュー環境で各イベントの到着時刻を計測した。`tool` イベント 2.1 秒 → 最初の `delta` 5.0 秒 → `done` 5.3 秒と逐次届いており、**フォールバック（非ストリーミング + タイピング風表示など）は不要**と判断した（2026-10-27）。
 - **ステートレス**: 会話履歴はブラウザが持ち、毎回直近 10 件を送る。サーバーレス環境ではリクエストごとに別のインスタンスが処理しうるため、サーバー側に状態を持たない方が単純で壊れにくい。
 - **手動エージェントループ**: SDK の自動実行に任せず、関数呼び出し → 実行 → 結果返却を自分で書いた。反復回数・時間予算・リトライ・ツール実行の通知（バッジ表示）を細かく制御でき、仕組みがコードから読める。
-- **LLM 呼び出しを 1 モジュールに分離**: `llm.py` にプロバイダ非依存の型（`ToolSpec` / `ModelTurn` / `TextDelta` など）と `LLMClient` プロトコルを定義し、Gemini 固有のコードはその中だけに置いた。プロバイダを差し替えやすく、テストではモック（`tests/conftest.py` の `ScriptedLLM`）に置き換えて実 API なしでループを検証できる。なお Gemini 3 系は関数呼び出しに付く thought signature を次のリクエストで返す必要があるため、モデル応答は Gemini の形のまま `ModelTurn.raw` に保持している。
+- **LLM 呼び出しを 1 モジュールに分離**: `llm.py` にプロバイダ非依存の型（`ToolSpec` / `ModelTurn` / `TextDelta` など）と `LLMClient` プロトコルを定義し、Gemini 固有のコードはその中だけに置いた。プロバイダを差し替えやすく、テストではモック（`backend/tests/conftest.py` の `ScriptedLLM`）に置き換えて実 API なしでループを検証できる。なお Gemini 3 系は関数呼び出しに付く thought signature を次のリクエストで返す必要があるため、モデル応答は Gemini の形のまま `ModelTurn.raw` に保持している。
 - **経歴データはツール経由で取得**: プロンプトに `profile.json` を丸ごと埋め込まず、必要な部分だけをツールで取らせる。回答の根拠がツール結果に限定され、ログの `tools` で「何を根拠に答えたか」を追える。
 - **uv**: 依存の定義（`pyproject.toml`）とロックファイル（`uv.lock`）を一本化でき、`uv sync --locked` で CI とローカルの環境をそろえられる。Vercel も `uv.lock` からのインストールに対応しているため、`requirements.txt` を二重管理する必要がない。
 - **提供地域の制御**: Gemini API 追加利用規約では、EEA・スイス・英国のユーザーに提供する場合は有料サービスのみ利用可能とされている。無料枠のまま公開を続けるため、Vercel が付与する `x-vercel-ip-country` ヘッダーで国を判定し、これらの地域からの `/api/chat` には 451（Unavailable For Legal Reasons）を返す。ページの他の部分はそのまま表示する。判定はレート制限より前に行い、拒否したリクエストがレート制限の枠を消費しないようにしている。

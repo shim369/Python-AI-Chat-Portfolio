@@ -21,7 +21,7 @@ type I18n = {
 const Context = createContext<I18n | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  // 初回の描画は英語。保存済みの言語があればマウント後に切り替える（静的書き出しでも表示がずれないように）
+  // 初回の描画は英語。保存済みの言語があればマウント後に切り替える（ビルド時に作る HTML は英語なので、hydration で表示がずれないように）
   const [lang, setLangState] = useState<Lang>("en");
 
   useEffect(() => {

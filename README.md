@@ -8,12 +8,12 @@ A one-page portfolio that combines a self-introduction with an AI chat you can a
 The backend is Python (FastAPI). A **hand-written agent loop** built on Gemini API function calling answers by calling tools (career data, blog posts) and streams its progress to the page over SSE.
 
 - Live site: https://python-ai-chat-portfolio.vercel.app
-- Development process and tasks: [docs/BACKLOG.md](docs/BACKLOG.md) (3 sprints + extra tasks, in Japanese)
+- Development process and tasks: [docs/BACKLOG.md](docs/BACKLOG.md) (3 sprints + extra tasks, including the move to Next.js; in Japanese)
 
 ## Features
 
-- A single self-introduction page (skills / projects / latest blog posts / how this site works / contact), responsive with dark mode
-- An AI chat that opens from a button in the bottom-right corner (full screen on phones)
+- A single self-introduction page (skills / projects / latest blog posts / how this site works / contact), responsive, with two designs (Normal / Pop) and GSAP scroll animations
+- An AI chat that opens from a button in the bottom-right corner (full screen on phones). In the Pop design it is also shown inside the hero
 - Contact form: verified with reCAPTCHA v3, then sent to my own inbox over Gmail SMTP
 - Japanese / English switching (UI text, the language of AI answers, and error messages)
 - AI chat
@@ -70,6 +70,7 @@ frontend/            Next.js (App Router, TypeScript) — the page
   components/        One component per section (Hero, Skills, Works, Blog, Architecture, Contact, Footer) plus ChatWidget
   lib/               Typed content (config.ts: skills and projects), UI text (messages.ts), i18n / theme providers, chat hook, GSAP effects
   styles/            style.css (Normal design) and pop.css (Pop design)
+  public/            Favicons and the hero background video
 vercel.json          Two services (frontend / backend) and the /api/* routing
 docs/BACKLOG.md      Tasks per sprint
 ```
@@ -263,7 +264,7 @@ Error messages on the page include the `request_id` (error ID), so when someone 
   - **Verified on Vercel**: There was a risk that Python SSE would be buffered and sent in one batch, so instead of judging from local runs I measured each event's arrival time on a preview deployment. The `tool` event arrived at 2.1 s → first `delta` at 5.0 s → `done` at 5.3 s, one by one, so I concluded that **no fallback (non-streaming + typewriter effect, etc.) is needed** (2026-10-27).
 - **Stateless**: The browser keeps the conversation history and sends the last 10 messages each time. On serverless, each request may be handled by a different instance, so keeping no state on the server is simpler and harder to break.
 - **Manual agent loop**: Instead of leaving it to the SDK's automatic execution, I wrote function call → run → return result myself. This gives fine control over iterations, the time budget, retries, and tool notifications (badges), and the mechanism can be read from the code.
-- **LLM calls isolated in one module**: `llm.py` defines provider-agnostic types (`ToolSpec` / `ModelTurn` / `TextDelta`, etc.) and an `LLMClient` protocol, and keeps all Gemini-specific code inside it. Providers are easy to swap, and tests replace it with a mock (`ScriptedLLM` in `tests/conftest.py`) to verify the loop without the real API. Gemini 3 models require the thought signature attached to function calls to be sent back in the next request, so model responses are kept in Gemini's own shape in `ModelTurn.raw`.
+- **LLM calls isolated in one module**: `llm.py` defines provider-agnostic types (`ToolSpec` / `ModelTurn` / `TextDelta`, etc.) and an `LLMClient` protocol, and keeps all Gemini-specific code inside it. Providers are easy to swap, and tests replace it with a mock (`ScriptedLLM` in `backend/tests/conftest.py`) to verify the loop without the real API. Gemini 3 models require the thought signature attached to function calls to be sent back in the next request, so model responses are kept in Gemini's own shape in `ModelTurn.raw`.
 - **Career data fetched through tools**: Instead of embedding all of `profile.json` in the prompt, the model fetches only what it needs through tools. Answers are grounded only in tool results, and the `tools` field in the logs shows what each answer was based on.
 - **uv**: Dependency definitions (`pyproject.toml`) and the lock file (`uv.lock`) live in one tool, and `uv sync --locked` keeps CI and local environments identical. Vercel also installs from `uv.lock`, so there is no `requirements.txt` to maintain in parallel.
 - **Region restriction**: The Gemini API Additional Terms of Service say that only paid services may be used when serving users in the EEA, Switzerland, or the UK. To keep running on the free tier, the country is determined from the `x-vercel-ip-country` header that Vercel adds, and `/api/chat` returns 451 (Unavailable For Legal Reasons) for those regions. The rest of the page still works. The check runs before rate limiting so that rejected requests don't use up the rate limit.

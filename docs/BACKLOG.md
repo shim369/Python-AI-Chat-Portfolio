@@ -8,7 +8,7 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] `vercel.json`（maxDuration、関数バンドルからの除外設定）
 - [x] `.env.example`（変数名のみ）
 - [x] 1ページ構成の静的ページ（ヒーロー / スキル / 制作物 / 技術解説 / チャット / フッター）
-- [x] レスポンシブ・ダークモード対応
+- [x] レスポンシブ・ダークモード対応（現在のデザインにはダークモードはない）
 - [x] `profile.json` と `prompts/system.md`
 - [x] `POST /api/chat`（非ストリーミング、ステートレス）
 - [x] LLM 呼び出しを `app/llm.py` に分離（`LLMClient` プロトコル）
@@ -53,3 +53,13 @@ Python-AI-Chat-Portfolio の開発タスク。スプリント単位で管理す�
 - [x] 提供地域の制御（Gemini 無料枠の規約に沿い、EEA・スイス・英国からのチャットに 451 を返す）
 - [x] GitHub Actions が main で成功することを確認（Run #1, 4f7ffcc, 19秒）
 - [x] 本番でログ（Vercel Runtime Logs）・レート制限を確認（地域制限の 451 は日本からは再現できないためテストで担保。クライアントが送った x-vercel-ip-country は Vercel に上書きされることを確認）
+
+## 追加タスク（Next.js への移行）
+
+- [x] 画面を Next.js（App Router・TypeScript）で作り直す（`frontend/`。既存の CSS を流用し、Normal / Pop・日英切り替え・GSAP の演出・AI チャット・ブログ・お問い合わせを移植）
+- [x] Python の API を `backend/` に移し、`vercel.json` で frontend / backend の2サービス構成にする（`/api/*` を backend へ振り分け）
+- [x] 旧サイト（`public/`）と、それを配信していた `scripts/dev_server.py` を削除
+- [x] GitHub Actions を backend（pytest）と frontend（型チェック・ビルド）の2ジョブにする
+- [x] ローカルで、実ブラウザ（puppeteer）による動作確認（チャットの応答、Works の横スクロール、日英・デザインの切り替え、フォームの入力チェック）
+- [ ] Vercel のプレビューで、2サービス構成のデプロイと `/api/chat` の応答を確認
+- [ ] 本番に反映し、ページと AI チャットの動作を確認
