@@ -843,25 +843,6 @@ html[data-theme="pop"] .footer-big {
   html[data-theme="pop"] .card-grid.is-horizontal { padding: 4px 12px 10px 4px; }
 }
 
-/* 図の下: AI チャットの流れ（Pop は白いパネルなので、文字は黒、番号は黄色の丸） */
-html[data-theme="pop"] .arch-flow-title {
-  color: #111;
-  font-weight: 700;
-}
-
-html[data-theme="pop"] .arch-flow li {
-  color: #111;
-}
-
-html[data-theme="pop"] .arch-flow li::before {
-  width: 30px;
-  height: 30px;
-  border: 2px solid #111;
-  background: var(--yellow);
-  color: #111;
-  font-weight: 700;
-}
-
 /* Works: 高さの低い画面では、固定中にカードと「See more projects」まで収まるよう、Pop のカードも詰める */
 @media (min-width: 601px) and (max-height: 920px) {
   html[data-theme="pop"] #works .section-title {

@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 
-const NOTES = [1, 2, 3, 4] as const;
-const FLOW_STEPS = [1, 2, 3, 4, 5] as const;
+const NOTES = [1, 2, 3] as const;
 const ARROW_PATHS = [
   "M190 150 C245 150 245 62 300 62",
   "M190 182 C245 182 245 220 300 220",
@@ -76,14 +75,6 @@ export default function Architecture() {
                 <path key={d} className="arch-line" pathLength={1} markerStart="url(#arrow)" markerEnd="url(#arrow)" d={d} />
               ))}
             </svg>
-            <figcaption className="arch-flow">
-              <p className="arch-flow-title">{t("arch.flowTitle")}</p>
-              <ol>
-                {FLOW_STEPS.map((n) => (
-                  <li key={n}>{t(`arch.flow${n}`)}</li>
-                ))}
-              </ol>
-            </figcaption>
           </figure>
           <ul className="design-notes">
             {NOTES.map((n) => (

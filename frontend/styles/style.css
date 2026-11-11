@@ -951,55 +951,6 @@ html:not([data-theme="pop"]) .skill-item.is-in::before {
   overflow-x: auto;
 }
 
-/* 図の下: AI チャットの流れ（番号つきの手順） */
-.arch-flow {
-  margin-top: 28px;
-  text-align: left;
-}
-
-.arch-flow-title {
-  margin: 0 0 14px;
-  color: var(--vm-lt);
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-}
-
-.arch-flow ol {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  gap: 18px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: flow;
-}
-
-.arch-flow li {
-  position: relative;
-  padding-top: 40px;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 14px;
-  line-height: 1.7;
-  counter-increment: flow;
-}
-
-.arch-flow li::before {
-  content: counter(flow);
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--vm-lt);
-  border-radius: 50%;
-  color: var(--vm-lt);
-  font-family: var(--mono);
-  font-size: 13px;
-}
-
 .arch svg {
   display: block;
   width: 100%;
