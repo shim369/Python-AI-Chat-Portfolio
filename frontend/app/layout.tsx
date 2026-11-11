@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Dela_Gothic_One, DM_Mono, JetBrains_Mono, Zen_Kaku_Gothic_New } from "next/font/google";
 import type { ReactNode } from "react";
+import Loader from "@/components/Loader";
 import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import "../styles/style.css";
 import "../styles/pop.css";
+import "../styles/loader.css";
 
 // Google Fonts は、ビルド時に取得してこのサイト自身のドメインから配信する（実行時に Google へは接続しない）。
 // 書体は CSS 変数（--font-*）で渡し、styles/ の --display / --font / --mono から参照する
@@ -51,6 +53,10 @@ export const viewport: Viewport = {
 // 保存済みのデザイン（Pop）を、最初の描画の前に <html> へ反映する（表示のちらつきを避けるため）
 const THEME_SCRIPT = `try{if(localStorage.getItem("theme")==="pop"){document.documentElement.dataset.theme="pop";document.getElementById("favicon").href="/favicon-pop.svg"}}catch(e){}`;
 
+// 初回表示のローディングを出すかどうかを、最初の描画の前に決める（Loader.tsx と同じキー）。
+// 動きを減らす設定の人と、同じタブで2回目以降は出さない。8秒たっても閉じなかったときのために、ここでも外す
+const LOADER_SCRIPT = `try{var r=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("loader-seen")){r.classList.add("is-loading");setTimeout(function(){r.classList.remove("is-loading")},8000)}}catch(e){}`;
+
 const PERSON_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -66,9 +72,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <link rel="icon" id="favicon" href="/favicon.svg" type="image/svg+xml" />
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: LOADER_SCRIPT }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD) }} />
       </head>
       <body>
+        <Loader />
         <ThemeProvider>
           <I18nProvider>{children}</I18nProvider>
         </ThemeProvider>

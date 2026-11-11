@@ -1,0 +1,233 @@
+/* 初回表示のローディング。<html class="is-loading"> のときだけ画面を覆う。
+   通常デザインと Pop で、背景・書体・動きをそれぞれ別に作ってある
+   （通常: 暗い背景に Anton の名前と、左から引かれる線 / Pop: 黄色い背景に、ブラウザ窓風のカードと跳ねる3つの丸） */
+.loader {
+  display: none;
+}
+
+html.is-loading {
+  /* ローディング中は、後ろのページをスクロールさせない */
+  overflow: hidden;
+}
+
+html.is-loading .loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.5s ease;
+}
+
+.loader-inner {
+  display: grid;
+  justify-items: center;
+}
+
+.loader.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ローディング中は、ヒーローの名前のせり上がり（CSS）を止めておく。消えたところから始まる */
+html.is-loading .hero-name b {
+  animation-play-state: paused;
+}
+
+/* ---------- 通常デザイン ---------- */
+.loader {
+  background: var(--ink);
+  color: #fff;
+}
+
+.loader-inner {
+  gap: 18px;
+}
+
+.loader-kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--vm-lt);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: loader-fade 0.6s ease 0.1s backwards;
+}
+
+.loader-kicker::before {
+  content: "";
+  width: 44px;
+  height: 1px;
+  background: currentColor;
+}
+
+.loader-name {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(48px, 11vw, 120px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  /* backwards にして、終わったあとは通常のスタイルに戻す（消えるときの transition を効かせるため） */
+  animation: loader-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
+}
+
+/* 名前の下で、細い線が左から右へ引かれる */
+.loader-line {
+  display: block;
+  width: min(260px, 60vw);
+  height: 1px;
+  background: var(--vm-lt);
+  transform-origin: 0 50%;
+  animation: loader-draw 1.2s cubic-bezier(0.6, 0, 0.2, 1) 0.2s backwards;
+}
+
+/* Pop 専用の部品は、通常デザインでは出さない */
+.loader-mark,
+.loader-dots {
+  display: none;
+}
+
+.loader.is-leaving .loader-name {
+  transform: translateY(-8px);
+  transition: transform 0.5s ease;
+}
+
+/* ---------- Pop デザイン ---------- */
+html[data-theme="pop"] .loader {
+  background: var(--yellow);
+  color: #111;
+  /* 背景に、ページと同じドットの模様 */
+  background-image: radial-gradient(rgba(17, 17, 17, 0.14) 1.5px, transparent 1.6px);
+  background-size: 22px 22px;
+}
+
+html[data-theme="pop"] .loader-inner {
+  gap: 14px;
+  padding: 34px clamp(28px, 6vw, 56px) 30px;
+  border: var(--bw) solid #111;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--sh);
+  animation: loader-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards;
+}
+
+html[data-theme="pop"] .loader-kicker,
+html[data-theme="pop"] .loader-line {
+  display: none;
+}
+
+html[data-theme="pop"] .loader-mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: var(--bw) solid #111;
+  border-radius: 18px;
+  background: var(--yellow);
+  box-shadow: 3px 3px 0 #111;
+  font-family: var(--display);
+  font-size: 22px;
+  font-style: normal;
+  line-height: 1;
+  animation: loader-wobble 1.4s ease-in-out infinite;
+}
+
+html[data-theme="pop"] .loader-name {
+  font-size: clamp(30px, 8vw, 64px);
+  letter-spacing: 0;
+  text-transform: none;
+  animation: none;
+}
+
+html[data-theme="pop"] .loader-dots {
+  display: flex;
+  gap: 10px;
+  /* 跳ねたときに、上の名前にぶつからないよう、間隔を空ける */
+  margin-top: 16px;
+}
+
+html[data-theme="pop"] .loader-dots b {
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid #111;
+  border-radius: 50%;
+  background: var(--pink);
+  animation: loader-bounce 0.9s ease-in-out infinite;
+}
+
+html[data-theme="pop"] .loader-dots b:nth-child(2) {
+  background: var(--mint);
+  animation-delay: 0.12s;
+}
+
+html[data-theme="pop"] .loader-dots b:nth-child(3) {
+  background: var(--sky);
+  animation-delay: 0.24s;
+}
+
+html[data-theme="pop"] .loader.is-leaving .loader-inner {
+  transform: scale(0.94);
+  transition: transform 0.5s ease;
+}
+
+html[data-theme="pop"] .loader.is-leaving .loader-name {
+  transform: none;
+}
+
+/* ---------- 動き ---------- */
+@keyframes loader-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes loader-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@keyframes loader-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes loader-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-3deg);
+  }
+}
+
+@keyframes loader-wobble {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes loader-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    display: none !important;
+  }
+}
