@@ -26,7 +26,7 @@ The backend is Python (FastAPI). A **hand-written agent loop** built on Gemini A
 
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js (App Router) / React / TypeScript (`frontend/`), GSAP + ScrollTrigger |
+| Frontend | Next.js (App Router) / React / TypeScript (`frontend/`), GSAP + ScrollTrigger, Google Fonts self-hosted with `next/font` |
 | Backend | Python 3.14 / FastAPI (`backend/`) |
 | LLM | Google Gemini API (`google-genai` SDK, default model `gemini-3.5-flash-lite`) |
 | Hosting | Vercel Hobby (free plan). One project with two [services](https://vercel.com/docs/services) (`vercel.json`): `frontend` (Next.js) and `backend` (a Python Function); `/api/*` goes to the backend |

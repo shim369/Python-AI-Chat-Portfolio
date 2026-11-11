@@ -78,8 +78,8 @@ html[data-theme="pop"] {
   --vm: #111;
   --vm-dark: #111;
   --vm-lt: var(--yellow);
-  --display: "Dela Gothic One", "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
-  --mono: "DM Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --display: var(--font-dela), var(--font-zen), "Hiragino Sans", "Yu Gothic", sans-serif;
+  --mono: var(--font-dm-mono), var(--font-jetbrains), ui-monospace, Menlo, monospace;
   --radius: 20px;
 }
 

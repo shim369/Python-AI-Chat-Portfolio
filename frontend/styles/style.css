@@ -34,9 +34,9 @@
   --gutter: clamp(20px, 5vw, 72px);
   --slant: clamp(36px, 6vw, 88px);
   --sy: 0;
-  --display: "Anton", "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
-  --font: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
-  --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --display: var(--font-anton), var(--font-zen), "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font: var(--font-zen), "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --mono: var(--font-jetbrains), "IBM Plex Mono", ui-monospace, Menlo, monospace;
   color-scheme: light;
 }
 

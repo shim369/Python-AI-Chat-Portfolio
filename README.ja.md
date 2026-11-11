@@ -26,7 +26,7 @@
 
 | 層 | 技術 |
 |---|---|
-| フロントエンド | Next.js（App Router）/ React / TypeScript（`frontend/`）、GSAP + ScrollTrigger |
+| フロントエンド | Next.js（App Router）/ React / TypeScript（`frontend/`）、GSAP + ScrollTrigger、Google Fonts は `next/font` で自前配信 |
 | バックエンド | Python 3.14 / FastAPI（`backend/`） |
 | LLM | Google Gemini API（`google-genai` SDK、デフォルトのモデルは `gemini-3.5-flash-lite`） |
 | ホスティング | Vercel Hobby（無料プラン）。1つのプロジェクトに2つの[サービス](https://vercel.com/docs/services)（`vercel.json`）: `frontend`（Next.js）と `backend`（Python Function）。`/api/*` は backend へ |
