@@ -40,7 +40,9 @@ export default function ScrollEffects() {
 
     const track = document.querySelector<HTMLElement>("#project-list");
     let heroIntro: gsap.core.Tween | null = null;
-    const startHeroIntro = () => heroIntro?.play();
+    const startHeroIntro = () => heroIntro?.restart();
+    // 切り替えでローディングを出し直すときは、ヒーローを隠した状態に戻して待つ
+    const resetHeroIntro = () => heroIntro?.pause(0);
     const ctx = gsap.context(() => {
       // hero: 読み込み時に上から順に表示する（名前の見出しは CSS で下からせり上がる）。
       // 初回のローディング中は止めておき、ローディングが消えた合図（loader:done）で始める
@@ -52,7 +54,8 @@ export default function ScrollEffects() {
         stagger: 0.12,
         paused: root.classList.contains("is-loading"),
       });
-      window.addEventListener("loader:done", startHeroIntro, { once: true });
+      window.addEventListener("loader:start", resetHeroIntro);
+      window.addEventListener("loader:done", startHeroIntro);
 
       // セクションを画面上端で固定し、縦スクロールの量に合わせて制作物の一覧を横に流す（通常・Pop 共通）。
       // 横並びのレイアウトは .is-horizontal が付いたときだけ効くので、無効時は通常のグリッドのまま
@@ -82,6 +85,7 @@ export default function ScrollEffects() {
 
     return () => {
       ctx.revert();
+      window.removeEventListener("loader:start", resetHeroIntro);
       window.removeEventListener("loader:done", startHeroIntro);
       track?.classList.remove("is-horizontal");
       document.removeEventListener("click", onClick);

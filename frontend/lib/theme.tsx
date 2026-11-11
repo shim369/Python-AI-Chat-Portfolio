@@ -1,5 +1,6 @@
 "use client";
 
+import { LOADER_START_EVENT } from "@/components/Loader";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type Theme = "normal" | "pop";
@@ -26,6 +27,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [theme]);
 
   const setTheme = useCallback((next: Theme) => {
+    if (readTheme() === next) return;
+    // 切り替えのたびに、ローディングを出してページを先頭から見せ直す（動きを減らす設定の人は、先頭に戻すだけ）。
+    // 合図を先に送り、同じ処理の中でデザインも切り替えるので、ローディングは切り替え後のデザインで出る
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      window.scrollTo(0, 0);
+    } else {
+      window.dispatchEvent(new Event(LOADER_START_EVENT));
+    }
+    // URL に #architecture などが付いていると先頭に戻らないので、外す
+    history.replaceState(null, "", window.location.pathname + window.location.search);
     if (next === "pop") document.documentElement.dataset.theme = "pop";
     else delete document.documentElement.dataset.theme;
     try {
