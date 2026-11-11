@@ -50,8 +50,10 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-// 保存済みのデザイン（Pop）を、最初の描画の前に <html> へ反映する（表示のちらつきを避けるため）
-const THEME_SCRIPT = `try{if(localStorage.getItem("theme")==="pop"){document.documentElement.dataset.theme="pop";document.getElementById("favicon").href="/favicon-pop.svg"}}catch(e){}`;
+// 保存済みのデザイン（Pop）を、最初の描画の前に <html> へ反映する（表示のちらつきを避けるため）。
+// ファビコンはここでは書き換えない: <head> のリンクをあとから書き換えると、React が元のリンクをもう1つ足してしまうため、
+// 読み込み後に lib/theme.tsx が切り替える
+const THEME_SCRIPT = `try{if(localStorage.getItem("theme")==="pop"){document.documentElement.dataset.theme="pop"}}catch(e){}`;
 
 // 初回表示のローディングを出すかどうかを、最初の描画の前に決める（Loader.tsx と同じキー）。
 // 動きを減らす設定の人と、同じタブで2回目以降は出さない。8秒たっても閉じなかったときのために、ここでも外す
