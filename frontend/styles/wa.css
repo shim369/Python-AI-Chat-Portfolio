@@ -434,7 +434,8 @@ html[data-theme="wa"] .eyebrow {
   top: 0;
   left: var(--gutter);
   flex-direction: column;
-  align-items: flex-start;
+  /* 番号の丸と、縦書きの見出しの文字は、同じ縦の中心線にそろえる（左揃えだと、細い丸が文字の中心より左に寄って見える） */
+  align-items: center;
   gap: 20px;
   margin: 0;
   color: var(--sumi);
@@ -468,6 +469,15 @@ html[data-theme="wa"] .eyebrow span {
   line-height: 1.1;
   text-orientation: mixed;
   writing-mode: vertical-rl;
+}
+
+/* 英語の縦書きは、文字を右に倒した向きになり、見えている字の中心が、枠の中心（丸の中心）より約3px左に寄って見える。
+   英語のときだけ、右へ3pxずらして、丸と見た目の中心をそろえる（日本語と、横書きになる狭い画面では、ずらさない） */
+@media (min-width: 821px) {
+  html[lang="en"][data-theme="wa"] .eyebrow span {
+    position: relative;
+    left: 3px;
+  }
 }
 
 html[data-theme="wa"] .section-alt .eyebrow,
