@@ -111,7 +111,14 @@ export default function ScrollEffects() {
         gsap.fromTo(
           heading,
           { clipPath: "inset(0 0 100% 0)" },
-          { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power2.inOut", scrollTrigger: { trigger: heading, start: "top 90%", once: true } }
+          {
+            clipPath: "inset(0 0 0% 0)",
+            duration: 1.2,
+            ease: "power2.inOut",
+            // 現れ終わったら切り抜きを外す（残すと、縦書きの "g" の下のはらいなど、文字の枠からはみ出した部分が切れて見える）
+            clearProps: "clipPath",
+            scrollTrigger: { trigger: heading, start: "top 90%", once: true },
+          }
         );
       });
 
@@ -162,7 +169,8 @@ export default function ScrollEffects() {
         gsap.fromTo(
           title,
           { clipPath: "inset(0 0 100% 0)" },
-          { clipPath: "inset(0 0% 0% 0)", duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: title, start: "top 88%", once: true } }
+          // 現れ終わったら切り抜きを外す（文字の枠からはみ出した部分が切れて見えないように）
+          { clipPath: "inset(0 0% 0% 0)", duration: 0.8, ease: "power3.out", clearProps: "clipPath", scrollTrigger: { trigger: title, start: "top 88%", once: true } }
         );
       });
 
