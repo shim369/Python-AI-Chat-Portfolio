@@ -6,7 +6,16 @@
 export type Localized = { ja: string; en: string };
 
 export type Skill = { name: string; years: Localized; note: Localized };
-export type Project = { title: string; summary: Localized; tech: string[]; url: string };
+export type Project = {
+  title: string;
+  summary: Localized;
+  /** 和のカードの右上に出る札（種類） */
+  category: Localized;
+  tech: string[];
+  url: string;
+  /** 公開しているデモがあるときだけ */
+  demo?: string;
+};
 
 // 言語系スキル（全件は backend/app/data/profile.json にあり、AIチャットはそちらを参照する。DB・テスト・AIなどは messages.ts の skills.extra に記載）
 export const SKILLS: Skill[] = [
@@ -115,6 +124,10 @@ export const SKILLS: Skill[] = [
 export const PROJECTS: Project[] = [
   {
     "title": "Python-Web-Analyzer",
+    "category": {
+      "ja": "調査ツール",
+      "en": "Analysis tool"
+    },
     "summary": {
       "ja": "Excelのドメイン一覧からSSL対応・CMS・ページ数を並列クロールで解析し、評価を付けるStreamlitアプリ。状態をSQLiteに保存し、強制終了後も復旧します。",
       "en": "A Streamlit app that crawls a list of domains in parallel to detect SSL, CMS and page count, then rates each site. State is saved in SQLite."
@@ -129,6 +142,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Python-Health-Insight-Agent",
+    "category": {
+      "ja": "AIエージェント",
+      "en": "AI agent"
+    },
     "summary": {
       "ja": "食事・運動・睡眠ログを分析するAIエージェント。Gemini が説明し、統計は型付きツールで計算して根拠つきで回答します。RAGやMCPサーバーも備えます。",
       "en": "An AI agent that analyzes meal, workout and sleep logs. Gemini explains, typed tools compute the statistics, and answers cite evidence. Includes RAG and MCP."
@@ -146,6 +163,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Python-AI-Chat-Portfolio",
+    "category": {
+      "ja": "AI",
+      "en": "AI"
+    },
     "summary": {
       "ja": "このサイト。Gemini の function calling を使った手動エージェントループのAIチャットを、Vercel 上の FastAPI と Next.js で動かしています。",
       "en": "This site. An AI chat built on a hand-written agent loop with Gemini function calling, running on FastAPI and Next.js on Vercel."
@@ -157,10 +178,15 @@ export const PROJECTS: Project[] = [
       "Next.js",
       "TypeScript"
     ],
-    "url": "https://github.com/shim369/Python-AI-Chat-Portfolio"
+    "url": "https://github.com/shim369/Python-AI-Chat-Portfolio",
+    "demo": "https://python-ai-chat-portfolio.vercel.app"
   },
   {
     "title": "Python-Defect-Hunter-Game",
+    "category": {
+      "ja": "画像認識",
+      "en": "Computer vision"
+    },
     "summary": {
       "ja": "表面欠陥データセット KolektorSDD2 を使った「人間 vs AI」のブラウザゲーム。CPUで学習した小さな U-Net と人間が同じ画像の欠陥をなぞり、IoU で比較します。",
       "en": "A Human vs AI browser game on the KolektorSDD2 surface-defect dataset. You and a small CPU-trained U-Net trace the same defect, and both are scored by IoU."
@@ -176,6 +202,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Python-Smart-Health-Intelligence-Platform",
+    "category": {
+      "ja": "ヘルスケア",
+      "en": "Healthcare"
+    },
     "summary": {
       "ja": "開発中のマルチユーザー向け健康管理Webアプリ。ルールベースの提案、Gemini によるレシピ生成、LightGBM による体重予測、Google認証を備えます。",
       "en": "A multi-user health tracking web app (in progress) with rule-based recommendations, Gemini recipe generation, LightGBM weight prediction and Google sign-in."
@@ -192,6 +222,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Python-Budget-Tracker-App",
+    "category": {
+      "ja": "業務アプリ",
+      "en": "Business app"
+    },
     "summary": {
       "ja": "オフラインで動く家計簿・サブスク管理アプリ。FastAPI と Pydantic で作り、設計書とトレーサビリティを整備し、336件のテストでカバレッジ99.9%。",
       "en": "An offline budget and subscription tracker built with FastAPI and Pydantic, backed by design docs, traceability, and 336 tests at 99.9% coverage."
@@ -207,6 +241,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Python-Encryption-Tool",
+    "category": {
+      "ja": "セキュリティ",
+      "en": "Security"
+    },
     "summary": {
       "ja": "ファイル・フォルダを一括で暗号化 / 復号するデスクトップツール。ソルトとストレッチングによる鍵の強化、Mypy Strict 準拠の型付け、GitHub Actions での CI。",
       "en": "A desktop tool that encrypts and decrypts files and whole folders, with salted, stretched keys, Mypy-strict typing and CI on GitHub Actions."
@@ -222,6 +260,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Nextjs-TypeScript-AspNetCore-Todo-App",
+    "category": {
+      "ja": "Webアプリ",
+      "en": "Web app"
+    },
     "summary": {
       "ja": "Next.js（TypeScript）のフロントエンドと ASP.NET Core（MVC）のバックエンドを分離したフルスタックの Todo アプリ。データは SQLite に保存します。",
       "en": "A full-stack Todo app with a Next.js (TypeScript) frontend decoupled from an ASP.NET Core (MVC) backend, storing its data in SQLite."
@@ -237,6 +279,10 @@ export const PROJECTS: Project[] = [
   },
   {
     "title": "Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
+    "category": {
+      "ja": "Webサイト",
+      "en": "Website"
+    },
     "summary": {
       "ja": "Nuxt 3 とヘッドレスCMS（microCMS）で構築した Jamstack サイト。GSAP と AOS のスクロールアニメーション、reCAPTCHA v3 付きフォームを備え、Vercel で公開。",
       "en": "A Jamstack site built with Nuxt 3 and the microCMS headless CMS, with GSAP and AOS scroll animations and a reCAPTCHA v3 form, published on Vercel."
@@ -248,7 +294,8 @@ export const PROJECTS: Project[] = [
       "GSAP",
       "Vercel"
     ],
-    "url": "https://github.com/shim369/Nuxtjs-TypeScript-Gsap-MicroCMS-Site"
+    "url": "https://github.com/shim369/Nuxtjs-TypeScript-Gsap-MicroCMS-Site",
+    "demo": "https://nuxtbase-gsap.vercel.app"
   }
 ];
 
