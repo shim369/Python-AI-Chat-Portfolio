@@ -8,7 +8,7 @@ export default function Skills() {
   return (
     <section id="skills" className="section">
       <div className="container">
-        <p className="eyebrow"><b>01</b><span>{t("nav.skills")}</span></p>
+        <p className="eyebrow"><b data-kan="壱">01</b><span>{t("nav.skills")}</span></p>
         <h2 className="section-title">{t("skills.heading")}</h2>
         <ul className="skill-grid" id="skill-list">
           {SKILLS.map((skill) => (

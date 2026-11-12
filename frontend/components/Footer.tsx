@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 
 export default function Footer() {
+  const { t } = useI18n();
   const { theme } = useTheme();
   const footer = useRef<HTMLElement>(null);
   const big = useRef<HTMLDivElement>(null);
@@ -61,6 +63,7 @@ export default function Footer() {
         {/* Pop デザイン: 黄色い文字 */}
         <div className="footer-big" ref={big} aria-hidden="true">S.OHTANI</div>
         <div className="footer-row">
+          <p className="footer-thanks">{t("footer.thanks")}</p>
           <p className="footer-copy">&copy; Shinpei Ohtani</p>
         </div>
       </div>

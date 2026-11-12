@@ -37,8 +37,10 @@ export default function Architecture() {
     <>
       <div className="seam seam-in seam-ink" aria-hidden="true" />
       <section id="architecture" className="section section-dark">
+        {/* 和のデザインだけ: 夜空の月（ほかのデザインでは非表示） */}
+        <div className="moon" aria-hidden="true" />
         <div className="container">
-          <p className="eyebrow"><b>04</b><span>{t("nav.architecture")}</span></p>
+          <p className="eyebrow"><b data-kan="四">04</b><span>{t("nav.architecture")}</span></p>
           <h2 className="section-title">{t("arch.title")}</h2>
           <figure className={`arch${go ? " go" : ""}`} ref={figure}>
             <svg viewBox="0 0 960 330" role="img" aria-labelledby="arch-title arch-desc">

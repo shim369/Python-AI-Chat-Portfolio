@@ -37,7 +37,7 @@ export default function Blog() {
   return (
     <section id="blog" className="section">
       <div className="container">
-        <p className="eyebrow"><b>03</b><span>{t("nav.blog")}</span></p>
+        <p className="eyebrow"><b data-kan="参">03</b><span>{t("nav.blog")}</span></p>
         <h2 className="section-title">TECH BLOG</h2>
         <p className="section-lead">{t("blog.lead")}</p>
         <div className="card-grid" id="blog-list">

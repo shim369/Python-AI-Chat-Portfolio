@@ -147,7 +147,7 @@ export default function Contact() {
     <section id="contact" className="section">
       <div className="container contact-grid">
         <div className="contact-intro">
-          <p className="eyebrow"><b>05</b><span>{t("nav.contact")}</span></p>
+          <p className="eyebrow"><b data-kan="五">05</b><span>{t("nav.contact")}</span></p>
           <h2 className="section-title">{t("contact.heading")}</h2>
           <p className="section-lead">{t("contact.lead")}</p>
         </div>

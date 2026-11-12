@@ -16,7 +16,7 @@ export default function ScrollEffects() {
   const { lang } = useI18n();
   const { theme } = useTheme();
 
-  // 通常・Pop 共通の動き
+  // 全デザイン共通の動き
   useEffect(() => {
     if (!motionEnabled()) return;
 
@@ -38,7 +38,6 @@ export default function ScrollEffects() {
     };
     document.addEventListener("click", onClick);
 
-    const track = document.querySelector<HTMLElement>("#project-list");
     let heroIntro: gsap.core.Tween | null = null;
     const startHeroIntro = () => heroIntro?.restart();
     // 切り替えでローディングを出し直すときは、ヒーローを隠した状態に戻して待つ
@@ -57,28 +56,6 @@ export default function ScrollEffects() {
       window.addEventListener("loader:start", resetHeroIntro);
       window.addEventListener("loader:done", startHeroIntro);
 
-      // セクションを画面上端で固定し、縦スクロールの量に合わせて制作物の一覧を横に流す（通常・Pop 共通）。
-      // 横並びのレイアウトは .is-horizontal が付いたときだけ効くので、無効時は通常のグリッドのまま
-      if (track) {
-        track.classList.add("is-horizontal");
-        const distance = () => Math.max(0, track.scrollWidth - track.clientWidth);
-        gsap.to(track, {
-          x: () => -distance(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#works",
-            start: "top top",
-            end: () => "+=" + distance(),
-            pin: true,
-            // 小さめにして、スクロールを止めたらカードもすぐ止まるようにする（大きいと止めた後も流れ続ける）
-            scrub: 0.2,
-            invalidateOnRefresh: true,
-            // 固定で増えた高さを後ろのセクションの発火位置に反映させるため、先に計算する
-            refreshPriority: 1,
-          },
-        });
-      }
-
       reveal("#skill-list > .skill-item");
       reveal(REVEAL_TARGETS);
     });
@@ -87,15 +64,75 @@ export default function ScrollEffects() {
       ctx.revert();
       window.removeEventListener("loader:start", resetHeroIntro);
       window.removeEventListener("loader:done", startHeroIntro);
-      track?.classList.remove("is-horizontal");
       document.removeEventListener("click", onClick);
       root.style.scrollBehavior = previousBehavior;
     };
   }, []);
 
-  // 通常デザインだけの動き。Pop に切り替えたら gsap.context ごと片付ける（インラインスタイルも元に戻る）
+  // セクションを画面上端で固定し、縦スクロールの量に合わせて制作物の一覧を横に流す（通常・Pop。和は、襖が開く格子状の一覧）。
+  // 横並びのレイアウトは .is-horizontal が付いたときだけ効くので、無効時は通常のグリッドのまま
+  const horizontalWorks = theme !== "wa";
   useEffect(() => {
-    if (!motionEnabled() || theme === "pop") return;
+    const track = document.querySelector<HTMLElement>("#project-list");
+    if (!motionEnabled() || !horizontalWorks || !track) return;
+    track.classList.add("is-horizontal");
+    const ctx = gsap.context(() => {
+      const distance = () => Math.max(0, track.scrollWidth - track.clientWidth);
+      gsap.to(track, {
+        x: () => -distance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#works",
+          start: "top top",
+          end: () => "+=" + distance(),
+          pin: true,
+          // 小さめにして、スクロールを止めたらカードもすぐ止まるようにする（大きいと止めた後も流れ続ける）
+          scrub: 0.2,
+          invalidateOnRefresh: true,
+          // 固定で増えた高さを後ろのセクションの発火位置に反映させるため、先に計算する
+          refreshPriority: 1,
+        },
+      });
+    });
+    return () => {
+      ctx.revert();
+      track.classList.remove("is-horizontal");
+    };
+  }, [horizontalWorks]);
+
+  // 和のデザインだけの動き。ほかのデザインに切り替えたら gsap.context ごと片付ける（インラインスタイルも元に戻る）
+  useEffect(() => {
+    if (!motionEnabled() || theme !== "wa") return;
+    const doors = gsap.utils.toArray<HTMLElement>("#project-list > .card");
+
+    const ctx = gsap.context(() => {
+      // 見出し（縦書き）: 上から下へ、墨が引かれるように現れる
+      gsap.utils.toArray<HTMLElement>(".eyebrow span").forEach((heading) => {
+        gsap.fromTo(
+          heading,
+          { clipPath: "inset(0 0 100% 0)" },
+          { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power2.inOut", scrollTrigger: { trigger: heading, start: "top 90%", once: true } }
+        );
+      });
+
+      // 制作物: 閉じた襖が、画面に入ると左右に開く（開く動きは CSS の transition）
+      doors.forEach((card) => card.classList.add("is-closed"));
+      ScrollTrigger.batch(doors, {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => batch.forEach((card, i) => gsap.delayedCall(i * 0.15 + 0.1, () => card.classList.remove("is-closed"))),
+      });
+    });
+
+    return () => {
+      ctx.revert();
+      for (const card of doors) card.classList.remove("is-closed");
+    };
+  }, [theme]);
+
+  // 通常デザインだけの動き。ほかのデザインに切り替えたら gsap.context ごと片付ける（インラインスタイルも元に戻る）
+  useEffect(() => {
+    if (!motionEnabled() || theme !== "normal") return;
     const cards = gsap.utils.toArray<HTMLElement>("#skill-list > .skill-item");
 
     const ctx = gsap.context(() => {

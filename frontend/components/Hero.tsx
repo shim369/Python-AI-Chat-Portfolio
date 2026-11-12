@@ -1,19 +1,27 @@
 "use client";
 
 import { useChatOpener } from "@/lib/chat-ui";
+import Emblem from "@/components/Emblem";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 const KEYWORDS = ["Python", "JavaScript", "TypeScript", "React", "FastAPI", "Gemini API", "AI Chat", "SQL"];
 const TICKER = ["PYTHON", "JAVASCRIPT", "FASTAPI", "AI CHAT", "SQL"];
 
 export default function Hero() {
   const { t } = useI18n();
+  const { theme } = useTheme();
   const { open } = useChatOpener();
 
   return (
     <>
       <section className="hero">
-        <video className="hero-video" src="/images/water.mp4" autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
+        {/* 和のデザインでは、背景の水の動画も、エンブレムの代わりの円相も使い分ける（動画は和のときは読み込まない） */}
+        {theme === "wa" ? (
+          <Emblem />
+        ) : (
+          <video className="hero-video" src="/images/water.mp4" autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
+        )}
         <div className="container">
           <div className="hero-intro">
             <p className="hero-kicker">Portfolio / 2026</p>
@@ -43,6 +51,11 @@ export default function Hero() {
       {/* 通常デザイン: 罫線で挟んだキーワード帯 */}
       <div className="strip" aria-hidden="true">
         {KEYWORDS.map((k) => <span key={k}>{k}</span>)}
+      </div>
+
+      {/* 和のデザイン: 赤い菱形のある仕切り線（ほかのデザインでは非表示） */}
+      <div className="rule" aria-hidden="true">
+        <i />
       </div>
 
       {/* Pop デザイン: 流れるティッカー（スクロールに連動して横に動く） */}

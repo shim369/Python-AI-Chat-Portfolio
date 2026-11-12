@@ -108,7 +108,7 @@ h3 {
   width: 100%;
   height: 3px;
   background: var(--vm-lt);
-  transform: scaleX(0);
+  transform: scaleX(var(--progress, 0));
   transform-origin: 0 50%;
 }
 
@@ -1599,8 +1599,7 @@ html:not([data-theme="pop"]) .footer-big {
     gap: 6px;
   }
 
-  .lang-switch button,
-  .theme-switch button {
+  .lang-switch button {
     padding: 6px 8px;
     font-size: 11px;
   }

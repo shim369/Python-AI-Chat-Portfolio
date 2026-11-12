@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="3" y="3" width="58" height="58" fill="#b4362a"/>
+  <rect x="9" y="9" width="46" height="46" fill="none" stroke="#f4efe3" stroke-width="2.2"/>
+  <rect x="12.6" y="12.6" width="38.8" height="38.8" fill="none" stroke="#f4efe3" stroke-width="1"/>
+  <text x="32" y="44.5" text-anchor="middle" font-family="'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif" font-weight="800" font-size="34" fill="#f4efe3">晋</text>
+</svg>
