@@ -10,6 +10,22 @@
 - デプロイ先: https://python-ai-chat-portfolio.vercel.app
 - 開発の進め方とタスク: [docs/BACKLOG.md](docs/BACKLOG.md)（3 スプリント + 追加タスク。Next.js への移行を含む）
 
+## スクリーンショット
+
+メインのデザインは **和（Wa）** です。**Normal** と **Pop** は、ヘッダーのプルダウンから選べます。選んだデザインは保存され、切り替えるたびに、そのデザインのローディングを出して、ページの先頭から表示し直します。
+
+<p align="center">
+  <img src="docs/images/wa-hero.jpg" alt="和のデザイン: 墨の梅の枝があるヒーロー" width="860">
+</p>
+
+| 制作物（和） | AI チャット（和） |
+|---|---|
+| <img src="docs/images/wa-works.jpg" alt="和のデザイン: 漢数字の番号つきの制作物カード" width="100%"> | <img src="docs/images/chat.jpg" alt="和のデザイン: ツールを呼び出して答える AI チャット" width="100%"> |
+
+| Normal | Pop |
+|---|---|
+| <img src="docs/images/normal.jpg" alt="Normal デザイン: 水の動画の上のヒーロー" width="100%"> | <img src="docs/images/pop.jpg" alt="Pop デザイン: AI チャットのパネルがあるヒーロー" width="100%"> |
+
 ## 主な機能
 
 - 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）。レスポンシブ対応で、3つのデザイン（メインの「和」と、ヘッダーのプルダウンで選べる Normal / Pop）と GSAP のスクロール演出を備える

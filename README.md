@@ -10,6 +10,22 @@ The backend is Python (FastAPI). A **hand-written agent loop** built on Gemini A
 - Live site: https://python-ai-chat-portfolio.vercel.app
 - Development process and tasks: [docs/BACKLOG.md](docs/BACKLOG.md) (3 sprints + extra tasks, including the move to Next.js; in Japanese)
 
+## Screenshots
+
+The main design is **Wa (和)**. **Normal** and **Pop** can be chosen from the pull-down in the header; the choice is saved, and the page starts from the top with that design's loading screen each time it changes.
+
+<p align="center">
+  <img src="docs/images/wa-hero.jpg" alt="Wa design: the hero with a brushed plum branch" width="860">
+</p>
+
+| Works (Wa) | AI chat (Wa) |
+|---|---|
+| <img src="docs/images/wa-works.jpg" alt="Wa design: project cards with kanji numbers" width="100%"> | <img src="docs/images/chat.jpg" alt="Wa design: the AI chat answering with a tool call" width="100%"> |
+
+| Normal | Pop |
+|---|---|
+| <img src="docs/images/normal.jpg" alt="Normal design: hero over a water video" width="100%"> | <img src="docs/images/pop.jpg" alt="Pop design: hero with the AI chat panel" width="100%"> |
+
 ## Features
 
 - A single self-introduction page (skills / projects / latest blog posts / how this site works / contact), responsive, with three designs (the main "Wa" (和) design, plus Normal and Pop, chosen from a pull-down in the header) and GSAP scroll animations
