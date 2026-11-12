@@ -12,7 +12,7 @@
 
 ## 主な機能
 
-- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）。レスポンシブ対応で、2つのデザイン（Normal / Pop）と GSAP のスクロール演出を備える
+- 1ページの自己紹介（スキル / 制作物 / ブログ最新記事 / このサイトの仕組み / お問い合わせ）。レスポンシブ対応で、3つのデザイン（メインの「和」と、ヘッダーのプルダウンで選べる Normal / Pop）と GSAP のスクロール演出を備える
 - 画面右下のボタンで開閉する AI チャット（スマホでは画面いっぱいに表示）。Pop デザインではヒーロー内にも表示する
 - お問い合わせフォーム: reCAPTCHA v3 で検証してから、Gmail の SMTP で自分宛てにメールを送る
 - 日本語 / 英語の切り替え（画面の文言・AI の回答言語・エラーメッセージ）
@@ -69,7 +69,7 @@ frontend/            Next.js（App Router・TypeScript）— ページ
   app/               レイアウト、メタ情報（Open Graph）、ページ
   components/        セクションごとのコンポーネント（Hero, Skills, Works, Blog, Architecture, Contact, Footer）と ChatWidget
   lib/               型つきの表示内容（config.ts: スキル・制作物）、画面の文言（messages.ts）、言語・デザインの切り替え、チャットのフック、GSAP の演出
-  styles/            style.css（Normal デザイン）と pop.css（Pop デザイン）
+  styles/            style.css（Normal デザイン。ほかのデザインの土台でもある）、wa.css（和。既定のデザイン）、pop.css（Pop）、loader.css（各デザインのローディング）
   public/            ファビコンとヒーローの背景動画
 vercel.json          2つのサービス（frontend / backend）と /api/* の振り分け
 docs/BACKLOG.md      スプリントごとのタスク

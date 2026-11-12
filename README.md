@@ -12,7 +12,7 @@ The backend is Python (FastAPI). A **hand-written agent loop** built on Gemini A
 
 ## Features
 
-- A single self-introduction page (skills / projects / latest blog posts / how this site works / contact), responsive, with two designs (Normal / Pop) and GSAP scroll animations
+- A single self-introduction page (skills / projects / latest blog posts / how this site works / contact), responsive, with three designs (the main "Wa" (和) design, plus Normal and Pop, chosen from a pull-down in the header) and GSAP scroll animations
 - An AI chat that opens from a button in the bottom-right corner (full screen on phones). In the Pop design it is also shown inside the hero
 - Contact form: verified with reCAPTCHA v3, then sent to my own inbox over Gmail SMTP
 - Japanese / English switching (UI text, the language of AI answers, and error messages)
@@ -69,7 +69,7 @@ frontend/            Next.js (App Router, TypeScript) — the page
   app/               Layout, metadata (Open Graph) and the page
   components/        One component per section (Hero, Skills, Works, Blog, Architecture, Contact, Footer) plus ChatWidget
   lib/               Typed content (config.ts: skills and projects), UI text (messages.ts), i18n / theme providers, chat hook, GSAP effects
-  styles/            style.css (Normal design) and pop.css (Pop design)
+  styles/            style.css (Normal design, also the base), wa.css (Wa design, the default), pop.css (Pop design), loader.css (the loading screen of each design)
   public/            Favicons and the hero background video
 vercel.json          Two services (frontend / backend) and the /api/* routing
 docs/BACKLOG.md      Tasks per sprint
