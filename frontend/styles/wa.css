@@ -1110,7 +1110,9 @@ html[data-theme="wa"] .tool-badge {
   }
 
   html[data-theme="wa"] .blog-card {
-    grid-template-columns: 70px minmax(0, 1fr);
+    /* 日付（2026/10/29）がはみ出さない幅にして、題名との間に余白を取る */
+    grid-template-columns: 104px minmax(0, 1fr);
+    column-gap: 18px;
   }
 
   html[data-theme="wa"] .nav-links {
