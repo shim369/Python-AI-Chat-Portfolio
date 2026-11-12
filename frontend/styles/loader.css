@@ -1,6 +1,7 @@
 /* 初回表示のローディング。<html class="is-loading"> のときだけ画面を覆う。
-   通常デザインと Pop で、背景・書体・動きをそれぞれ別に作ってある
-   （通常: 暗い背景に Anton の名前と、左から引かれる線 / Pop: 黄色い背景に、ブラウザ窓風のカードと跳ねる3つの丸） */
+   和・通常・Pop で、背景・書体・動きをそれぞれ別に作ってある
+   （和: 和紙の地に朱の印がぽんと押され、名前の下で墨の線が引かれる / 通常: 暗い背景に Anton の名前と、左から引かれる線 /
+   Pop: 黄色い背景に、ブラウザ窓風のカードと跳ねる3つの丸）。ここに書いた部分が通常デザイン用 */
 .loader {
   display: none;
 }
@@ -29,9 +30,12 @@ html.is-loading .loader {
   pointer-events: none;
 }
 
-/* ローディング中は、ヒーローの名前のせり上がり（CSS）を止めておく。消えたところから始まる */
-html.is-loading .hero-name b {
-  animation-play-state: paused;
+/* ローディング中は、ヒーローの名前のせり上がりと、和の円相・朝日などのアニメーション（CSS）を止めておく。消えたところから始まる */
+html.is-loading .hero-name b,
+html.is-loading .emblem *,
+html.is-loading .hero-kicker {
+  /* 各デザインの animation（省略形）に上書きされないよう !important にする */
+  animation-play-state: paused !important;
 }
 
 /* ---------- 通常デザイン ---------- */
@@ -179,6 +183,62 @@ html[data-theme="pop"] .loader.is-leaving .loader-name {
   transform: none;
 }
 
+/* ---------- 和 ---------- */
+/* 和紙の地に、朱の印がぽんと押され、名前の下で細い墨の線が引かれる */
+html[data-theme="wa"] .loader {
+  background-color: #f4efe3;
+  background-image: radial-gradient(rgba(29, 28, 26, 0.06) 1px, transparent 1.2px);
+  background-size: 7px 7px;
+  color: #1d1c1a;
+}
+
+html[data-theme="wa"] .loader-inner {
+  gap: 18px;
+}
+
+html[data-theme="wa"] .loader-kicker,
+html[data-theme="wa"] .loader-dots {
+  display: none;
+}
+
+html[data-theme="wa"] .loader-mark {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  background: #b4362a;
+  box-shadow: inset 0 0 0 4px #b4362a, inset 0 0 0 6px rgba(244, 239, 227, 0.7);
+  color: #f4efe3;
+  font-family: var(--display);
+  font-size: 0;
+  font-style: normal;
+  transform: rotate(-3deg);
+  animation: loader-stamp 0.8s cubic-bezier(0.3, 1.2, 0.5, 1) 0.1s backwards;
+}
+
+html[data-theme="wa"] .loader-mark::after {
+  content: "晋";
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  /* 明朝体の字は、枠の中で下に寄って見えるので、少し上げて中央に揃える */
+  transform: translateY(-8.6px);
+}
+
+html[data-theme="wa"] .loader-name {
+  font-size: clamp(40px, 9vw, 96px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  animation: loader-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s backwards;
+}
+
+html[data-theme="wa"] .loader-line {
+  width: min(280px, 60vw);
+  background: #1d1c1a;
+  animation: loader-draw 1.2s cubic-bezier(0.6, 0, 0.2, 1) 0.6s backwards;
+}
+
 /* ---------- 動き ---------- */
 @keyframes loader-fade {
   from {
@@ -203,6 +263,17 @@ html[data-theme="pop"] .loader.is-leaving .loader-name {
   from {
     opacity: 0;
     transform: scale(0.8) rotate(-3deg);
+  }
+}
+
+@keyframes loader-stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.7) rotate(-12deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94) rotate(-3deg);
   }
 }
 

@@ -77,8 +77,9 @@ export const viewport: Viewport = {
 const THEME_SCRIPT = `try{var t=localStorage.getItem("theme");if(t==="normal"||t==="pop"||t==="wa"){document.documentElement.dataset.theme=t}}catch(e){}`;
 
 // 初回表示のローディングを出すかどうかを、最初の描画の前に決める（Loader.tsx と同じキー）。
-// 動きを減らす設定の人と、同じタブで2回目以降は出さない。8秒たっても閉じなかったときのために、ここでも外す
-const LOADER_SCRIPT = `try{var r=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("loader-seen")){r.classList.add("is-loading");setTimeout(function(){r.classList.remove("is-loading")},8000)}}catch(e){}`;
+// 動きを減らす設定の人と、同じタブで2回目以降は出さない。8秒たっても閉じなかったとき（JS が動かないなど）のために、ここでも外す。
+// ローディング本体（Loader.tsx）が動き出したら、この予備のタイマーは止める（あとから切り替えで出す次のローディングを消さないため）
+const LOADER_SCRIPT = `try{var r=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("loader-seen")){r.classList.add("is-loading");window.__loaderFallback=setTimeout(function(){r.classList.remove("is-loading")},8000)}}catch(e){}`;
 
 const PERSON_JSON_LD = {
   "@context": "https://schema.org",

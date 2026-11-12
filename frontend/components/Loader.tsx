@@ -14,11 +14,11 @@ const MAX_MS = 6000; // 読み込みが長引いても、これを超えたら�
 const LEAVE_MS = 500; // 画面全体が薄くなって消えるまでの時間
 
 /**
- * ローディング（通常デザインは名前と線、Pop は跳ねる丸のカード。どちらも名前が現れて消える）。
+ * ローディング（和は朱の印と名前、通常は名前と線、Pop は跳ねる丸のカード。どれも名前が現れて消える）。
  * 出る場面は2つ:
  *  1. 初回表示: layout.tsx のインラインスクリプトが <html class="is-loading"> を付けたとき
  *     （動きを減らす設定の人と、同じタブでの2回目以降は付かないので、何も表示されない）
- *  2. 通常 / Pop の切り替え: "loader:start" を受けたとき（切り替えのたびに、先頭から見せ直す）
+ *  2. デザインの切り替え（和 / 通常 / Pop）: "loader:start" を受けたとき（切り替えのたびに、先頭から見せ直す）
  * 閉じたあとに "loader:done" を送り、ヒーローの入場アニメーションがそれに合わせて始まる。
  */
 export default function Loader() {
@@ -28,6 +28,8 @@ export default function Loader() {
     const html = document.documentElement;
     const el = root.current;
     if (!el) return;
+    // layout.tsx の予備のタイマー（8秒で強制的に閉じる）は、ここから先を Loader 自身に任せるので止める
+    window.clearTimeout((window as unknown as { __loaderFallback?: number }).__loaderFallback);
 
     let cancelled = false;
     let finished = true;
@@ -102,7 +104,7 @@ export default function Loader() {
   return (
     <div ref={root} className="loader" aria-hidden="true">
       <div className="loader-inner">
-        {/* 通常デザインと Pop で出す部品が違う（見た目は styles/loader.css で切り替える） */}
+        {/* デザインごとに出す部品が違う（見た目は styles/loader.css で切り替える） */}
         <i className="loader-mark">SO</i>
         <p className="loader-kicker">Portfolio / 2026</p>
         <p className="loader-name">S. OHTANI</p>
