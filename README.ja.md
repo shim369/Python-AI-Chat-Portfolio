@@ -18,13 +18,9 @@
   <img src="docs/images/wa-hero.jpg" alt="和のデザイン: 墨の梅の枝があるヒーロー" width="860">
 </p>
 
-| 制作物（和） | AI チャット（和） |
-|---|---|
-| <img src="docs/images/wa-works.jpg" alt="和のデザイン: 漢数字の番号つきの制作物カード" width="100%"> | <img src="docs/images/chat.jpg" alt="和のデザイン: ツールを呼び出して答える AI チャット" width="100%"> |
-
-| Normal | Pop |
-|---|---|
-| <img src="docs/images/normal.jpg" alt="Normal デザイン: 水の動画の上のヒーロー" width="100%"> | <img src="docs/images/pop.jpg" alt="Pop デザイン: AI チャットのパネルがあるヒーロー" width="100%"> |
+| AI チャット（和） | Normal | Pop |
+|---|---|---|
+| <img src="docs/images/chat.jpg" alt="和のデザイン: ツールを呼び出して答える AI チャット" width="100%"> | <img src="docs/images/normal.jpg" alt="Normal デザイン: 水の動画の上のヒーロー" width="100%"> | <img src="docs/images/pop.jpg" alt="Pop デザイン: AI チャットのパネルがあるヒーロー" width="100%"> |
 
 ## 主な機能
 

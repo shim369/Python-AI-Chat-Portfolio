@@ -18,13 +18,9 @@ The main design is **Wa (和)**. **Normal** and **Pop** can be chosen from the p
   <img src="docs/images/wa-hero.jpg" alt="Wa design: the hero with a brushed plum branch" width="860">
 </p>
 
-| Works (Wa) | AI chat (Wa) |
-|---|---|
-| <img src="docs/images/wa-works.jpg" alt="Wa design: project cards with kanji numbers" width="100%"> | <img src="docs/images/chat.jpg" alt="Wa design: the AI chat answering with a tool call" width="100%"> |
-
-| Normal | Pop |
-|---|---|
-| <img src="docs/images/normal.jpg" alt="Normal design: hero over a water video" width="100%"> | <img src="docs/images/pop.jpg" alt="Pop design: hero with the AI chat panel" width="100%"> |
+| AI chat (Wa) | Normal | Pop |
+|---|---|---|
+| <img src="docs/images/chat.jpg" alt="Wa design: the AI chat answering with a tool call" width="100%"> | <img src="docs/images/normal.jpg" alt="Normal design: hero over a water video" width="100%"> | <img src="docs/images/pop.jpg" alt="Pop design: hero with the AI chat panel" width="100%"> |
 
 ## Features
 
