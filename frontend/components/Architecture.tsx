@@ -14,7 +14,42 @@ const ARROW_PATHS = [
 export default function Architecture() {
   const { t } = useI18n();
   const figure = useRef<HTMLElement>(null);
+  const moon = useRef<HTMLDivElement>(null);
   const [go, setGo] = useState(false);
+
+  // 和のデザインの月: 仕組みの節が画面に入るにつれて、節の上から右上の定位置まで、ゆっくり降りてくる
+  useEffect(() => {
+    const el = moon.current;
+    const section = el?.parentElement;
+    if (!el || !section) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let y: number | null = null;
+    let raf = 0;
+    const target = () => {
+      const size = el.offsetWidth;
+      const progress = reduce ? 1 : Math.min(1, Math.max(0, (window.innerHeight - section.getBoundingClientRect().top) / (window.innerHeight * 1.25)));
+      const eased = (1 - Math.cos(Math.PI * progress)) / 2;
+      const from = -size - 40;
+      return from + (24 - from) * eased;
+    };
+    const frame = () => {
+      const t = target();
+      y = y === null || reduce ? t : y + (t - y) * 0.04;
+      el.style.transform = `translate3d(0, ${y}px, 0)`;
+      raf = !reduce && Math.abs(t - y) > 0.3 ? requestAnimationFrame(frame) : 0;
+    };
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
+    kick();
+    return () => {
+      window.removeEventListener("scroll", kick);
+      window.removeEventListener("resize", kick);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   // アーキテクチャ図: 画面に入ったら線を順に描く
   useEffect(() => {
@@ -38,7 +73,7 @@ export default function Architecture() {
       <div className="seam seam-in seam-ink" aria-hidden="true" />
       <section id="architecture" className="section section-dark">
         {/* 和のデザインだけ: 夜空の月（ほかのデザインでは非表示） */}
-        <div className="moon" aria-hidden="true" />
+        <div className="moon" ref={moon} aria-hidden="true" />
         <div className="container">
           <p className="eyebrow"><b data-kan="四">04</b><span>{t("nav.architecture")}</span></p>
           <h2 className="section-title">{t("arch.title")}</h2>

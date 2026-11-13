@@ -861,7 +861,7 @@ html[data-theme="wa"] .section-dark::before {
 
 html[data-theme="wa"] .moon {
   position: absolute;
-  top: 60px;
+  top: 0;
   right: calc(var(--gutter) + 10px);
   z-index: -1;
   display: block;
@@ -870,7 +870,8 @@ html[data-theme="wa"] .moon {
   border-radius: 50%;
   background: radial-gradient(circle at 38% 34%, #f7f0dc, #e5d9b6 70%);
   box-shadow: 0 0 70px rgba(247, 240, 220, 0.25);
-  transform: translateY(calc(var(--sy) * -0.04px));
+  /* 位置（上から降りてくる動き）は Architecture.tsx が transform と opacity で決める */
+  will-change: transform;
 }
 
 html[data-theme="wa"] .section-dark .section-title {
