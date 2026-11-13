@@ -104,6 +104,10 @@ export default function ScrollEffects() {
   useEffect(() => {
     if (!motionEnabled() || theme !== "wa") return;
     const doors = gsap.utils.toArray<HTMLElement>("#project-list > .card");
+    const big = document.querySelector<HTMLElement>(".footer-big");
+    const clearBig = () => {
+      for (const prop of ["mask-image", "-webkit-mask-image", "opacity"]) big?.style.removeProperty(prop);
+    };
 
     const ctx = gsap.context(() => {
       // 見出し（縦書き）: 上から下へ、墨が引かれるように現れる
@@ -122,6 +126,28 @@ export default function ScrollEffects() {
         );
       });
 
+      // フッターの S.OHTANI: 画面に入ると、左の文字から順に、ふわっと現れる（縁をぼかしたマスクを左から右へ動かす）
+      if (big) {
+        const state = { p: 0 };
+        const paint = () => {
+          const edge = state.p * 140;
+          const mask = `linear-gradient(90deg, #000 ${edge - 40}%, transparent ${edge}%)`;
+          big.style.maskImage = mask;
+          big.style.webkitMaskImage = mask;
+          big.style.opacity = String(Math.min(1, state.p * 3));
+        };
+        paint();
+        gsap.to(state, {
+          p: 1,
+          duration: 2.4,
+          ease: "power1.inOut",
+          onUpdate: paint,
+          // 終わったらマスクを外す（文字の枠からはみ出した部分が切れないように）
+          onComplete: clearBig,
+          scrollTrigger: { trigger: big, start: "top 92%", once: true },
+        });
+      }
+
       // 制作物: 閉じた襖が、画面に入ると左右に開く（開く動きは CSS の transition）
       doors.forEach((card) => card.classList.add("is-closed"));
       ScrollTrigger.batch(doors, {
@@ -133,6 +159,7 @@ export default function ScrollEffects() {
 
     return () => {
       ctx.revert();
+      clearBig();
       for (const card of doors) card.classList.remove("is-closed");
     };
   }, [theme]);
