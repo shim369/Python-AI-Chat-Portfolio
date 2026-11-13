@@ -7,8 +7,7 @@
 .emblem,
 .rule,
 .moon,
-.fusuma,
-.footer-thanks {
+.fusuma {
   display: none;
 }
 
@@ -1019,18 +1018,15 @@ html[data-theme="wa"] .footer-big {
   font-weight: 800;
   line-height: 0.95;
   -webkit-text-stroke: 1px rgba(244, 239, 227, 0.4);
-  /* ページ全体の進み具合（0〜1）で、最後まで来たときに少し左へ寄る（スクロール量そのままだと、長いページで動きすぎる） */
-  transform: translateX(calc(var(--progress, 0) * -80px));
+  /* 左端は、下の © の行と同じ線にそろえる（動かさない）。文字の左の余白の分だけ、左へ寄せる */
+  transform: none;
+  margin-left: -0.045em;
 }
 
 html[data-theme="wa"] .footer-row {
+  justify-content: flex-start;
   gap: 18px;
   color: rgba(244, 239, 227, 0.8);
-}
-
-html[data-theme="wa"] .footer-thanks {
-  display: block;
-  margin: 0;
 }
 
 /* ---------- チャット ---------- */
